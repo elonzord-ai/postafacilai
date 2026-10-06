@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Posta Fácil AI – Mural de lojas</title>
+<style>
+:root{--bg:#eef1f5;--ink:#14213d;--muted:#5b6678;--board:#ffffff;--line:#d9dee6;--accent:#0b6bff;--panel:#ffffff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151d;--ink:#e8edf5;--muted:#9aa6b8;--board:#1a212c;--line:#2b3442;--accent:#4d93ff;--panel:#1a212c}}
+:root[data-theme="dark"]{--bg:#10151d;--ink:#e8edf5;--muted:#9aa6b8;--board:#1a212c;--line:#2b3442;--accent:#4d93ff;--panel:#1a212c}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:10px 14px;flex-wrap:wrap}
+h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em}
+.stat{color:var(--muted);font-size:13px;flex:1;min-width:140px}
+.btns{display:flex;gap:6px}
+button,a.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;text-decoration:none;display:inline-block}
+button:focus-visible,a.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+main{flex:1;position:relative;min-height:0}
+canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#sheet{position:absolute;left:12px;right:12px;bottom:12px;max-width:420px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:none;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+#sheet h2{margin:0 0 4px;font-size:17px}
+#sheet p{margin:4px 0 10px;color:var(--muted);font-size:14px;line-height:1.4}
+#sheet .row{display:flex;gap:8px;align-items:center}
+#x{margin-left:auto}
+</style>
+</head>
+<body>
+<header>
+  <h1>Posta Fácil AI</h1>
+  <div class="stat" id="stat"></div>
+  <div class="btns">
+    <button id="zo" aria-label="Diminuir zoom">−</button>
+    <button id="zi" aria-label="Aumentar zoom">+</button>
+    <button id="zr">Ver tudo</button>
+  </div>
+</header>
+<main>
+  <canvas id="c" aria-label="Mural de blocos. Arraste para mover, use a roda ou pinça para dar zoom."></canvas>
+  <div id="sheet" role="dialog" aria-live="polite">
+    <h2 id="sh"></h2><p id="sp"></p>
+    <div class="row"><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
+  </div>
+</main>
+<script>
+// ===== CONFIGURAÇÃO (edite aqui) =====
+var WHATSAPP = "5500000000000";   // seu número com DDI+DDD
+var PRECO = 5;                    // R$ por bloco/mês (exemplo)
+var N = 100, C = 10;              // 100x100 blocos, 10px cada = 1000x1000
+var SUPABASE_URL = "https://ycjgabnmnrzikziotfin.supabase.co";
+var SUPABASE_KEY = "sb_publishable_Eo04mkG2ZK-Z31m9HLyDFQ_up9gCiNs"; // chave pública
+var ADS = [];
+// ===== FIM DA CONFIGURAÇÃO =====
+var cv=document.getElementById("c"),ctx=cv.getContext("2d");
+var $=function(i){return document.getElementById(i)};
+var s=1,tx=0,ty=0,minS=.3,dpr=window.devicePixelRatio||1,hover=null,pts={},drag=null,pinch=null;
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function adAt(cx,cy){for(var i=0;i<ADS.length;i++){var a=ADS[i];if(cx>=a.x&&cx<a.x+a.w&&cy>=a.y&&cy<a.y+a.h)return a}return null}
+function stat(){var u=0;ADS.forEach(function(a){u+=a.w*a.h});$("stat").textContent=(N*N-u).toLocaleString("pt-BR")+" blocos livres de "+(N*N).toLocaleString("pt-BR")+" · R$ "+PRECO+"/bloco por mês"}
+function fit(){var r=cv.getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;minS=Math.min(r.width,r.height)/(N*C)*.95;s=minS;tx=(r.width-N*C*s)/2;ty=(r.height-N*C*s)/2;draw()}
+function clamp(){var r=cv.getBoundingClientRect(),w=N*C*s;
+  tx=w<r.width?(r.width-w)/2:Math.min(0,Math.max(r.width-w,tx));ty=w<r.height?(r.height-w)/2:Math.min(0,Math.max(r.height-w,ty))}
+function zoomAt(f,px,py){var ns=Math.min(40,Math.max(minS,s*f));f=ns/s;tx=px-(px-tx)*f;ty=py-(py-ty)*f;s=ns;clamp();draw()}
+function draw(){
+  var r=cv.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);
+  ctx.setTransform(dpr*s,0,0,dpr*s,dpr*tx,dpr*ty);
+  ctx.fillStyle=css("--board");ctx.fillRect(0,0,N*C,N*C);
+  if(s*C>=5){ctx.strokeStyle=css("--line");ctx.lineWidth=1/s;ctx.beginPath();
+    for(var i=0;i<=N;i++){ctx.moveTo(i*C,0);ctx.lineTo(i*C,N*C);ctx.moveTo(0,i*C);ctx.lineTo(N*C,i*C)}ctx.stroke()}
+  ADS.forEach(function(a){var X=a.x*C,Y=a.y*C,W=a.w*C,H=a.h*C;ctx.fillStyle=a.c;ctx.fillRect(X,Y,W,H);
+    var fs=Math.min(H*.3,W/(a.n.length*.58),26);if(fs*s>=6){ctx.fillStyle="#fff";ctx.font="700 "+fs+"px Trebuchet MS,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(a.n,X+W/2,Y+H/2)}});
+  if(hover){var a=adAt(hover.x,hover.y);ctx.strokeStyle=css("--accent");ctx.lineWidth=2/s;
+    if(a)ctx.strokeRect(a.x*C,a.y*C,a.w*C,a.h*C);else{ctx.fillStyle="rgba(11,107,255,.25)";ctx.fillRect(hover.x*C,hover.y*C,C,C);ctx.strokeRect(hover.x*C,hover.y*C,C,C)}}
+}
+function cellAt(px,py){var x=Math.floor((px-tx)/s/C),y=Math.floor((py-ty)/s/C);return(x>=0&&y>=0&&x<N&&y<N)?{x:x,y:y}:null}
+function pos(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function openSheet(c){var a=adAt(c.x,c.y),sa=$("sa");
+  if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" Anúncio ativo até "+a.v+".";sa.textContent="Visitar loja";sa.href=a.l}
+  else{$("sh").textContent="Bloco livre ("+(c.x+1)+", "+(c.y+1)+")";$("sp").textContent="Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja.";
+    sa.textContent="Reservar no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero reservar o bloco ("+(c.x+1)+","+(c.y+1)+") no mural Posta Fácil AI")}
+  $("sheet").style.display="block"}
+cv.addEventListener("pointerdown",function(e){cv.setPointerCapture(e.pointerId);pts[e.pointerId]=pos(e);var k=Object.keys(pts);
+  if(k.length===1)drag={sx:pts[k[0]].x,sy:pts[k[0]].y,ox:tx,oy:ty,moved:false};
+  else if(k.length===2){drag=null;var a=pts[k[0]],b=pts[k[1]];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:s}}});
+cv.addEventListener("pointermove",function(e){var p=pos(e);
+  if(pts[e.pointerId])pts[e.pointerId]=p;var k=Object.keys(pts);
+  if(k.length===2&&pinch){var a=pts[k[0]],b=pts[k[1]],d=Math.hypot(a.x-b.x,a.y-b.y);zoomAt(pinch.s*d/pinch.d/s,(a.x+b.x)/2,(a.y+b.y)/2);return}
+  if(drag&&k.length===1){var dx=p.x-drag.sx,dy=p.y-drag.sy;if(Math.abs(dx)+Math.abs(dy)>6)drag.moved=true;
+    if(drag.moved){tx=drag.ox+dx;ty=drag.oy+dy;clamp();draw()}}
+  else if(!k.length){hover=cellAt(p.x,p.y);draw()}});
+function up(e){var p=pos(e);delete pts[e.pointerId];
+  if(drag&&!drag.moved&&!pinch){var c=cellAt(p.x,p.y);if(c)openSheet(c)}
+  if(!Object.keys(pts).length){drag=null;pinch=null}}
+cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",function(e){delete pts[e.pointerId];drag=null;pinch=null});
+cv.addEventListener("wheel",function(e){e.preventDefault();var p=pos(e);zoomAt(e.deltaY<0?1.15:1/1.15,p.x,p.y)},{passive:false});
+function mid(){var r=cv.getBoundingClientRect();return[r.width/2,r.height/2]}
+$("zi").onclick=function(){var m=mid();zoomAt(1.5,m[0],m[1])};
+$("zo").onclick=function(){var m=mid();zoomAt(1/1.5,m[0],m[1])};
+$("zr").onclick=fit;
+$("x").onclick=function(){$("sheet").style.display="none"};
+window.addEventListener("resize",fit);
+function safe(l){return/^https?:\/\//i.test(l||"")?l:"#"}
+function br(d){var p=(d||"").split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:d}
+function load(){
+  fetch(SUPABASE_URL+"/rest/v1/anunciantes?select=*",{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}})
+  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+  .then(function(rows){ADS=rows.map(function(a){return{x:a.x,y:a.y,w:a.w,h:a.h,n:a.nome,d:a.descricao||"",l:safe(a.link),c:a.cor||"#0b6bff",v:br(a.vencimento)}});stat();draw()})
+  .catch(function(){$("stat").textContent="Não foi possível carregar os anunciantes. Tente recarregar a página."});
+}
+stat();fit();load();
+</script>
+</body>
+</html>
