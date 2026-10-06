@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Posta Fácil AI – Mural de lojas</title>
 <style>
-:root{--bg:#eef1f5;--ink:#14213d;--muted:#5b6678;--board:#ffffff;--line:#d9dee6;--accent:#0b6bff;--panel:#ffffff;
+:root{--bg:#eef1f5;--ink:#14213d;--muted:#5b6678;--board:#ffffff;--frame:#1b2b4b;--slot:#2d4068;--line:#d9dee6;--accent:#0b6bff;--panel:#ffffff;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151d;--ink:#e8edf5;--muted:#9aa6b8;--board:#1a212c;--line:#2b3442;--accent:#4d93ff;--panel:#1a212c}}
-:root[data-theme="dark"]{--bg:#10151d;--ink:#e8edf5;--muted:#9aa6b8;--board:#1a212c;--line:#2b3442;--accent:#4d93ff;--panel:#1a212c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10151d;--ink:#e8edf5;--muted:#9aa6b8;--board:#1a212c;--frame:#080b10;--slot:#1c2635;--line:#2b3442;--accent:#4d93ff;--panel:#1a212c}}
+:root[data-theme="dark"]{--bg:#10151d;--ink:#e8edf5;--muted:#9aa6b8;--board:#1a212c;--frame:#080b10;--slot:#1c2635;--line:#2b3442;--accent:#4d93ff;--panel:#1a212c}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column}
@@ -67,7 +67,15 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 // ===== CONFIGURAÇÃO (edite aqui) =====
 var WHATSAPP = "5562998309271";   // seu número com DDI+DDD
 var PRECO = 5;                    // R$ por bloco/mês (exemplo)
-var N = 100, C = 10;              // 100x100 blocos, 10px cada = 1000x1000
+var N = 100, C = 10;
+var B = 8, T = N + 2*B;          // moldura de 8 blocos em volta
+var PRECO_TOPO = 1500;           // R$ por semana, placas 1 a 4 (exemplo)
+var PRECO_LADOS = 1100;          // R$ por semana, placas 5 a 12 (exemplo)
+var SLOTS = [];(function(){var id=1,i;function add(x,y,w,h){SLOTS.push({id:id++,x:x,y:y,w:w,h:h,ad:null})}
+  for(i=0;i<4;i++)add(i*T/4,0,T/4,B);                       // topo 1-4
+  add(N+B,B,B,N/2);add(N+B,B+N/2,B,N/2);                    // direita 5-6
+  for(i=0;i<4;i++)add(i*T/4,N+B,T/4,B);                     // base 7-10
+  add(0,B,B,N/2);add(0,B+N/2,B,N/2)})();                    // esquerda 11-12              // 100x100 blocos, 10px cada = 1000x1000
 var SUPABASE_URL = "https://ycjgabnmnrzikziotfin.supabase.co";
 var SUPABASE_KEY = "sb_publishable_Eo04mkG2ZK-Z31m9HLyDFQ_up9gCiNs"; // chave pública
 var ADS = [];
@@ -78,25 +86,40 @@ var s=1,tx=0,ty=0,minS=.3,dpr=window.devicePixelRatio||1,hover=null,pts={},drag=
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 function adAt(cx,cy){for(var i=0;i<ADS.length;i++){var a=ADS[i];if(cx>=a.x&&cx<a.x+a.w&&cy>=a.y&&cy<a.y+a.h)return a}return null}
 function stat(){var u=0;ADS.forEach(function(a){u+=a.w*a.h});$("stat").textContent=(N*N-u).toLocaleString("pt-BR")+" blocos livres de "+(N*N).toLocaleString("pt-BR")+" · R$ "+PRECO+"/bloco por mês"}
-function fit(){var r=cv.getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;minS=Math.min(r.width,r.height)/(N*C)*.95;s=minS;tx=(r.width-N*C*s)/2;ty=(r.height-N*C*s)/2;draw()}
-function clamp(){var r=cv.getBoundingClientRect(),w=N*C*s;
+function fit(){var r=cv.getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;minS=Math.min(r.width,r.height)/(T*C)*.95;s=minS;tx=(r.width-T*C*s)/2;ty=(r.height-T*C*s)/2;draw()}
+function clamp(){var r=cv.getBoundingClientRect(),w=T*C*s;
   tx=w<r.width?(r.width-w)/2:Math.min(0,Math.max(r.width-w,tx));ty=w<r.height?(r.height-w)/2:Math.min(0,Math.max(r.height-w,ty))}
 function zoomAt(f,px,py){var ns=Math.min(40,Math.max(minS,s*f));f=ns/s;tx=px-(px-tx)*f;ty=py-(py-ty)*f;s=ns;clamp();draw()}
 function draw(){
   var r=cv.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);
   ctx.setTransform(dpr*s,0,0,dpr*s,dpr*tx,dpr*ty);
+  ctx.fillStyle=css("--frame");ctx.fillRect(0,0,T*C,T*C);
+  SLOTS.forEach(function(q){var X=q.x*C,Y=q.y*C,W=q.w*C,H=q.h*C,a=q.ad,t=a?a.n:"Seu logo aqui",v=q.h>q.w;
+    ctx.fillStyle=a?a.c:css("--slot");ctx.fillRect(X+2,Y+2,W-4,H-4);
+    ctx.save();ctx.translate(X+W/2,Y+H/2);if(v)ctx.rotate(-Math.PI/2);
+    var L=v?H:W,M=v?W:H,fs=Math.min(M*.4,L/(t.length*.6),28);
+    if(fs*s>=5){ctx.fillStyle=a?"#fff":"#c9d3e6";ctx.font="700 "+fs+"px Trebuchet MS,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,0,0)}
+    ctx.restore();
+    if(hover&&hover.sl===q){ctx.strokeStyle=css("--accent");ctx.lineWidth=3/s;ctx.strokeRect(X+2,Y+2,W-4,H-4)}});
+  ctx.translate(B*C,B*C);
   ctx.fillStyle=css("--board");ctx.fillRect(0,0,N*C,N*C);
   if(s*C>=5){ctx.strokeStyle=css("--line");ctx.lineWidth=1/s;ctx.beginPath();
     for(var i=0;i<=N;i++){ctx.moveTo(i*C,0);ctx.lineTo(i*C,N*C);ctx.moveTo(0,i*C);ctx.lineTo(N*C,i*C)}ctx.stroke()}
   ADS.forEach(function(a){var X=a.x*C,Y=a.y*C,W=a.w*C,H=a.h*C;ctx.fillStyle=a.c;ctx.fillRect(X,Y,W,H);
     var fs=Math.min(H*.3,W/(a.n.length*.58),26);if(fs*s>=6){ctx.fillStyle="#fff";ctx.font="700 "+fs+"px Trebuchet MS,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(a.n,X+W/2,Y+H/2)}});
-  if(hover){var a=adAt(hover.x,hover.y);ctx.strokeStyle=css("--accent");ctx.lineWidth=2/s;
+  if(hover&&!hover.sl){var a=adAt(hover.x,hover.y);ctx.strokeStyle=css("--accent");ctx.lineWidth=2/s;
     if(a)ctx.strokeRect(a.x*C,a.y*C,a.w*C,a.h*C);else{ctx.fillStyle="rgba(11,107,255,.25)";ctx.fillRect(hover.x*C,hover.y*C,C,C);ctx.strokeRect(hover.x*C,hover.y*C,C,C)}}
 }
-function cellAt(px,py){var x=Math.floor((px-tx)/s/C),y=Math.floor((py-ty)/s/C);return(x>=0&&y>=0&&x<N&&y<N)?{x:x,y:y}:null}
+function cellAt(px,py){var wx=(px-tx)/s/C,wy=(py-ty)/s/C;if(wx<0||wy<0||wx>=T||wy>=T)return null;
+  var x=Math.floor(wx)-B,y=Math.floor(wy)-B;if(x>=0&&y>=0&&x<N&&y<N)return{x:x,y:y};
+  for(var i=0;i<SLOTS.length;i++){var q=SLOTS[i];if(wx>=q.x&&wx<q.x+q.w&&wy>=q.y&&wy<q.y+q.h)return{sl:q}}return null}
 function pos(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
 var curAd=null;
-function openSheet(c){var a=adAt(c.x,c.y),sa=$("sa");curAd=a;
+function openSlot(q){var a=q.ad,sa=$("sa");curAd=null;
+  if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" Patrocinador master. Ativo até "+a.v+".";sa.textContent="Visitar site";sa.href=a.l}
+  else{$("sh").textContent="Placa de patrocinador "+q.id;$("sp").textContent="Espaço master em destaque ao redor do mural, para grandes marcas. R$ "+(q.id<=4?PRECO_TOPO:PRECO_LADOS).toLocaleString("pt-BR")+" por semana, com renovação a cada 7 dias.";sa.textContent="Quero esta placa";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero a placa de patrocinador "+q.id+" no mural Posta Fácil AI")}
+  $("sheet").style.display="block";document.body.classList.add("sheet-open")}
+function openSheet(c){if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" Anúncio ativo até "+a.v+".";sa.textContent="Visitar loja";sa.href=a.l}
   else{$("sh").textContent="Bloco livre ("+(c.x+1)+", "+(c.y+1)+")";$("sp").textContent="Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja.";
     sa.textContent="Reservar no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero reservar o bloco ("+(c.x+1)+","+(c.y+1)+") no mural Posta Fácil AI")}
@@ -135,7 +158,7 @@ function tick(){var i=tick.i||0,a=fresh.shift()||recent[i%Math.max(recent.length
 function load(first){
   fetch(SUPABASE_URL+"/rest/v1/anunciantes?select=*&order=criado_em.desc",{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}})
   .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
-  .then(function(rows){ADS=map(rows);ADS.forEach(function(a){if(!seen[a.id]){seen[a.id]=1;if(!first)fresh.push(a)}});recent=ADS.slice(0,5);stat();draw();loadRank();
+  .then(function(rows){ADS=map(rows);ADS.forEach(function(a){if(!seen[a.id]){seen[a.id]=1;if(!first)fresh.push(a)}});recent=ADS.slice(0,5);stat();draw();loadRank();loadSp();
     if(first&&!started){started=true;setTimeout(tick,2500)}})
   .catch(function(){if(first)$("stat").textContent="Não foi possível carregar os anunciantes. Tente recarregar a página."});
 }
@@ -152,8 +175,11 @@ function track(id){var k="pf_c_"+id+"_"+new Date().toLocaleDateString("sv");
   try{if(localStorage.getItem(k))return;localStorage.setItem(k,"1")}catch(e){}
   fetch(SUPABASE_URL+"/rest/v1/rpc/registrar_clique",{method:"POST",keepalive:true,headers:hdr(),body:JSON.stringify({p_id:id})}).catch(function(){});
   setTimeout(loadRank,1500)}
+function loadSp(){fetch(SUPABASE_URL+"/rest/v1/patrocinadores?select=*",{headers:hdr()})
+  .then(function(r){return r.ok?r.json():[]}).then(function(rows){SLOTS.forEach(function(q){q.ad=null});
+    rows.forEach(function(a){var q=SLOTS[a.slot-1];if(q)q.ad={n:a.nome,d:a.descricao||"",l:safe(a.link),c:a.cor||"#0b6bff",v:br(a.vencimento)}});draw()}).catch(function(){})}
 function focusAd(a){var r=cv.getBoundingClientRect(),k=Math.min(r.width*.5/(a.w*C),r.height*.5/(a.h*C));
-  s=Math.min(40,Math.max(minS,k));tx=r.width/2-(a.x+a.w/2)*C*s;ty=r.height/2-(a.y+a.h/2)*C*s;clamp();draw();openSheet({x:a.x,y:a.y})}
+  s=Math.min(40,Math.max(minS,k));tx=r.width/2-(a.x+B+a.w/2)*C*s;ty=r.height/2-(a.y+B+a.h/2)*C*s;clamp();draw();openSheet({x:a.x,y:a.y})}
 $("sa").addEventListener("click",function(){if(curAd&&curAd.l!=="#")track(curAd.id)});
 $("hot").onclick=function(){var on=$("rank").classList.toggle("on");$("hot").setAttribute("aria-expanded",on)};
 if(innerWidth>=900)$("hot").onclick();
