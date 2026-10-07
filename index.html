@@ -113,10 +113,11 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
 .kard{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px}.kard p{margin:4px 0;font-size:13px}
 .how li{margin:8px 0;line-height:1.4}.tot{font-weight:700;margin:6px 0}
 #adv ol{list-style:none;margin:0;padding:0}#adv li button{width:100%;text-align:left;border:0;background:none;padding:6px 4px}
-@media(min-width:1100px){#me2{display:none}#mf{display:none}}
+@media(min-width:1100px){#me2{display:none}}
 #mf{flex:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0 6px;padding:4px 10px;border-top:1px solid var(--line);background:var(--bg);font-size:13px}
 #mf a,#mf button{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:6px 8px;border:0;background:none;color:var(--muted);font-size:13px;text-decoration:none;border-radius:8px}
 #mf button:not(:disabled):hover,#mf a:hover{color:var(--ink);border-color:transparent}
+@media(min-width:1100px){#mf{display:none}}
 .ic{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px}
 .ic.wa{fill:#25D366;stroke:none;width:18px;height:18px}
 .ic.gd{color:var(--gold)}
@@ -534,6 +535,20 @@ var IMGS={};
 function adImg(a){if(!a.img)return null;var i=IMGS[a.img];if(!i){i=IMGS[a.img]=new Image();i.onload=function(){draw()};i.src=a.img}return i.complete&&i.naturalWidth?i:null}
 var _d2=draw;draw=function(){_d2();ADS.forEach(function(a){var i=adImg(a);if(!i)return;var X=a.x*C,Y=a.y*C,W=a.w*C,H=a.h*C,k=Math.max(W/i.naturalWidth,H/i.naturalHeight),sw=W/k,sh=H/k;
   ctx.drawImage(i,(i.naturalWidth-sw)/2,(i.naturalHeight-sh)/2,sw,sh,X,Y,W,H);if(FILTER&&a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(X,Y,W,H)}})};
+var _d3=draw;draw=function(){_d3();
+  if(FILTER)return;
+  var x0=18,y0=43,w0=64,h0=14;
+  if(ADS.some(function(a){return x0<a.x+a.w&&x0+w0>a.x&&y0<a.y+a.h&&y0+h0>a.y}))return;
+  var light=css("--board")==="#ffffff",col=light?"#0b8a5f":"#2ee59d",X=x0*C,Y=y0*C,W=w0*C,H=h0*C,r=24;
+  ctx.save();
+  ctx.beginPath();ctx.moveTo(X+r,Y);ctx.arcTo(X+W,Y,X+W,Y+H,r);ctx.arcTo(X+W,Y+H,X,Y+H,r);ctx.arcTo(X,Y+H,X,Y,r);ctx.arcTo(X,Y,X+W,Y,r);ctx.closePath();
+  ctx.fillStyle=light?"rgba(11,138,95,.08)":"rgba(46,229,157,.10)";ctx.fill();
+  ctx.setLineDash([14,10]);ctx.lineWidth=3;ctx.strokeStyle=col;ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.font="800 52px Trebuchet MS,sans-serif";ctx.fillText("Seu achadinho aqui",X+W/2,Y+H*.4);
+  ctx.font="700 30px Trebuchet MS,sans-serif";ctx.fillText("Toque num bloco \u00b7 R$ "+PRECO+"/m\u00eas",X+W/2,Y+H*.78);
+  ctx.restore()};
+draw();
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){})}catch(e){}
 var instEv=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();instEv=e;$("inst").style.display=""});
 var IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),
