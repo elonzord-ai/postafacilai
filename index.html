@@ -119,12 +119,12 @@ function cellAt(px,py){var wx=(px-tx)/s/C,wy=(py-ty)/s/C;if(wx<0||wy<0||wx>=T||w
   var x=Math.floor(wx)-B,y=Math.floor(wy)-B;if(x>=0&&y>=0&&x<N&&y<N)return{x:x,y:y};
   for(var i=0;i<SLOTS.length;i++){var q=SLOTS[i];if(wx>=q.x&&wx<q.x+q.w&&wy>=q.y&&wy<q.y+q.h)return{sl:q}}return null}
 function pos(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
-var curAd=null;
-function openSlot(q){var a=q.ad,sa=$("sa");curAd=null;
+var curAd=null,curSp=null;
+function openSlot(q){var a=q.ad,sa=$("sa");curAd=null;curSp=a||null;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" Patrocinador master. Ativo até "+a.v+".";sa.textContent="Visitar site";sa.href=a.l}
   else{$("sh").textContent="Placa de patrocinador "+q.id;$("sp").textContent="Espaço master em destaque ao redor do mural, para grandes marcas. R$ "+(q.id<=4?PRECO_TOPO:PRECO_LADOS).toLocaleString("pt-BR")+" por semana, com renovação a cada 7 dias.";sa.textContent="Quero esta placa";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero a placa de patrocinador "+q.id+" no mural Posta Fácil AI")}
   $("sheet").style.display="block";document.body.classList.add("sheet-open")}
-function openSheet(c){if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;
+function openSheet(c){if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;curSp=null;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" Anúncio ativo até "+a.v+".";sa.textContent="Visitar loja";sa.href=a.l}
   else{$("sh").textContent="Bloco livre ("+(c.x+1)+", "+(c.y+1)+")";$("sp").textContent="Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja.";
     sa.textContent="Reservar no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero reservar o bloco ("+(c.x+1)+","+(c.y+1)+") no mural Posta Fácil AI")}
@@ -182,13 +182,17 @@ function track(id){var k="pf_c_"+id+"_"+new Date().toLocaleDateString("sv");
   setTimeout(loadRank,1500)}
 function loadSp(){fetch(SUPABASE_URL+"/rest/v1/patrocinadores?select=*",{headers:hdr()})
   .then(function(r){return r.ok?r.json():[]}).then(function(rows){SLOTS.forEach(function(q){q.ad=null});
-    rows.forEach(function(a){var q=SLOTS[a.slot-1];if(q)q.ad={n:a.nome,d:a.descricao||"",l:safe(a.link),c:a.cor||"#0b6bff",v:br(a.vencimento)}});draw()}).catch(function(){})}
+    rows.forEach(function(a){var q=SLOTS[a.slot-1];if(q)q.ad={id:a.id,n:a.nome,d:a.descricao||"",l:safe(a.link),c:a.cor||"#0b6bff",v:br(a.vencimento)}});draw()}).catch(function(){})}
 function focusAd(a){var r=cv.getBoundingClientRect(),k=Math.min(r.width*.5/(a.w*C),r.height*.5/(a.h*C));
   s=Math.min(40,Math.max(minS,k));tx=r.width/2-(a.x+B+a.w/2)*C*s;ty=r.height/2-(a.y+B+a.h/2)*C*s;clamp();draw();openSheet({x:a.x,y:a.y})}
-$("sa").addEventListener("click",function(){if(curAd&&curAd.l!=="#")track(curAd.id)});
+$("sa").addEventListener("click",function(){if(curAd&&curAd.l!=="#")track(curAd.id);if(curSp&&curSp.l!=="#")trackSp(curSp.id)});
+function once(k){k+="_"+new Date().toLocaleDateString("sv");try{if(localStorage.getItem(k))return false;localStorage.setItem(k,"1");return true}catch(e){return false}}
+function rpc(fn,body){fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",keepalive:true,headers:hdr(),body:body}).catch(function(){})}
+function trackSp(id){if(once("pf_s_"+id))rpc("registrar_clique_placa",JSON.stringify({p_id:id}))}
+function visit(){if(once("pf_v"))rpc("registrar_visita","{}")}
 $("hot").onclick=function(){var on=$("rank").classList.toggle("on");$("hot").setAttribute("aria-expanded",on)};
 if(innerWidth>=900)$("hot").onclick();
-stat();fit();load(true);setInterval(function(){if(!document.hidden)load(false)},30000);
+stat();fit();load(true);visit();setInterval(function(){if(!document.hidden)load(false)},30000);
 </script>
 </body>
 </html>
