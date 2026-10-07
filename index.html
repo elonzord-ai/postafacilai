@@ -22,7 +22,7 @@ h1{font-size:19px;margin:0;font-weight:800;letter-spacing:-.02em;display:flex;al
 button,a.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;text-decoration:none;display:inline-block}
 button:focus-visible,a.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 a.primary{background:linear-gradient(135deg,#2f6bf0,#6a3df0);border-color:transparent;color:#fff}
-main{flex:1;position:relative;min-height:0}
+main{flex:1;position:relative;min-height:0;overflow:hidden}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #sheet{position:fixed;z-index:10;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:420px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;display:none;box-shadow:0 6px 24px rgba(0,0,0,.18)}
 #sheet h2{margin:0 0 4px;font-size:17px}
@@ -156,7 +156,10 @@ $("zi").onclick=function(){var m=mid();zoomAt(1.5,m[0],m[1])};
 $("zo").onclick=function(){var m=mid();zoomAt(1/1.5,m[0],m[1])};
 $("zr").onclick=fit;
 $("x").onclick=function(){$("sheet").style.display="none";document.body.classList.remove("sheet-open")};
-window.addEventListener("resize",fit);
+function sizeCv(){var r=cv.getBoundingClientRect(),old=minS;if(!r.width||!r.height)return;
+  cv.width=r.width*dpr;cv.height=r.height*dpr;minS=Math.min(r.width,r.height)/(T*C)*.95;
+  if(s<=old*1.001||s<minS){s=minS;tx=(r.width-T*C*s)/2;ty=(r.height-T*C*s)/2}clamp();draw()}
+if(window.ResizeObserver)new ResizeObserver(sizeCv).observe(cv.parentNode);else window.addEventListener("resize",sizeCv);
 function safe(l){return/^https?:\/\//i.test(l||"")?l:"#"}
 function br(d){var p=(d||"").split("-");return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:d}
 var UF={};[["SP",[11,12,13,14,15,16,17,18,19]],["RJ",[21,22,24]],["ES",[27,28]],["MG",[31,32,33,34,35,37,38]],["PR",[41,42,43,44,45,46]],["SC",[47,48,49]],["RS",[51,53,54,55]],["DF",[61]],["GO",[62,64]],["TO",[63]],["MT",[65,66]],["MS",[67]],["AC",[68]],["RO",[69]],["BA",[71,73,74,75,77]],["SE",[79]],["PE",[81,87]],["AL",[82]],["PB",[83]],["RN",[84]],["CE",[85,88]],["PI",[86,89]],["PA",[91,93,94]],["AM",[92,97]],["RR",[95]],["AP",[96]],["MA",[98,99]]].forEach(function(g){g[1].forEach(function(d){UF[d]=g[0]})});
