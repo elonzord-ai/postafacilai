@@ -113,7 +113,10 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
 .kard{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px}.kard p{margin:4px 0;font-size:13px}
 .how li{margin:8px 0;line-height:1.4}.tot{font-weight:700;margin:6px 0}
 #adv ol{list-style:none;margin:0;padding:0}#adv li button{width:100%;text-align:left;border:0;background:none;padding:6px 4px}
-@media(min-width:1100px){#me2{display:none}}
+@media(min-width:1100px){#me2{display:none}#mf{display:none}}
+#mf{flex:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:0 6px;padding:4px 10px;border-top:1px solid var(--line);background:var(--bg);font-size:13px}
+#mf a,#mf button{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:6px 8px;border:0;background:none;color:var(--muted);font-size:13px;text-decoration:none;border-radius:8px}
+#mf button:not(:disabled):hover,#mf a:hover{color:var(--ink);border-color:transparent}
 .ic{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px}
 .ic.wa{fill:#25D366;stroke:none;width:18px;height:18px}
 .ic.gd{color:var(--gold)}
@@ -199,6 +202,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 <section class="card" id="adv"><h2><svg class='ic gd'><use href='#i-crown'/></svg>Maiores anunciantes</h2><p class="mut">Em breve: ranking dos anunciantes com mais cliques.</p></section>
 </aside>
 </div>
+<footer id="mf" aria-label="Mais opções">
+  <button type="button" id="mfl"><svg class='ic gd'><use href='#i-gavel'/></svg>Leilão</button>
+  <button type="button" id="mfa"><svg class='ic gd'><use href='#i-crown'/></svg>Maiores anunciantes</button>
+  <a href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg>Termos de Uso</a>
+  <a href="https://wa.me/5562998309271" target="_blank" rel="noopener"><svg class='ic wa'><use href='#i-wa'/></svg>Fale conosco</a>
+</footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
 // ===== CONFIGURAÇÃO (edite aqui) =====
@@ -481,7 +490,7 @@ function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu cód
         k.appendChild(el("b","",o.nome));k.appendChild(el("p","mut",o.w*o.h+" bloco(s) · "+(o.nicho||"Outros")));
         k.appendChild(el("p","","👁 "+a.vis+" visualizações · 🖱 "+a.cli+" cliques · CTR "+ctr(a)+" · "+(d>0?d+" dias restantes":"vencido")));k.appendChild(el("p","mut","🔗 "+o.link));r.appendChild(k)})})
     .catch(function(){r.textContent="Não foi possível carregar. Confira o código e tente de novo."})}}
-function how(){var f=el("div");f.innerHTML='<ol class="how"><li><b>Escolha um bloco livre</b> no mural (zoom e arraste).</li><li><b>Defina tamanho, nome, link e cor</b> da sua loja.</li><li><b>Pague via Pix</b> e seu anúncio aparece no mural.</li><li>Acompanhe <b>cliques e CTR</b> em Meu Espaço.</li></ol>';modal("Como funciona",f)}
+function how(){var f=el("div");f.innerHTML='<p class="mut">Mural de lojas, afiliados e achadinhos em promoção. Toque em um bloco para ver a oferta. Para anunciar o seu:</p><ol class="how"><li><b>Escolha um bloco livre</b> no mural (zoom e arraste) ou filtre por nicho.</li><li><b>Defina tamanho, nome, link, cor e nicho</b>. Se quiser, envie uma imagem.</li><li><b>Pague via Pix</b>. Seu anúncio entra no mural após a confirmação (imagens passam por análise automática).</li><li>Acompanhe <b>cliques e CTR</b> em Meu Espaço.</li><li><b>Placas de patrocinador</b> ao redor do mural são alugadas por semana, e algumas são disputadas em leilão ao vivo.</li></ol>';modal("Como funciona",f)}
 function bind(i,fn){var e=$(i);if(e)e.onclick=function(ev){ev.preventDefault();fn()}}
 bind("me",meuEspaco);bind("me2",meuEspaco);bind("hp",how);bind("mn",function(){$("nichos").scrollIntoView({block:"nearest"})});
 try{if(!localStorage.getItem("pf_how")){localStorage.setItem("pf_how","1");setTimeout(how,800)}}catch(e){}
@@ -527,7 +536,20 @@ var _d2=draw;draw=function(){_d2();ADS.forEach(function(a){var i=adImg(a);if(!i)
   ctx.drawImage(i,(i.naturalWidth-sw)/2,(i.naturalHeight-sh)/2,sw,sh,X,Y,W,H);if(FILTER&&a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(X,Y,W,H)}})};
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){})}catch(e){}
 var instEv=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();instEv=e;$("inst").style.display=""});
-$("inst").onclick=function(){if(!instEv)return;instEv.prompt();instEv.userChoice.finally(function(){instEv=null;$("inst").style.display="none"})};
+var IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),
+  STANDALONE=navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
+if(IOS&&!STANDALONE)$("inst").style.display="";
+$("inst").onclick=function(){
+  if(instEv){instEv.prompt();instEv.userChoice.finally(function(){instEv=null;$("inst").style.display="none"});return}
+  if(IOS){var f=el("div");f.innerHTML='<ol class="how"><li>Toque em <b>Compartilhar</b> (o quadrado com a seta para cima) na barra do navegador.</li><li>Role e toque em <b>Adicionar à Tela de Início</b>.</li><li>Toque em <b>Adicionar</b>. O app aparece na sua tela inicial.</li></ol><p class="mut">Se não achar a opção, abra este site pelo Safari.</p>';modal("Instalar no iPhone",f)}};
+function topModal(){var m={},l=[],f=el("div");ADS.forEach(function(a){m[a.n]=m[a.n]||{a:a,b:0};m[a.n].b+=a.w*a.h});for(var k in m)l.push(m[k]);l.sort(function(p,q){return q.b-p.b});
+  if(!l.length)f.appendChild(el("p","mut","Ainda sem anunciantes."));
+  else{var ol=el("ol");ol.style.cssText="list-style:none;margin:0;padding:0";l.slice(0,5).forEach(function(o,i){var li=el("li"),b=el("button","",(i+1)+". "+o.a.n+" · "+o.b+" blocos");b.style.cssText="width:100%;text-align:left;margin-bottom:6px";b.onclick=function(){$("md").className="";focusAd(o.a)};li.appendChild(b);ol.appendChild(li)});f.appendChild(ol)}
+  modal("Maiores anunciantes",f)}
+$("mfa").onclick=topModal;
+$("mfl").onclick=function(){if(DISP)openDisp({id:DISP.slot||1});else modal("Leilão",el("p","mut","Nenhuma disputa aberta no momento."))};
+$("md").addEventListener("click",function(e){if(e.target===this)this.className=""});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("md").className=""});
 window.addEventListener("appinstalled",function(){$("inst").style.display="none"});
 </script>
 </body>
