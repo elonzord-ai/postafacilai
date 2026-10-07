@@ -108,6 +108,18 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
 .ic.gd{color:var(--gold)}
 #lv h2,#adv h2,#rank h2{display:flex;align-items:center;gap:8px}
 button .ic{margin-right:4px}
+#nbar{display:flex;align-items:center;gap:10px;padding:6px 14px;border-bottom:1px solid var(--line)}
+#nbar #nichos{padding:0;border:0;flex:1;min-width:0;scrollbar-width:thin}
+#nq{flex:none;width:min(260px,42vw);font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink)}
+#ht{display:flex;gap:5px;overflow-x:auto;margin-bottom:8px;padding-bottom:4px;scrollbar-width:thin}
+#ht .chip{font-size:12px;padding:3px 10px}
+#hl ol{list-style:none;margin:0;padding:0}
+#hl li>*{display:block;width:100%;text-align:left;border:0;background:none;padding:7px 4px;color:var(--ink);text-decoration:none;font-size:14px;border-radius:6px}
+#hl li>*:hover{background:var(--bg)}
+#fsl{max-height:150px;overflow:auto;margin:4px 0 6px;border:1px solid var(--line);border-radius:8px}
+#md #fsl button{display:flex;width:100%;text-align:left;gap:6px;border:0;border-radius:0;background:none;color:var(--ink);padding:7px 9px;font-size:14px}
+#md #fsl button:hover{background:var(--bg)}
+#fsl small{color:var(--muted);margin-left:auto;font-size:11px}
 </style>
 </head>
 <body>
@@ -133,7 +145,7 @@ button .ic{margin-right:4px}
     <button id="zr">Ver tudo</button>
   </div>
 </header>
-<div id="nichos" aria-label="Filtrar por nicho"></div>
+<div id="nbar"><input id="nq" type="search" placeholder="Buscar nicho: capacete, air fryer..." aria-label="Buscar nicho" autocomplete="off"><div id="nichos" aria-label="Filtrar por nicho"></div></div>
 <a id="palco" target="_blank" rel="noopener"></a>
 <div id="app">
 <nav id="nav" aria-label="Navegação">
@@ -154,7 +166,7 @@ button .ic{margin-right:4px}
   <p class="lvl" id="lvk">&nbsp;</p><p class="lvt" id="lvt">–</p>
   <p class="lvl" id="lvn">&nbsp;</p><ol id="lvh"></ol>
   <button id="lvb" type="button">Abrir painel de lances</button></section>
-<aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2><svg class='ic gd'><use href='#i-flame'/></svg>Ofertas mais clicadas hoje</h2><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
+<aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2><svg class='ic gd'><use href='#i-flame'/></svg>Em destaque</h2><div id="ht"></div><div id="hl" style="display:none"></div><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
     <h2 id="sh"></h2><p id="sp"></p>
     <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em R$ (inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
@@ -368,7 +380,42 @@ document.getElementById("lvb").onclick=function(){if(DISP)openDisp({id:DISP.slot
 </script>
 <div id="md"></div>
 <script>
-var NICHOS=["Moda","Casa","Tech","Beleza","Brinquedos","Outros"],FILTER=null,curBuy=null;
+var NDATA=[["🏍️","Motos e Peças","motos,capacetes,intercomunicadores,luvas,jaquetas,botas,suporte celular,gps,baú,bagageiro,retrovisor,escapamento,pneus,corrente,pastilha de freio,bateria,óleo,motoboy"],
+["🚗","Carros e Peças","carros,peças automotivas,tapetes,capas para bancos,volante,carregador veicular,multimídia,som automotivo,alto-falantes,câmera de ré,sensores,alarme,rastreamento,led,polimento,limpeza automotiva,rodas"],
+["📱","Celulares e Acessórios","smartphone,capas,películas,carregadores,cabos,power bank,fones de ouvido,headset,smartwatch,pulseira inteligente,cartão de memória,pendrive,tripé,ring light,microfone"],
+["💻","Informática","computador,notebook,pc gamer,monitor,teclado,mouse,webcam,impressora,scanner,hd,ssd,memória ram,placa de vídeo,placa-mãe,processador,gabinete,roteador,switch"],
+["🎮","Games","console,playstation,xbox,nintendo,jogos,controle,headset gamer,teclado gamer,mouse gamer,cadeira gamer,joystick,cartão-presente,monitor gamer"],
+["🏠","Casa e Decoração","decoração,móveis,iluminação,luminária,tapete,cortina,almofada,quadros,espelho,relógio,prateleira,estante,utilidades domésticas,banheiro,quarto,sala,lavanderia"],
+["🍳","Cozinha","eletrodomésticos,panelas,frigideira,air fryer,liquidificador,batedeira,sanduicheira,cafeteira,torradeira,chaleira,utensílios,potes,garrafas,copos,talheres,facas,tábuas"],
+["🧹","Limpeza e Organização","aspirador,vassoura,mop,balde,organizadores,caixas,cestos,varal,produtos de limpeza,guarda-roupa"],
+["🔧","Ferramentas e Construção","ferramentas manuais,ferramentas elétricas,furadeira,parafusadeira,esmerilhadeira,serra,compressor,solda,chaves,alicates,ferragens,parafusos,materiais elétricos,materiais hidráulicos,epi"],
+["🏗️","Reforma e Jardim","jardinagem,plantas,vasos,mangueira,irrigação,churrasqueira,piscina,móveis de jardim,iluminação externa,reforma,hidráulica,elétrica"],
+["👕","Moda Masculina","camisetas,camisas,calças,bermudas,shorts,jaquetas,moletom,terno,blazer,cueca,meias,tênis,botas,sandálias,bonés,óculos,relógios"],
+["👗","Moda Feminina","vestidos,blusas,saias,conjuntos,jaquetas,moletom,lingerie,pijamas,tênis,sandálias,botas,bolsas,carteiras,óculos,joias,semijoias"],
+["👶","Bebês e Crianças","roupas infantis,calçados infantis,brinquedos,carrinho,bebê conforto,cadeirinha,berço,mamadeira,chupeta,fraldas,higiene,material escolar,produtos educativos"],
+["🐶","Pets","cachorros,gatos,ração,petiscos,caminha,casinha,coleira,guia,roupas pet,bebedouro,comedouro,banho,transporte"],
+["💄","Beleza e Cuidados","maquiagem,skincare,perfumes,cremes,protetor solar,cabelos,shampoo,condicionador,secador,chapinha,escova,barbeador,aparador,depilador,manicure,pedicure"],
+["🏋️","Esportes e Fitness","academia,musculação,corrida,ciclismo,futebol,basquete,vôlei,lutas,yoga,pilates,crossfit,halteres,elásticos,suplementação,roupas esportivas,tênis esportivos"],
+["🎣","Pesca e Camping","vara,molinete,iscas,anzóis,linhas,caixa de pesca,barraca,colchão inflável,lanterna,mochila,cadeira,mesa,outdoor"],
+["🏕️","Aventura e Outdoor","camping,trilhas,mochilas,lanternas,cantil,sobrevivência,equipamentos para viagem"],
+["✈️","Viagem e Bagagem","malas,mochilas,bolsas,necessaire,organizador de mala,almofada de viagem,adaptadores,cadeados"],
+["🎵","Áudio e Vídeo","fones,headphones,caixa de som,soundbar,microfone,amplificador,home theater,projetor,telas,câmeras"],
+["📷","Fotografia","câmeras,lentes,tripé,iluminação,ring light,microfone,gimbal,estabilizador,bolsas,cartão de memória,baterias"],
+["🏢","Escritório e Papelaria","material escolar,cadernos,canetas,agendas,impressora,cadeira,mesa,calculadora,home office"],
+["🛍️","Compras e Achadinhos","ofertas,promoções,cupons,achadinhos,produtos virais,mais vendidos,produtos em alta,produtos baratos,importados"],
+["💰","Negócios e Empreendedorismo","maquininha,impressora térmica,etiquetadora,embalagens,produtos para loja,marketing,publicidade,dropshipping,afiliados,e-commerce"],
+["🏪","Lojas e Marketplaces","mercado livre,shopee,amazon,aliexpress,magalu,casas bahia,lojas virtuais,e-commerce,afiliados,cupons"],
+["🔌","Eletrônicos","tv,smart tv,projetor,roteador,câmera de segurança,tomada inteligente,lâmpada inteligente,assistente virtual,automação residencial"],
+["🏡","Casa Inteligente","smart home,câmera wi-fi,fechadura inteligente,sensores,campainha,alarme,automação,assistente virtual"],
+["🔒","Segurança","câmeras,alarmes,sensores,fechaduras,cadeados,cofre,interfone,campainha,segurança residencial"],
+["🧰","Equipamentos Profissionais","ferramentas profissionais,industriais,oficina,construção,restaurante,salão,barbearia"],
+["💡","Iluminação","lâmpadas,led,fita led,luminárias,lustre,spots,refletores,iluminação decorativa,iluminação profissional"],
+["🎨","Hobbies e Colecionáveis","colecionáveis,miniaturas,modelismo,artesanato,pintura,desenho,jogos de tabuleiro,cartas,quebra-cabeças"],
+["🎸","Instrumentos Musicais","violão,guitarra,baixo,teclado,bateria,microfone,pedais,amplificador,sopro"],
+["🎁","Presentes","presentes masculinos,femininos,casal,crianças,personalizados,criativos,kits"],
+["🎄","Datas Comemorativas","dia das mães,dia dos pais,dia dos namorados,dia das crianças,natal,black friday,carnaval,páscoa,ano novo,volta às aulas"],
+["🏭","Indústria e Comércio","máquinas,equipamentos,ferramentas,epis,automação,materiais elétricos,materiais hidráulicos,suprimentos industriais"],
+["📦","Outros",""]],NICHOS=NDATA.map(function(n){return n[1]}),FILTER=null,curBuy=null;
 var _map=map;map=function(rows){var r=_map(rows);r.forEach(function(a){var o=rows.filter(function(x){return x.id===a.id})[0]||{};a.nicho=NICHOS.indexOf(o.nicho)>=0?o.nicho:"Outros";a.vis=o.visualizacoes||0;a.cli=o.cliques||0});return r};
 var _draw=draw;draw=function(){_draw();if(FILTER)ADS.forEach(function(a){if(a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(a.x*C,a.y*C,a.w*C,a.h*C)}})};
 function dl(v){var p=(v||"").split("/");return p.length===3?Math.ceil((new Date(p[2],p[1]-1,p[0])-Date.now())/864e5):null}
@@ -389,13 +436,14 @@ function pixShow(j,m){m.innerHTML="";m.appendChild(el("b","","Pague via Pix (cop
   var b=el("button","go","Copiar código Pix");b.onclick=function(){t.select();try{navigator.clipboard.writeText(j.pix)}catch(e){document.execCommand("copy")}b.textContent="Copiado!"};m.appendChild(b);
   if(j.codigo)m.appendChild(el("p","","Seu código do Meu Espaço: "+j.codigo));m.appendChild(el("p","mut","Seu bloco aparece no mural assim que o pagamento for confirmado."))}
 $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
-  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<select id="fs">'+NICHOS.map(function(n){return"<option>"+n+"</option>"}).join("")+'</select></label><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
+  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
   modal("Comprar blocos",f);
   function upd(){var w=Math.max(1,+$("fw").value||1),h=Math.max(1,+$("fh").value||1);$("fp").textContent=w*h+" bloco(s) · R$ "+(w*h*PRECO).toLocaleString("pt-BR")+"/mês"+(fits(p,w,h)?"":" · não cabe aqui");return[w,h]}
   $("fw").oninput=$("fh").oninput=upd;upd();
   $("fg").onclick=function(){var wh=upd(),n=$("fn").value.trim(),l=$("fl").value.trim(),m=$("fm");
     if(!fits(p,wh[0],wh[1])){m.textContent="Esse tamanho não cabe nessa posição.";return}
     if(!n||!/^https?:\/\//i.test(l)){m.textContent="Informe o nome e um link começando com https://";return}
+    if(!$("fs").value){m.textContent="Escolha um nicho na lista.";return}
     m.textContent="Gerando Pix...";
     fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value})})
     .then(function(r){return r.ok?r.json():Promise.reject()}).then(function(j){if(!j||!j.pix)throw 0;pixShow(j,m)})
@@ -414,6 +462,34 @@ function bind(i,fn){var e=$(i);if(e)e.onclick=function(ev){ev.preventDefault();f
 bind("me",meuEspaco);bind("me2",meuEspaco);bind("hp",how);bind("mn",function(){$("nichos").scrollIntoView({block:"nearest"})});
 try{if(!localStorage.getItem("pf_how")){localStorage.setItem("pf_how","1");setTimeout(how,800)}}catch(e){}
 var _tr=track;track=function(id){_tr(id);if(once("pf_cs_"+id))rpc("somar_clique",JSON.stringify({p_id:id}))};
+function nm(s){return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function nmatch(n,q){q=nm(q.trim());return !q||nm(n[1]+" "+n[2]).indexOf(q)>=0}
+var NQ="";
+nichos=function(){var b=$("nichos"),c={};ADS.forEach(function(a){c[a.nicho]=(c[a.nicho]||0)+a.w*a.h});b.innerHTML="";
+  var l=NDATA.filter(function(n){return nmatch(n,NQ)}).sort(function(p,q){return(c[q[1]]||0)-(c[p[1]]||0)});
+  [null].concat(l).forEach(function(n){var v=n?n[1]:null,k=el("button",FILTER===v?"chip on":"chip",n?n[0]+" "+n[1]+" · "+(c[n[1]]||0):"Todos");k.onclick=function(){FILTER=v;nichos();draw()};b.appendChild(k)});
+  if(!l.length)b.appendChild(el("span","mut","Nenhum nicho encontrado."))};
+$("nq").oninput=function(){NQ=this.value;nichos()};nichos();
+function nichoPick(){var q=$("fsq"),l=$("fsl"),h=$("fs");
+  function show(){l.innerHTML="";l.style.display="block";var t=nm(q.value.trim()),n=0;
+    NDATA.forEach(function(d){if(!nmatch(d,q.value))return;n++;var b=el("button","",d[0]+" "+d[1]),kw=t?d[2].split(",").filter(function(x){return nm(x).indexOf(t)>=0})[0]:"";
+      if(kw&&nm(d[1]).indexOf(t)<0)b.appendChild(el("small","",kw));
+      b.onclick=function(){h.value=d[1];q.value=d[0]+" "+d[1];l.style.display="none"};l.appendChild(b)});
+    if(!n)l.appendChild(el("p","mut","Nenhum nicho encontrado. Tente outra palavra."))}
+  q.oninput=function(){h.value="";show()};q.onfocus=show;show();l.style.display="none"}
+var _m=modal;modal=function(t,n){_m(t,n);if($("fsq"))nichoPick()};
+var HOT=["Mais clicados hoje","Mais anunciados","Produtos em alta","Ofertas do dia","Tendências","Produtos virais","Mais vendidos","Achadinhos da semana","Subindo no ranking"],hotI=0,VT=[];
+function hotTabs(){var b=$("ht");b.innerHTML="";HOT.forEach(function(t,i){var k=el("button",i===hotI?"chip on":"chip",t);k.onclick=function(){hotI=i;hotTabs();hotView()};b.appendChild(k)})}
+function hotList(rows){var l=$("hl");l.innerHTML="";if(!rows.length){l.appendChild(el("p","mut","Ainda sem itens aqui."));return}
+  var ol=el("ol");rows.forEach(function(r,i){var li=el("li"),b=el(r.h?"a":"button","",(i+1)+". "+r.t);if(r.h){b.href=r.h;b.target="_blank";b.rel="noopener"}else b.onclick=r.f;li.appendChild(b);ol.appendChild(li)});l.appendChild(ol)}
+function hotView(){var l=$("hl"),own=hotI===0,r=[];$("rl").style.display=own?"":"none";$("re").style.display=own&&!$("rl").children.length?"block":"none";l.style.display=own?"none":"block";if(own)return;
+  if(hotI===1){var m={};ADS.forEach(function(a){m[a.n]=m[a.n]||{a:a,b:0};m[a.n].b+=a.w*a.h});Object.keys(m).map(function(k){return m[k]}).sort(function(p,q){return q.b-p.b}).slice(0,5).forEach(function(o){r.push({t:o.a.n+" · "+o.b+" blocos",f:function(){focusAd(o.a)}})})}
+  else if(hotI===2)ADS.filter(function(a){return a.cli>0}).sort(function(p,q){return q.cli-p.cli}).slice(0,5).forEach(function(a){r.push({t:a.n+" · "+a.cli+" cliques",f:function(){focusAd(a)}})});
+  else if(hotI===8){l.innerHTML="";l.appendChild(el("p","mut","Em breve: quem mais sobe no ranking, comparando com ontem."));return}
+  else VT.forEach(function(v){if(v.s===HOT[hotI])r.push({t:v.t,h:v.l})});
+  hotList(r)}
+function loadVT(){fetch(SUPABASE_URL+"/rest/v1/vitrine?select=titulo,link,secao",{headers:hdr()}).then(function(r){return r.ok?r.json():[]}).then(function(rows){VT=rows.filter(function(x){return x.secao&&safe(x.link)!=="#"}).map(function(x){return{t:x.titulo,l:safe(x.link),s:x.secao}});hotView()}).catch(function(){})}
+var _s2=stat;stat=function(){_s2();hotView()};hotTabs();loadVT();setInterval(loadVT,60000);
 </script>
 </body>
 </html>
