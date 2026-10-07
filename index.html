@@ -268,7 +268,7 @@ function openSlot(q){$("bid").style.display="none";bidOpen=false;if(DISP&&DISP.s
   $("sheet").style.display="block";document.body.classList.add("sheet-open")}
 function openSheet(c){$("bid").style.display="none";bidOpen=false;if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;curSp=null;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" A partir do bloco "+num(a)+". Anúncio ativo até "+a.v+".";sa.textContent="Visitar loja";sa.href=a.l}
-  else{$("sh").textContent="Bloco "+num(c)+" · livre";$("sp").textContent="Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja.";
+  else{$("sh").textContent="Seu achadinho aqui";$("sp").textContent="Bloco "+num(c)+" · livre. Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja ou link de afiliado.";
     sa.textContent="Reservar no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero reservar o bloco "+num(c)+" no mural Posta Fácil AI")}
   $("sheet").style.display="block";document.body.classList.add("sheet-open")}
 cv.addEventListener("pointerdown",function(e){cv.setPointerCapture(e.pointerId);pts[e.pointerId]=pos(e);var k=Object.keys(pts);
