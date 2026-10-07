@@ -86,6 +86,23 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
 .mut{margin:0;color:var(--muted);font-size:13px}
 #hot{display:none}
 }
+.mut{color:var(--muted);font-size:13px;margin:4px 0}
+#nichos{display:flex;gap:6px;overflow-x:auto;padding:6px 14px;border-bottom:1px solid var(--line)}
+.chip{white-space:nowrap;font-size:13px;border-radius:999px;padding:4px 12px}
+.chip.on{background:var(--accent);color:#fff;border-color:transparent}
+#buy{background:linear-gradient(135deg,#1aa97a,#2ee59d);border-color:transparent;color:#05281c;font-weight:700}
+#md{display:none;position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:12px}
+#md.on{display:flex}
+#md .mb{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:18px;width:min(420px,100%);max-height:88vh;overflow:auto}
+#md h2{margin:0 0 8px;font-size:18px}
+#md label{display:block;font-size:13px;color:var(--muted);margin:6px 0}
+#md input,#md select,#md textarea{display:block;width:100%;font:inherit;font-size:14px;padding:7px 9px;margin-top:3px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+#md input[type=color]{height:36px;padding:2px}
+#md .go{width:100%;margin:8px 0;background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;font-weight:700;border-color:transparent}
+.kard{border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px}.kard p{margin:4px 0;font-size:13px}
+.how li{margin:8px 0;line-height:1.4}.tot{font-weight:700;margin:6px 0}
+#adv ol{list-style:none;margin:0;padding:0}#adv li button{width:100%;text-align:left;border:0;background:none;padding:6px 4px}
+@media(min-width:1100px){#me2{display:none}}
 </style>
 </head>
 <body>
@@ -94,18 +111,19 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
   <div class="stat" id="stat"></div>
   <div class="btns">
     <input id="bn" inputmode="numeric" placeholder="Ir ao bloco #" aria-label="Ir ao bloco por número"><button id="bg">Ir</button>
-    <button id="hot" aria-expanded="false">🔥 Mais clicadas</button>
+    <button id="me2">📊 Meu Espaço</button><button id="hp" aria-label="Como funciona">?</button><button id="hot" aria-expanded="false">🔥 Mais clicadas</button>
     <button id="zo" aria-label="Diminuir zoom">−</button>
     <button id="zi" aria-label="Aumentar zoom">+</button>
     <button id="zr">Ver tudo</button>
   </div>
 </header>
+<div id="nichos" aria-label="Filtrar por nicho"></div>
 <a id="palco" target="_blank" rel="noopener"></a>
 <div id="app">
 <nav id="nav" aria-label="Navegação">
   <a class="ni on" href="/">🧩 Mural</a>
-  <span class="ni soon">🗺️ Mapa de Nichos <small>em breve</small></span>
-  <span class="ni soon">📊 Meu Espaço <small>em breve</small></span>
+  <a class="ni" href="#" id="mn">🗺️ Mapa de Nichos</a>
+  <a class="ni" href="#" id="me">📊 Meu Espaço</a>
   <span class="ni soon">🏆 Rankings <small>em breve</small></span>
   <hr>
   <a class="ni" href="/termos.html" target="_blank" rel="noopener">📄 Termos de Uso</a>
@@ -124,7 +142,7 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
   <div id="sheet" role="dialog" aria-live="polite">
     <h2 id="sh"></h2><p id="sp"></p>
     <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em R$ (inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
-    <div class="row"><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
+    <div class="row"><button id="buy" style="display:none">Comprar agora</button><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
   </div>
 <section class="card" id="adv"><h2>🏆 Maiores anunciantes</h2><p class="mut">Em breve: ranking dos anunciantes com mais cliques.</p></section>
 </aside>
@@ -331,6 +349,55 @@ j.ultimos.forEach(function(x){var li=document.createElement("li"),a=document.cre
 a.className="n";a.textContent=x.nome;b.className="v";b.textContent=money(x.valor);li.appendChild(a);li.appendChild(b);ol.appendChild(li)})}).catch(function(){})}
 setInterval(lvLoad,5000);setTimeout(lvLoad,2500);
 document.getElementById("lvb").onclick=function(){if(DISP)openDisp({id:DISP.slot||1})};
+</script>
+<div id="md"></div>
+<script>
+var NICHOS=["Moda","Casa","Tech","Beleza","Brinquedos","Outros"],FILTER=null,curBuy=null;
+var _map=map;map=function(rows){var r=_map(rows);r.forEach(function(a){var o=rows.filter(function(x){return x.id===a.id})[0]||{};a.nicho=NICHOS.indexOf(o.nicho)>=0?o.nicho:"Outros";a.vis=o.visualizacoes||0;a.cli=o.cliques||0});return r};
+var _draw=draw;draw=function(){_draw();if(FILTER)ADS.forEach(function(a){if(a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(a.x*C,a.y*C,a.w*C,a.h*C)}})};
+function dl(v){var p=(v||"").split("/");return p.length===3?Math.ceil((new Date(p[2],p[1]-1,p[0])-Date.now())/864e5):null}
+function ctr(a){return a.vis>0?(a.cli/a.vis*100).toFixed(1)+"%":"–"}
+function nichos(){var b=$("nichos"),c={};ADS.forEach(function(a){c[a.nicho]=(c[a.nicho]||0)+a.w*a.h});b.innerHTML="";
+  [null].concat(NICHOS).forEach(function(n){var k=el("button",FILTER===n?"chip on":"chip",n?n+" · "+(c[n]||0):"Todos");k.onclick=function(){FILTER=n;nichos();draw()};b.appendChild(k)})}
+function top5(){var m={},l=[],sec=$("adv");ADS.forEach(function(a){m[a.n]=m[a.n]||{a:a,b:0};m[a.n].b+=a.w*a.h});for(var k in m)l.push(m[k]);l.sort(function(p,q){return q.b-p.b});
+  sec.innerHTML="<h2>🏆 Maiores anunciantes</h2>";if(!l.length)return sec.appendChild(el("p","mut","Ainda sem anunciantes."));
+  var ol=el("ol");l.slice(0,5).forEach(function(o,i){var li=el("li"),b=el("button","",(i+1)+". "+o.a.n+" · "+o.b+" blocos");b.onclick=function(){focusAd(o.a)};li.appendChild(b);ol.appendChild(li)});sec.appendChild(ol)}
+var _stat=stat;stat=function(){_stat();nichos();top5()};nichos();
+var _os=openSheet;openSheet=function(c){_os(c);var b=$("buy");curBuy=null;b.style.display="none";if(c.sl)return;var a=adAt(c.x,c.y);
+  if(a){var d=dl(a.v);$("sp").textContent+=" Nicho: "+a.nicho+" · "+a.w*a.h+" bloco(s) · "+(d==null?"":d>0?d+" dias restantes":"vencido")+" · "+a.cli+" cliques · CTR "+ctr(a)+".";
+    if(once("pf_vw_"+a.id))rpc("registrar_visualizacao",JSON.stringify({p_id:a.id}))}
+  else{curBuy={x:c.x,y:c.y};b.style.display="inline-block"}};
+function modal(t,n){var m=$("md"),b=el("div","mb"),x=el("button","","Fechar");x.onclick=function(){m.className=""};m.innerHTML="";b.appendChild(el("h2","",t));b.appendChild(n);b.appendChild(x);m.appendChild(b);m.className="on"}
+function fits(p,w,h){return p.x+w<=N&&p.y+h<=N&&!ADS.some(function(a){return p.x<a.x+a.w&&p.x+w>a.x&&p.y<a.y+a.h&&p.y+h>a.y})}
+function pixShow(j,m){m.innerHTML="";m.appendChild(el("b","","Pague via Pix (copia e cola):"));var t=el("textarea");t.readOnly=true;t.rows=3;t.value=j.pix;m.appendChild(t);
+  var b=el("button","go","Copiar código Pix");b.onclick=function(){t.select();try{navigator.clipboard.writeText(j.pix)}catch(e){document.execCommand("copy")}b.textContent="Copiado!"};m.appendChild(b);
+  if(j.codigo)m.appendChild(el("p","","Seu código do Meu Espaço: "+j.codigo));m.appendChild(el("p","mut","Seu bloco aparece no mural assim que o pagamento for confirmado."))}
+$("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
+  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<select id="fs">'+NICHOS.map(function(n){return"<option>"+n+"</option>"}).join("")+'</select></label><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
+  modal("Comprar blocos",f);
+  function upd(){var w=Math.max(1,+$("fw").value||1),h=Math.max(1,+$("fh").value||1);$("fp").textContent=w*h+" bloco(s) · R$ "+(w*h*PRECO).toLocaleString("pt-BR")+"/mês"+(fits(p,w,h)?"":" · não cabe aqui");return[w,h]}
+  $("fw").oninput=$("fh").oninput=upd;upd();
+  $("fg").onclick=function(){var wh=upd(),n=$("fn").value.trim(),l=$("fl").value.trim(),m=$("fm");
+    if(!fits(p,wh[0],wh[1])){m.textContent="Esse tamanho não cabe nessa posição.";return}
+    if(!n||!/^https?:\/\//i.test(l)){m.textContent="Informe o nome e um link começando com https://";return}
+    m.textContent="Gerando Pix...";
+    fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value})})
+    .then(function(r){return r.ok?r.json():Promise.reject()}).then(function(j){if(!j||!j.pix)throw 0;pixShow(j,m)})
+    .catch(function(){m.textContent="Não foi possível gerar o Pix agora (o bloco pode ter sido ocupado). ";var a=el("a","","Finalizar pelo WhatsApp");a.target="_blank";a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero comprar "+wh[0]*wh[1]+" bloco(s) a partir do "+num(p)+" para "+n+" ("+l+")");m.appendChild(a)})}};
+function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu código de anunciante.</p><input id="mc" placeholder="Seu código"><button class="go" id="mg">Ver métricas</button><div id="mr"></div>';modal("📊 Meu Espaço",f);
+  try{$("mc").value=localStorage.getItem("pf_code")||""}catch(e){}
+  $("mg").onclick=function(){var c=$("mc").value.trim(),r=$("mr");if(!c)return;try{localStorage.setItem("pf_code",c)}catch(e){}r.textContent="Carregando...";
+    fetch(SUPABASE_URL+"/rest/v1/rpc/meu_espaco",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:c})}).then(function(x){return x.ok?x.json():Promise.reject()}).then(function(rows){r.textContent="";
+      if(!rows||!rows.length){r.textContent="Nenhum espaço encontrado para esse código.";return}
+      rows.forEach(function(o){var a={vis:o.visualizacoes||0,cli:o.cliques||0},d=dl(br(o.vencimento)),k=el("div","kard");
+        k.appendChild(el("b","",o.nome));k.appendChild(el("p","mut",o.w*o.h+" bloco(s) · "+(o.nicho||"Outros")));
+        k.appendChild(el("p","","👁 "+a.vis+" visualizações · 🖱 "+a.cli+" cliques · CTR "+ctr(a)+" · "+(d>0?d+" dias restantes":"vencido")));k.appendChild(el("p","mut","🔗 "+o.link));r.appendChild(k)})})
+    .catch(function(){r.textContent="Não foi possível carregar. Confira o código e tente de novo."})}}
+function how(){var f=el("div");f.innerHTML='<ol class="how"><li><b>Escolha um bloco livre</b> no mural (zoom e arraste).</li><li><b>Defina tamanho, nome, link e cor</b> da sua loja.</li><li><b>Pague via Pix</b> e seu anúncio aparece no mural.</li><li>Acompanhe <b>cliques e CTR</b> em Meu Espaço.</li></ol>';modal("Como funciona",f)}
+function bind(i,fn){var e=$(i);if(e)e.onclick=function(ev){ev.preventDefault();fn()}}
+bind("me",meuEspaco);bind("me2",meuEspaco);bind("hp",how);bind("mn",function(){$("nichos").scrollIntoView({block:"nearest"})});
+try{if(!localStorage.getItem("pf_how")){localStorage.setItem("pf_how","1");setTimeout(how,800)}}catch(e){}
+var _tr=track;track=function(id){_tr(id);if(once("pf_cs_"+id))rpc("somar_clique",JSON.stringify({p_id:id}))};
 </script>
 </body>
 </html>
