@@ -56,6 +56,31 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #bid button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
 #bs{color:var(--ink)!important}#bm{min-height:1.2em;margin:0 0 4px!important}
 #sp a{color:#9db0ff;text-decoration:underline}
+
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+#side{display:contents}
+#lv,#adv,#nav{display:none}
+#rank{position:fixed;top:120px}
+@media (min-width:1100px){
+#app{flex:1;min-height:0;display:grid;grid-template-columns:210px minmax(0,1fr) 330px;gap:14px;padding:0 14px 14px}
+#nav{display:flex;flex-direction:column;gap:4px;padding-top:6px}
+.ni{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;color:var(--ink);text-decoration:none;font-size:15px}
+a.ni:hover{background:var(--panel)}.ni.on{background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;font-weight:700}
+.ni.soon{color:var(--muted);cursor:default}.ni small{margin-left:auto;font-size:11px;border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+#nav hr{width:100%;border:0;border-top:1px solid var(--line);margin:8px 0}
+main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
+#side{display:flex;flex-direction:column;gap:12px;overflow:auto;padding-top:6px}
+#lv,#adv{display:block}
+.card,#rank,#sheet{position:static!important;display:block;width:auto;max-width:none;max-height:none;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 18px rgba(0,0,0,.14)}
+#sheet{display:none}
+.card h2{margin:0 0 8px;font-size:15px}
+.lvl{margin:0;font-size:11px;letter-spacing:.08em;color:var(--muted)}
+.lvv{margin:2px 0 10px;font-size:22px;font-weight:800;color:#2ee59d}
+.lvt{margin:2px 0 12px;font:700 22px 'Courier New',monospace}
+#lvb{width:100%;background:linear-gradient(135deg,#2f6bf0,#6a3df0);border-color:transparent;color:#fff;font-weight:700}
+.mut{margin:0;color:var(--muted);font-size:13px}
+#hot{display:none}
+}
 </style>
 </head>
 <body>
@@ -71,15 +96,33 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
   </div>
 </header>
 <a id="palco" target="_blank" rel="noopener"></a>
+<div id="app">
+<nav id="nav" aria-label="Navegação">
+  <a class="ni on" href="/">🧩 Mural</a>
+  <span class="ni soon">🗺️ Mapa de Nichos <small>em breve</small></span>
+  <span class="ni soon">📊 Meu Espaço <small>em breve</small></span>
+  <span class="ni soon">🏆 Rankings <small>em breve</small></span>
+  <hr>
+  <a class="ni" href="/termos.html" target="_blank" rel="noopener">📄 Termos de Uso</a>
+  <a class="ni" href="https://wa.me/5562998309271" target="_blank" rel="noopener">💬 Fale conosco</a>
+</nav>
 <main>
   <canvas id="c" aria-label="Mural de blocos. Arraste para mover, use a roda ou pinça para dar zoom."></canvas>
-  <aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2>🔥 Ofertas mais clicadas hoje</h2><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
+  </main>
+<aside id="side">
+<section class="card" id="lv"><h2>🥇 Leilão · Placa 1</h2>
+  <p class="lvl" id="lvl">Carregando…</p><p class="lvv" id="lvv">–</p>
+  <p class="lvl" id="lvk">&nbsp;</p><p class="lvt" id="lvt">–</p>
+  <button id="lvb" type="button">Abrir painel de lances</button></section>
+<aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2>🔥 Ofertas mais clicadas hoje</h2><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
     <h2 id="sh"></h2><p id="sp"></p>
     <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em R$ (inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
     <div class="row"><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
   </div>
-</main>
+<section class="card" id="adv"><h2>🏆 Maiores anunciantes</h2><p class="mut">Em breve: ranking dos anunciantes com mais cliques.</p></section>
+</aside>
+</div>
 <div id="toast" role="status" aria-live="polite"></div>
 <script>
 // ===== CONFIGURAÇÃO (edite aqui) =====
@@ -265,6 +308,16 @@ $("bb").onclick=function(){var code=$("bc").value.trim(),val=parseInt($("bv").va
   .catch(function(){$("bm").textContent="Falha de conexão. Tente de novo."}).then(renderBid)};
 setInterval(function(){if(DISP){draw();renderBid()}},1000);
 stat();fit();load(true);visit();loadDisp();setInterval(function(){if(!document.hidden)load(false)},30000);
+</script>
+<script>
+setInterval(function(){var l=document.getElementById("lvl");if(!l)return;
+if(typeof DISP==="undefined"||!DISP){l.textContent="Nenhuma disputa aberta no momento.";return}
+var st=dst(),has=DISP.maior_lance!=null;
+l.textContent=has?"MAIOR LANCE":"SEM LANCES · MÍNIMO";
+document.getElementById("lvv").textContent=has?money(DISP.maior_lance)+" · "+DISP.vencedor:money(DISP.lance_minimo);
+document.getElementById("lvk").textContent=st==="aguardando"?"COMEÇA EM":st==="ao_vivo"?"TERMINA EM":"ENCERRADA";
+document.getElementById("lvt").textContent=st==="encerrada"?"–":fmt((st==="aguardando"?DISP.inicio:DISP.fim)-nowS())},1000);
+document.getElementById("lvb").onclick=function(){if(DISP)openDisp({id:DISP.slot||1})};
 </script>
 </body>
 </html>
