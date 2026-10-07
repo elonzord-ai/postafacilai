@@ -58,6 +58,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #sp a{color:#9db0ff;text-decoration:underline}
 
 header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+#app{flex:1;min-height:0;display:flex;flex-direction:column}
 #side{display:contents}
 #lv,#adv,#nav{display:none}
 #rank{position:fixed;top:120px}
@@ -78,6 +79,10 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
 .lvv{margin:2px 0 10px;font-size:22px;font-weight:800;color:#2ee59d}
 .lvt{margin:2px 0 12px;font:700 22px 'Courier New',monospace}
 #lvb{width:100%;background:linear-gradient(135deg,#2f6bf0,#6a3df0);border-color:transparent;color:#fff;font-weight:700}
+#lvh{list-style:none;margin:6px 0 12px;padding:0;font-size:13px}
+#lvh li{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-top:1px solid var(--line)}
+#lvh .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#lvh .v{font-weight:700;color:#2ee59d}
+.ni.soon{white-space:nowrap}.ni small{white-space:nowrap}
 .mut{margin:0;color:var(--muted);font-size:13px}
 #hot{display:none}
 }
@@ -113,6 +118,7 @@ main{border:1px solid var(--line);border-radius:16px;background:var(--board)}
 <section class="card" id="lv"><h2>🥇 Leilão · Placa 1</h2>
   <p class="lvl" id="lvl">Carregando…</p><p class="lvv" id="lvv">–</p>
   <p class="lvl" id="lvk">&nbsp;</p><p class="lvt" id="lvt">–</p>
+  <p class="lvl" id="lvn">&nbsp;</p><ol id="lvh"></ol>
   <button id="lvb" type="button">Abrir painel de lances</button></section>
 <aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2>🔥 Ofertas mais clicadas hoje</h2><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
@@ -317,6 +323,13 @@ l.textContent=has?"MAIOR LANCE":"SEM LANCES · MÍNIMO";
 document.getElementById("lvv").textContent=has?money(DISP.maior_lance)+" · "+DISP.vencedor:money(DISP.lance_minimo);
 document.getElementById("lvk").textContent=st==="aguardando"?"COMEÇA EM":st==="ao_vivo"?"TERMINA EM":"ENCERRADA";
 document.getElementById("lvt").textContent=st==="encerrada"?"–":fmt((st==="aguardando"?DISP.inicio:DISP.fim)-nowS())},1000);
+function lvLoad(){if(document.hidden||typeof DISP==="undefined"||!DISP)return;
+fetch(SUPABASE_URL+"/rest/v1/rpc/historico_lances",{method:"POST",headers:hdr(),body:"{}"}).then(function(r){return r.ok?r.json():null}).then(function(j){
+if(!j)return;document.getElementById("lvn").textContent="📈 "+j.total+(j.total===1?" LANCE":" LANCES");
+var ol=document.getElementById("lvh");ol.textContent="";
+j.ultimos.forEach(function(x){var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("span");
+a.className="n";a.textContent=x.nome;b.className="v";b.textContent=money(x.valor);li.appendChild(a);li.appendChild(b);ol.appendChild(li)})}).catch(function(){})}
+setInterval(lvLoad,5000);setTimeout(lvLoad,2500);
 document.getElementById("lvb").onclick=function(){if(DISP)openDisp({id:DISP.slot||1})};
 </script>
 </body>
