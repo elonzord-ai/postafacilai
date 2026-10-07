@@ -269,7 +269,7 @@ function openSlot(q){$("bid").style.display="none";bidOpen=false;if(DISP&&DISP.s
   $("sheet").style.display="block";document.body.classList.add("sheet-open")}
 function openSheet(c){$("bid").style.display="none";bidOpen=false;if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;curSp=null;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" A partir do bloco "+num(a)+". Anúncio ativo até "+a.v+".";sa.textContent="Visitar loja";sa.href=a.l}
-  else{$("sh").textContent="Seu achadinho aqui";$("sp").textContent="Bloco "+num(c)+" · livre. Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja ou link de afiliado.";
+  else{$("sh").textContent="Bloco "+num(c)+" · livre";$("sp").textContent="Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja.";
     sa.textContent="Reservar no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero reservar o bloco "+num(c)+" no mural Posta Fácil AI")}
   $("sheet").style.display="block";document.body.classList.add("sheet-open")}
 cv.addEventListener("pointerdown",function(e){cv.setPointerCapture(e.pointerId);pts[e.pointerId]=pos(e);var k=Object.keys(pts);
@@ -535,8 +535,9 @@ var IMGS={};
 function adImg(a){if(!a.img)return null;var i=IMGS[a.img];if(!i){i=IMGS[a.img]=new Image();i.onload=function(){draw()};i.src=a.img}return i.complete&&i.naturalWidth?i:null}
 var _d2=draw;draw=function(){_d2();ADS.forEach(function(a){var i=adImg(a);if(!i)return;var X=a.x*C,Y=a.y*C,W=a.w*C,H=a.h*C,k=Math.max(W/i.naturalWidth,H/i.naturalHeight),sw=W/k,sh=H/k;
   ctx.drawImage(i,(i.naturalWidth-sw)/2,(i.naturalHeight-sh)/2,sw,sh,X,Y,W,H);if(FILTER&&a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(X,Y,W,H)}})};
-var _d3=draw;draw=function(){_d3();
-  if(FILTER)return;
+var CTA_HIDE=false,ctaB=null,xDown=false;try{CTA_HIDE=localStorage.getItem("pf_cta_x")==="1"}catch(e){}
+var _d3=draw;draw=function(){_d3();ctaB=null;
+  if(FILTER||CTA_HIDE)return;
   var x0=18,y0=43,w0=64,h0=14;
   if(ADS.some(function(a){return x0<a.x+a.w&&x0+w0>a.x&&y0<a.y+a.h&&y0+h0>a.y}))return;
   var light=css("--board")==="#ffffff",col=light?"#0b8a5f":"#2ee59d",X=x0*C,Y=y0*C,W=w0*C,H=h0*C,r=24;
@@ -547,7 +548,17 @@ var _d3=draw;draw=function(){_d3();
   ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";
   ctx.font="800 52px Trebuchet MS,sans-serif";ctx.fillText("Seu achadinho aqui",X+W/2,Y+H*.4);
   ctx.font="700 30px Trebuchet MS,sans-serif";ctx.fillText("Toque num bloco \u00b7 R$ "+PRECO+"/m\u00eas",X+W/2,Y+H*.78);
-  ctx.restore()};
+  var br=Math.max(16,13/s),bx=X+W-4,by=Y+4,k=br*.4;
+  ctx.beginPath();ctx.arc(bx,by,br,0,6.2832);ctx.fillStyle=css("--panel");ctx.fill();ctx.lineWidth=Math.max(2,1.5/s);ctx.strokeStyle=col;ctx.stroke();
+  ctx.lineWidth=Math.max(3,2/s);ctx.lineCap="round";ctx.beginPath();ctx.moveTo(bx-k,by-k);ctx.lineTo(bx+k,by+k);ctx.moveTo(bx+k,by-k);ctx.lineTo(bx-k,by+k);ctx.stroke();
+  ctx.restore();
+  ctaB={cx:B*C+bx,cy:B*C+by,r:br}};
+function hideCta(){CTA_HIDE=true;try{localStorage.setItem("pf_cta_x","1")}catch(e){}draw()}
+function onCtaX(e){if(!ctaB)return false;var p=pos(e);return Math.hypot(p.x-(tx+s*ctaB.cx),p.y-(ty+s*ctaB.cy))<=s*ctaB.r+8}
+cv.addEventListener("pointerdown",function(e){xDown=onCtaX(e)});
+cv.addEventListener("pointerup",function(){setTimeout(function(){xDown=false},0)});
+cv.addEventListener("pointercancel",function(){xDown=false});
+var _os3=openSheet;openSheet=function(c){if(xDown){xDown=false;hideCta();return}return _os3(c)};
 draw();
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){})}catch(e){}
 var instEv=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();instEv=e;$("inst").style.display=""});
