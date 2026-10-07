@@ -55,6 +55,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #bid button{width:100%;margin-bottom:6px;background:linear-gradient(135deg,#1aa97a,#2ee59d);border-color:transparent;color:#05281c;font-weight:700}
 #bid button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
 #bs{color:var(--ink)!important}#bm{min-height:1.2em;margin:0 0 4px!important}
+#sp a{color:#9db0ff;text-decoration:underline}
 </style>
 </head>
 <body>
@@ -244,7 +245,7 @@ function renderBid(){if(!DISP||!bidOpen)return;var st=dst(),t=$("bs"),
   else t.textContent="Encerrada."+(DISP.maior_lance!=null?" Vencedor: "+DISP.vencedor+" com "+money(DISP.maior_lance)+".":" Sem lances.");
   $("bb").disabled=st!=="ao_vivo"}
 function openDisp(q){var sa=$("sa");curAd=null;curSp=null;bidOpen=true;$("bid").style.display="block";
-  $("sh").textContent="Disputa de lances · Placa "+q.id;$("sp").textContent="Quem vencer leva a placa por "+DISP.dias_uso+" dias. O pagamento é combinado pelo WhatsApp depois do lance vencedor.";
+  $("sh").textContent="Disputa de lances · Placa "+q.id;$("sp").innerHTML="Quem vencer leva a placa por "+DISP.dias_uso+" dias. O lance é um compromisso de compra, com pagamento via Pix em até 30 minutos após o fim da disputa. <a href=\"/termos.html\" target=\"_blank\" rel=\"noopener\">Leia os Termos de Uso</a>.";
   sa.textContent="Pedir código";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero participar da disputa de lances da placa "+q.id+" no Posta Fácil AI");
   try{$("bc").value=localStorage.getItem("pf_code")||""}catch(e){}
   $("bm").textContent="";renderBid();$("sheet").style.display="block";document.body.classList.add("sheet-open")}
