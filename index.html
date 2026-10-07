@@ -44,7 +44,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #rank .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #rank .ct{color:var(--muted);font-size:12px}
 #rank p{margin:0;color:var(--muted);font-size:13px}
-@media (min-width:1100px){#sheet{left:12px;right:auto;top:64px;bottom:auto;width:250px}}
+@media (min-width:1100px){#sheet{left:12px;right:auto;top:160px;bottom:auto;width:250px;max-height:calc(100vh - 176px);overflow:auto}}
 #bn{font:inherit;font-size:14px;width:118px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 8px}
 #palco{display:none;align-items:center;gap:10px;margin:0 14px 8px;padding:8px 12px;border:1px solid var(--line);border-left:4px solid var(--c,#6a3df0);border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none;font-size:14px;min-height:46px;transition:opacity .35s}
 #palco.on{display:flex}#palco.fade{opacity:0}
@@ -75,7 +75,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
   <aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2>🔥 Ofertas mais clicadas hoje</h2><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
     <h2 id="sh"></h2><p id="sp"></p>
-    <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em reais (número inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
+    <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em R$ (inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
     <div class="row"><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
   </div>
 </main>
@@ -111,7 +111,7 @@ function draw(){
   var r=cv.getBoundingClientRect();ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,r.width,r.height);
   ctx.setTransform(dpr*s,0,0,dpr*s,dpr*tx,dpr*ty);
   ctx.fillStyle=css("--frame");ctx.fillRect(0,0,T*C,T*C);
-  SLOTS.forEach(function(q){var X=q.x*C,Y=q.y*C,W=q.w*C,H=q.h*C,a=q.ad,t=a?a.n:"Placa "+q.id+" · disponível",v=q.h>q.w;
+  SLOTS.forEach(function(q){var X=q.x*C,Y=q.y*C,W=q.w*C,H=q.h*C,a=q.ad,t=a?a.n:(DISP&&DISP.slot===q.id?"Placa "+q.id+" · "+(dst()==="ao_vivo"?"disputa ao vivo":dst()==="aguardando"?"disputa de lances":"disputa encerrada"):"Placa "+q.id+" · disponível"),v=q.h>q.w;
     ctx.fillStyle=a?a.c:css("--slot");ctx.fillRect(X+2,Y+2,W-4,H-4);
     ctx.strokeStyle=css("--gold");ctx.globalAlpha=a?.9:.45;ctx.lineWidth=2;ctx.strokeRect(X+3,Y+3,W-6,H-6);ctx.globalAlpha=1;
     ctx.save();ctx.translate(X+W/2,Y+H/2);if(v)ctx.rotate(-Math.PI/2);
@@ -245,7 +245,7 @@ function renderBid(){if(!DISP||!bidOpen)return;var st=dst(),t=$("bs"),
   $("bb").disabled=st!=="ao_vivo"}
 function openDisp(q){var sa=$("sa");curAd=null;curSp=null;bidOpen=true;$("bid").style.display="block";
   $("sh").textContent="Disputa de lances · Placa "+q.id;$("sp").textContent="Quem vencer leva a placa por "+DISP.dias_uso+" dias. O pagamento é combinado pelo WhatsApp depois do lance vencedor.";
-  sa.textContent="Pedir meu código no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero participar da disputa de lances da placa "+q.id+" no Posta Fácil AI");
+  sa.textContent="Pedir código";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero participar da disputa de lances da placa "+q.id+" no Posta Fácil AI");
   try{$("bc").value=localStorage.getItem("pf_code")||""}catch(e){}
   $("bm").textContent="";renderBid();$("sheet").style.display="block";document.body.classList.add("sheet-open")}
 function loadDisp(){clearTimeout(dtm);
