@@ -51,6 +51,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #palco .pt{font-weight:700;white-space:nowrap}#palco .px{color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #palco .pi{height:34px;width:34px;object-fit:cover;border-radius:6px}
 #palco .pl{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
+#bid input{font:inherit;font-size:14px;width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 9px;margin:0 0 6px}
+#bid button{width:100%;margin-bottom:6px;background:linear-gradient(135deg,#1aa97a,#2ee59d);border-color:transparent;color:#05281c;font-weight:700}
+#bid button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
+#bs{color:var(--ink)!important}#bm{min-height:1.2em;margin:0 0 4px!important}
 </style>
 </head>
 <body>
@@ -71,6 +75,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
   <aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2>🔥 Ofertas mais clicadas hoje</h2><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
     <h2 id="sh"></h2><p id="sp"></p>
+    <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em reais (número inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
     <div class="row"><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
   </div>
 </main>
@@ -110,8 +115,8 @@ function draw(){
     ctx.fillStyle=a?a.c:css("--slot");ctx.fillRect(X+2,Y+2,W-4,H-4);
     ctx.strokeStyle=css("--gold");ctx.globalAlpha=a?.9:.45;ctx.lineWidth=2;ctx.strokeRect(X+3,Y+3,W-6,H-6);ctx.globalAlpha=1;
     ctx.save();ctx.translate(X+W/2,Y+H/2);if(v)ctx.rotate(-Math.PI/2);
-    var L=v?H:W,M=v?W:H,fs=Math.min(M*.4,L*.9/(t.length*.62),28);
-    if(fs*s>=5){ctx.fillStyle=a?"#fff":css("--gold");ctx.font="700 "+fs+"px Trebuchet MS,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,0,0)}
+    var L=v?H:W,M=v?W:H,fs=Math.min(M*.4,L*.9/(t.length*.62),28),dd=DISP&&DISP.slot===q.id;
+    if(fs*s>=5){ctx.fillStyle=a?"#fff":css("--gold");ctx.font="700 "+fs+"px Trebuchet MS,sans-serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t,0,dd?-M*.17:0);if(dd)timerDraw(M)}
     ctx.restore();
     if(hover&&hover.sl===q){ctx.strokeStyle=css("--hl");ctx.lineWidth=3/s;ctx.strokeRect(X+2,Y+2,W-4,H-4)}});
   ctx.translate(B*C,B*C);
@@ -128,11 +133,11 @@ function cellAt(px,py){var wx=(px-tx)/s/C,wy=(py-ty)/s/C;if(wx<0||wy<0||wx>=T||w
   for(var i=0;i<SLOTS.length;i++){var q=SLOTS[i];if(wx>=q.x&&wx<q.x+q.w&&wy>=q.y&&wy<q.y+q.h)return{sl:q}}return null}
 function pos(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
 var curAd=null,curSp=null;
-function openSlot(q){var a=q.ad,sa=$("sa");curAd=null;curSp=a||null;
+function openSlot(q){$("bid").style.display="none";bidOpen=false;if(DISP&&DISP.slot===q.id)return openDisp(q);var a=q.ad,sa=$("sa");curAd=null;curSp=a||null;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" Patrocinador master. Ativo até "+a.v+".";sa.textContent="Visitar site";sa.href=a.l}
   else{$("sh").textContent="Placa de patrocinador "+q.id;$("sp").textContent="Espaço master em destaque ao redor do mural, para grandes marcas. R$ "+(q.id<=4?PRECO_TOPO:PRECO_LADOS).toLocaleString("pt-BR")+" por semana, com renovação a cada 7 dias.";sa.textContent="Quero esta placa";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero a placa de patrocinador "+q.id+" no mural Posta Fácil AI")}
   $("sheet").style.display="block";document.body.classList.add("sheet-open")}
-function openSheet(c){if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;curSp=null;
+function openSheet(c){$("bid").style.display="none";bidOpen=false;if(c.sl)return openSlot(c.sl);var a=adAt(c.x,c.y),sa=$("sa");curAd=a;curSp=null;
   if(a){$("sh").textContent=a.n;$("sp").textContent=a.d+" A partir do bloco "+num(a)+". Anúncio ativo até "+a.v+".";sa.textContent="Visitar loja";sa.href=a.l}
   else{$("sh").textContent="Bloco "+num(c)+" · livre";$("sp").textContent="Reserve este espaço por R$ "+PRECO+" por mês e apareça aqui com sua loja.";
     sa.textContent="Reservar no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero reservar o bloco "+num(c)+" no mural Posta Fácil AI")}
@@ -155,7 +160,7 @@ function mid(){var r=cv.getBoundingClientRect();return[r.width/2,r.height/2]}
 $("zi").onclick=function(){var m=mid();zoomAt(1.5,m[0],m[1])};
 $("zo").onclick=function(){var m=mid();zoomAt(1/1.5,m[0],m[1])};
 $("zr").onclick=fit;
-$("x").onclick=function(){$("sheet").style.display="none";document.body.classList.remove("sheet-open")};
+$("x").onclick=function(){$("sheet").style.display="none";bidOpen=false;document.body.classList.remove("sheet-open")};
 function sizeCv(){var r=cv.getBoundingClientRect(),old=minS;if(!r.width||!r.height)return;
   cv.width=r.width*dpr;cv.height=r.height*dpr;minS=Math.min(r.width,r.height)/(T*C)*.95;
   if(s<=old*1.001||s<minS){s=minS;tx=(r.width-T*C*s)/2;ty=(r.height-T*C*s)/2}clamp();draw()}
@@ -223,7 +228,42 @@ function goBlock(n){n=parseInt(String(n).replace(/\D/g,""),10);
   tx=r.width/2-(x+B+.5)*C*s;ty=r.height/2-(y+B+.5)*C*s;clamp();hover={x:x,y:y};draw();openSheet({x:x,y:y})}
 $("bg").onclick=function(){goBlock($("bn").value)};
 $("bn").addEventListener("keydown",function(e){if(e.key==="Enter")goBlock($("bn").value)});
-stat();fit();load(true);visit();setInterval(function(){if(!document.hidden)load(false)},30000);
+var DISP=null,OFF=0,bidOpen=false,dtm=null;
+function nowS(){return Date.now()+OFF}
+function dst(){var n=nowS();return n<DISP.inicio?"aguardando":n<DISP.fim?"ao_vivo":"encerrada"}
+function fmt(ms){ms=Math.max(0,Math.floor(ms/1000));var d=Math.floor(ms/86400),h=Math.floor(ms%86400/3600),m=Math.floor(ms%3600/60),s=ms%60,p=function(x){return String(x).padStart(2,"0")};return(d?d+"d ":"")+p(h)+":"+p(m)+":"+p(s)}
+function money(v){return"R$ "+Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
+function timerDraw(M){var st=dst(),rem=st==="aguardando"?DISP.inicio-nowS():st==="ao_vivo"?DISP.fim-nowS():0,col=st==="ao_vivo"?(rem<=15000?"#ffb020":"#2ee59d"):"#7b869c";
+  ctx.font="700 "+Math.min(M*.3,24)+"px 'Courier New',monospace";ctx.fillStyle=col;if(st==="ao_vivo"){ctx.shadowColor=col;ctx.shadowBlur=10}
+  ctx.fillText(st==="encerrada"?"ENCERRADA":fmt(rem),0,M*.22);ctx.shadowBlur=0}
+function renderBid(){if(!DISP||!bidOpen)return;var st=dst(),t=$("bs"),
+  cur=DISP.maior_lance!=null?"Lance atual: "+money(DISP.maior_lance)+" ("+DISP.vencedor+").":"Sem lances ainda. Lance mínimo: "+money(DISP.lance_minimo)+".",
+  nxt=DISP.maior_lance!=null?DISP.maior_lance+DISP.incremento:DISP.lance_minimo;
+  if(st==="aguardando")t.textContent="Começa em "+fmt(DISP.inicio-nowS())+". "+cur;
+  else if(st==="ao_vivo")t.textContent="AO VIVO · termina em "+fmt(DISP.fim-nowS())+". "+cur+" Próximo lance: "+money(nxt)+" ou mais. Lance nos últimos 15 segundos estende o relógio.";
+  else t.textContent="Encerrada."+(DISP.maior_lance!=null?" Vencedor: "+DISP.vencedor+" com "+money(DISP.maior_lance)+".":" Sem lances.");
+  $("bb").disabled=st!=="ao_vivo"}
+function openDisp(q){var sa=$("sa");curAd=null;curSp=null;bidOpen=true;$("bid").style.display="block";
+  $("sh").textContent="Disputa de lances · Placa "+q.id;$("sp").textContent="Quem vencer leva a placa por "+DISP.dias_uso+" dias. O pagamento é combinado pelo WhatsApp depois do lance vencedor.";
+  sa.textContent="Pedir meu código no WhatsApp";sa.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero participar da disputa de lances da placa "+q.id+" no Posta Fácil AI");
+  try{$("bc").value=localStorage.getItem("pf_code")||""}catch(e){}
+  $("bm").textContent="";renderBid();$("sheet").style.display="block";document.body.classList.add("sheet-open")}
+function loadDisp(){clearTimeout(dtm);
+  fetch(SUPABASE_URL+"/rest/v1/rpc/estado_disputa",{method:"POST",headers:hdr(),body:"{}"}).then(function(r){return r.ok?r.json():[]})
+  .then(function(rows){var r=rows&&rows[0];if(!r)DISP=null;else{OFF=Date.parse(r.agora)-Date.now();
+    DISP={slot:r.slot,inicio:Date.parse(r.inicio),fim:Date.parse(r.fim),lance_minimo:Number(r.lance_minimo),incremento:Number(r.incremento),maior_lance:r.maior_lance==null?null:Number(r.maior_lance),vencedor:r.vencedor||"",dias_uso:r.dias_uso}}
+    draw();renderBid()}).catch(function(){})
+  .then(function(){var f=DISP&&!document.hidden&&(dst()==="ao_vivo"||(dst()==="aguardando"&&DISP.inicio-nowS()<30000));dtm=setTimeout(loadDisp,f?2000:30000)})}
+$("bb").onclick=function(){var code=$("bc").value.trim(),val=parseInt($("bv").value.replace(/\D/g,""),10);
+  if(!code||!(val>0)){$("bm").textContent="Preencha o código e o valor do lance.";return}
+  try{localStorage.setItem("pf_code",code)}catch(e){}
+  $("bb").disabled=true;$("bm").textContent="Enviando...";
+  fetch(SUPABASE_URL+"/rest/v1/rpc/dar_lance",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code,p_valor:val})})
+  .then(function(r){return r.json()}).then(function(t){var m={ok:"Lance registrado!",codigo_invalido:"Código inválido ou não aprovado.",sem_disputa_ao_vivo:"A disputa não está aberta agora.",valor_invalido:"Valor inválido."};
+    $("bm").textContent=m[t]||(String(t).indexOf("lance_baixo:")===0?"Lance mínimo agora: "+money(String(t).split(":")[1]):"Não foi possível enviar o lance.");$("bv").value="";loadDisp()})
+  .catch(function(){$("bm").textContent="Falha de conexão. Tente de novo."}).then(renderBid)};
+setInterval(function(){if(DISP){draw();renderBid()}},1000);
+stat();fit();load(true);visit();loadDisp();setInterval(function(){if(!document.hidden)load(false)},30000);
 </script>
 </body>
 </html>
