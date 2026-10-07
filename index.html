@@ -120,6 +120,19 @@ button .ic{margin-right:4px}
 #md #fsl button{display:flex;width:100%;text-align:left;gap:6px;border:0;border-radius:0;background:none;color:var(--ink);padding:7px 9px;font-size:14px}
 #md #fsl button:hover{background:var(--bg)}
 #fsl small{color:var(--muted);margin-left:auto;font-size:11px}
+:root{--gb:linear-gradient(135deg,rgba(214,179,106,.7),rgba(106,61,240,.45) 55%,rgba(27,191,216,.45))}
+#lv,#adv,#rank,#sheet,#md .mb{border:1px solid transparent!important;background:linear-gradient(var(--panel),var(--panel)) padding-box,var(--gb) border-box!important;box-shadow:0 8px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.05)}
+main{border:1px solid transparent!important;background:linear-gradient(var(--board),var(--board)) padding-box,var(--gb) border-box!important;box-shadow:0 10px 34px rgba(0,0,0,.3)}
+button:not(:disabled):hover,a.btn:hover{border-color:var(--gold)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6a3df0,#1bbfd8);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#8b5cf6,#2ee59d);background-clip:padding-box}
+::-webkit-scrollbar-corner{background:transparent}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:#6a3df0 transparent}}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+#md input[type=file]{padding:6px;font-size:13px}
 </style>
 </head>
 <body>
@@ -416,7 +429,7 @@ var NDATA=[["🏍️","Motos e Peças","motos,capacetes,intercomunicadores,luvas
 ["🎄","Datas Comemorativas","dia das mães,dia dos pais,dia dos namorados,dia das crianças,natal,black friday,carnaval,páscoa,ano novo,volta às aulas"],
 ["🏭","Indústria e Comércio","máquinas,equipamentos,ferramentas,epis,automação,materiais elétricos,materiais hidráulicos,suprimentos industriais"],
 ["📦","Outros",""]],NICHOS=NDATA.map(function(n){return n[1]}),FILTER=null,curBuy=null;
-var _map=map;map=function(rows){var r=_map(rows);r.forEach(function(a){var o=rows.filter(function(x){return x.id===a.id})[0]||{};a.nicho=NICHOS.indexOf(o.nicho)>=0?o.nicho:"Outros";a.vis=o.visualizacoes||0;a.cli=o.cliques||0});return r};
+var _map=map;map=function(rows){var r=_map(rows);r.forEach(function(a){var o=rows.filter(function(x){return x.id===a.id})[0]||{};a.nicho=NICHOS.indexOf(o.nicho)>=0?o.nicho:"Outros";a.vis=o.visualizacoes||0;a.cli=o.cliques||0;a.img=/^https:\/\//.test(o.imagem||"")?o.imagem:""});return r};
 var _draw=draw;draw=function(){_draw();if(FILTER)ADS.forEach(function(a){if(a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(a.x*C,a.y*C,a.w*C,a.h*C)}})};
 function dl(v){var p=(v||"").split("/");return p.length===3?Math.ceil((new Date(p[2],p[1]-1,p[0])-Date.now())/864e5):null}
 function ctr(a){return a.vis>0?(a.cli/a.vis*100).toFixed(1)+"%":"–"}
@@ -436,7 +449,7 @@ function pixShow(j,m){m.innerHTML="";m.appendChild(el("b","","Pague via Pix (cop
   var b=el("button","go","Copiar código Pix");b.onclick=function(){t.select();try{navigator.clipboard.writeText(j.pix)}catch(e){document.execCommand("copy")}b.textContent="Copiado!"};m.appendChild(b);
   if(j.codigo)m.appendChild(el("p","","Seu código do Meu Espaço: "+j.codigo));m.appendChild(el("p","mut","Seu bloco aparece no mural assim que o pagamento for confirmado."))}
 $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
-  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
+  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><label>Imagem do anúncio (opcional)<input id="fi" type="file" accept="image/png,image/jpeg,image/webp"></label><p id="fim" class="mut">Sem nudez ou conteúdo obsceno, violência ou mutilação, nem conteúdo que viole os direitos humanos. Toda imagem passa por análise automática antes de ir ao ar.</p><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
   modal("Comprar blocos",f);
   function upd(){var w=Math.max(1,+$("fw").value||1),h=Math.max(1,+$("fh").value||1);$("fp").textContent=w*h+" bloco(s) · R$ "+(w*h*PRECO).toLocaleString("pt-BR")+"/mês"+(fits(p,w,h)?"":" · não cabe aqui");return[w,h]}
   $("fw").oninput=$("fh").oninput=upd;upd();
@@ -445,9 +458,9 @@ $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
     if(!n||!/^https?:\/\//i.test(l)){m.textContent="Informe o nome e um link começando com https://";return}
     if(!$("fs").value){m.textContent="Escolha um nicho na lista.";return}
     m.textContent="Gerando Pix...";
-    fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value})})
-    .then(function(r){return r.ok?r.json():Promise.reject()}).then(function(j){if(!j||!j.pix)throw 0;pixShow(j,m)})
-    .catch(function(){m.textContent="Não foi possível gerar o Pix agora (o bloco pode ter sido ocupado). ";var a=el("a","","Finalizar pelo WhatsApp");a.target="_blank";a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero comprar "+wh[0]*wh[1]+" bloco(s) a partir do "+num(p)+" para "+n+" ("+l+")");m.appendChild(a)})}};
+    fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value,imagem:IMG})})
+    .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j&&j.erro);return j})}).then(function(j){if(!j||!j.pix)throw 0;pixShow(j,m)})
+    .catch(function(e){var c=e&&e.message,t={imagem_reprovada:"Imagem não aprovada pela moderação. Envie outra que respeite as diretrizes. ",imagem_invalida:"Imagem inválida ou grande demais. ",moderacao_indisponivel:"A análise de imagem está indisponível agora. Tente sem imagem ou mais tarde. "};m.textContent=t[c]||"Não foi possível gerar o Pix agora (o bloco pode ter sido ocupado). ";var a=el("a","","Finalizar pelo WhatsApp");a.target="_blank";a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero comprar "+wh[0]*wh[1]+" bloco(s) a partir do "+num(p)+" para "+n+" ("+l+")");m.appendChild(a)})}};
 function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu código de anunciante.</p><input id="mc" placeholder="Seu código"><button class="go" id="mg">Ver métricas</button><div id="mr"></div>';modal("Meu Espaço",f);
   try{$("mc").value=localStorage.getItem("pf_code")||""}catch(e){}
   $("mg").onclick=function(){var c=$("mc").value.trim(),r=$("mr");if(!c)return;try{localStorage.setItem("pf_code",c)}catch(e){}r.textContent="Carregando...";
@@ -490,6 +503,17 @@ function hotView(){var l=$("hl"),own=hotI===0,r=[];$("rl").style.display=own?"":
   hotList(r)}
 function loadVT(){fetch(SUPABASE_URL+"/rest/v1/vitrine?select=titulo,link,secao",{headers:hdr()}).then(function(r){return r.ok?r.json():[]}).then(function(rows){VT=rows.filter(function(x){return x.secao&&safe(x.link)!=="#"}).map(function(x){return{t:x.titulo,l:safe(x.link),s:x.secao}});hotView()}).catch(function(){})}
 var _s2=stat;stat=function(){_s2();hotView()};hotTabs();loadVT();setInterval(loadVT,60000);
+var IMG="";
+function imgPick(){IMG="";var f=$("fi"),m=$("fim"),t0=m.textContent;f.onchange=function(){IMG="";var file=f.files[0];if(!file){m.textContent=t0;return}
+  if(!/^image\/(jpeg|png|webp)$/.test(file.type)){m.textContent="Use JPG, PNG ou WebP.";f.value="";return}
+  var im=new Image(),u=URL.createObjectURL(file);
+  im.onload=function(){var k=Math.min(1,400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);IMG=c.toDataURL("image/jpeg",.82);URL.revokeObjectURL(u);m.textContent="Imagem pronta ("+Math.round(IMG.length/1024)+" KB). Será analisada antes de ir ao ar."};
+  im.onerror=function(){m.textContent="Não foi possível ler essa imagem."};im.src=u}}
+var _m2=modal;modal=function(t,n){_m2(t,n);if($("fi"))imgPick()};
+var IMGS={};
+function adImg(a){if(!a.img)return null;var i=IMGS[a.img];if(!i){i=IMGS[a.img]=new Image();i.onload=function(){draw()};i.src=a.img}return i.complete&&i.naturalWidth?i:null}
+var _d2=draw;draw=function(){_d2();ADS.forEach(function(a){var i=adImg(a);if(!i)return;var X=a.x*C,Y=a.y*C,W=a.w*C,H=a.h*C,k=Math.max(W/i.naturalWidth,H/i.naturalHeight),sw=W/k,sh=H/k;
+  ctx.drawImage(i,(i.naturalWidth-sw)/2,(i.naturalHeight-sh)/2,sw,sh,X,Y,W,H);if(FILTER&&a.nicho!==FILTER){ctx.fillStyle="rgba(10,17,40,.75)";ctx.fillRect(X,Y,W,H)}})};
 </script>
 </body>
 </html>
