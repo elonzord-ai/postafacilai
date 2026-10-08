@@ -197,6 +197,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 #prog .bar i{display:block;height:100%;background:linear-gradient(90deg,#d6b36a,#f5cf6b);border-radius:6px;transition:width .5s}
 #fmts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
 #fmts .chip:disabled{opacity:.4;cursor:not-allowed}
+.den{display:inline-block;margin-top:8px;font-size:12px;color:var(--muted);text-decoration:underline}
+.cup .den{display:block}
 </style>
 </head>
 <body>
@@ -234,6 +236,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   
   <hr>
   <a class="ni" href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg> Termos de Uso</a>
+  <a class="ni" href="/privacidade.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg> Privacidade</a>
   <a class="ni" href="https://wa.me/5562998309271" target="_blank" rel="noopener"><svg class='ic wa'><use href='#i-wa'/></svg> Fale conosco</a>
   <div id="cupc"><h3><svg class='ic'><use href='#i-ticket'/></svg> Cupons dos afiliados</h3><p id="cupt"></p><button type="button" id="cupv">Ver cupons</button></div>
 </nav>
@@ -248,7 +251,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button id="lvb" type="button">Abrir painel de lances</button></section>
 <aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2><svg class='ic gd'><use href='#i-flame'/></svg>Em destaque</h2><div id="ht"></div><div id="hl" style="display:none"></div><ol id="rl"></ol><p id="re">Os mais clicados do dia aparecem aqui assim que houver cliques.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
-    <h2 id="sh"></h2><p id="sp"></p><div id="spc"></div>
+    <h2 id="sh"></h2><p id="sp"></p><div id="spc"></div><a id="denad" href="#" class="den" style="display:none">Denunciar anúncio</a>
     <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em R$ (inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
     <div class="row"><button id="buy" style="display:none">Comprar agora</button><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
   </div>
@@ -260,6 +263,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button type="button" id="mfc"><svg class='ic gd'><use href='#i-ticket'/></svg>Cupons</button>
   <button type="button" id="mfa"><svg class='ic gd'><use href='#i-crown'/></svg>Maiores anunciantes</button>
   <a href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg>Termos de Uso</a>
+  <a href="/privacidade.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg>Privacidade</a>
   <a href="https://wa.me/5562998309271" target="_blank" rel="noopener"><svg class='ic wa'><use href='#i-wa'/></svg>Fale conosco</a>
 </footer>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -728,9 +732,9 @@ function cupBox(r,code,rows){var box=el("div","kard"),hoje=new Date().toLocaleDa
   open.onclick=function(){form.style.display=form.style.display==="none"?"block":"none"};
   function listMine(){fetch(SUPABASE_URL+"/rest/v1/rpc/meus_cupons",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code})})
     .then(function(x){return x.ok?x.json():[]}).then(function(cs){mine.innerHTML="";var hj=new Date().toLocaleDateString("sv");
-      (cs||[]).forEach(function(c){var on=c.ativo&&c.validade>=hj,it=el("p","",c.codigo+" \u00b7 "+c.descricao);it.style.margin="8px 0 2px";mine.appendChild(it);
-        var m=el("p","mut",(on?"no ar":"encerrado")+" \u00b7 at\u00e9 "+dBR(c.validade)+" \u00b7 "+c.usos+(c.limite!=null?" de "+c.limite:"")+" revelados");m.style.margin="0 0 4px";mine.appendChild(m);
-        if(on){var e=el("button","","Encerrar");e.onclick=function(){e.disabled=true;fetch(SUPABASE_URL+"/rest/v1/rpc/encerrar_cupom",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code,p_id:c.id})}).then(function(){loadCup();listMine()}).catch(function(){e.disabled=false})};mine.appendChild(e)}})}).catch(function(){})}
+      (cs||[]).forEach(function(c){var on=c.ativo&&c.validade>=hj&&c.aprovado!==false,wait=c.aprovado===false&&c.ativo&&c.validade>=hj,it=el("p","",c.codigo+" \u00b7 "+c.descricao);it.style.margin="8px 0 2px";mine.appendChild(it);
+        var m=el("p","mut",(on?"no ar":wait?"aguardando aprova\u00e7\u00e3o":"encerrado")+" \u00b7 at\u00e9 "+dBR(c.validade)+" \u00b7 "+c.usos+(c.limite!=null?" de "+c.limite:"")+" revelados");m.style.margin="0 0 4px";mine.appendChild(m);
+        if(on||wait){var e=el("button","","Encerrar");e.onclick=function(){e.disabled=true;fetch(SUPABASE_URL+"/rest/v1/rpc/encerrar_cupom",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code,p_id:c.id})}).then(function(){loadCup();listMine()}).catch(function(){e.disabled=false})};mine.appendChild(e)}})}).catch(function(){})}
   pub.onclick=function(){var desc=d.value.trim(),cp=k.value.trim(),lim=parseInt(q.value,10);
     if(!desc||!cp){msg.textContent="Preencha a descri\u00e7\u00e3o e o c\u00f3digo.";return}
     pub.disabled=true;msg.textContent="Publicando...";
@@ -738,7 +742,7 @@ function cupBox(r,code,rows){var box=el("div","kard"),hoje=new Date().toLocaleDa
     .then(function(x){return x.json().then(function(j){return{ok:x.ok,j:j}},function(){return{ok:x.ok,j:null}})})
     .then(function(x){pub.disabled=false;
       if(!x.ok){msg.textContent=CUPERR[x.j&&x.j.message]||"N\u00e3o foi poss\u00edvel publicar. Tente de novo.";return}
-      msg.textContent="Cupom publicado! Ele j\u00e1 aparece em Cupons.";d.value="";k.value="";q.value="";loadCup();listMine()})
+      msg.textContent="Cupom enviado! Ele aparece em Cupons assim que estiver no ar.";d.value="";k.value="";q.value="";loadCup();listMine()})
     .catch(function(){pub.disabled=false;msg.textContent="Sem conex\u00e3o. Tente de novo."})};
   box.appendChild(open);box.appendChild(form);box.appendChild(mine);r.appendChild(box);listMine()}
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){})}catch(e){}
@@ -773,7 +777,7 @@ function cupBloco(a,box){
       .catch(function(){b.disabled=false;b.textContent="Tentar de novo"})};d.appendChild(b)}
     var m=[];if(c.validade)m.push("até "+c.validade.slice(8,10)+"/"+c.validade.slice(5,7));if(c.limite!=null)m.push("restam "+Math.max(0,c.limite-c.usos));
     if(m.length)d.appendChild(el("div","meta",m.join(" · ")));
-    box.appendChild(d)});
+    d.appendChild(denLink("cupom",c.id));box.appendChild(d)});
   var n=el("p","cupn");n.appendChild(document.createTextNode("Código e oferta são de responsabilidade do anunciante. "));
   var t=el("a","","Termos de Uso");t.href="/termos.html";t.target="_blank";t.rel="noopener";n.appendChild(t);box.appendChild(n)}
 var _os9=openSheet;openSheet=function(c){_os9(c);var box=$("spc");if(!box)return;box.innerHTML="";if(c.sl)return;var a=adAt(c.x,c.y);if(a)cupBloco(a,box)};
@@ -791,6 +795,19 @@ var _m4=modal;modal=function(t,n){_m4(t,n);fmtChips()};
 function prog(){var v=0;ADS.forEach(function(a){v+=a.w*a.h});var p=$("prog");if(!p)return;p.style.display=v>0?"flex":"none";
   if(v>0){$("pgi").style.width=Math.max(2,Math.min(100,v/(N*N)*100))+"%";$("pgt").textContent=v.toLocaleString("pt-BR")+" de "+(N*N).toLocaleString("pt-BR")+" blocos vendidos"}}
 var _s4=stat;stat=function(){_s4();prog()};
+/* Denunciar anúncio/cupom */
+function denForm(tipo,id){var f=el("div");f.appendChild(el("p","mut","Conte o motivo. Analisamos todas as denúncias."));
+  var s=el("select");[["improprio","Conteúdo impróprio ou ofensivo"],["golpe","Golpe ou oferta enganosa"],["nao_funciona","Cupom ou link não funciona"],["direitos","Violação de direitos autorais"],["outro","Outro motivo"]].forEach(function(o){var op=el("option","",o[1]);op.value=o[0];s.appendChild(op)});
+  var d=el("textarea");d.rows=3;d.maxLength=300;d.placeholder="Detalhes (opcional)";
+  var b=el("button","go","Enviar denúncia"),m=el("p","mut");
+  b.onclick=function(){b.disabled=true;m.textContent="Enviando...";
+    fetch(SUPABASE_URL+"/rest/v1/rpc/denunciar",{method:"POST",headers:hdr(),body:JSON.stringify({p_tipo:tipo,p_id:String(id),p_motivo:s.value,p_detalhe:d.value})})
+    .then(function(r){if(!r.ok)throw 0;m.textContent="Obrigado! Vamos analisar a sua denúncia."})
+    .catch(function(){b.disabled=false;m.textContent="Não foi possível enviar agora. Tente de novo ou fale com a gente pelo WhatsApp."})};
+  [s,d,b,m].forEach(function(x){f.appendChild(x)});modal("Denunciar "+(tipo==="cupom"?"cupom":"anúncio"),f)}
+function denLink(tipo,id){var a=el("a","den","Denunciar");a.href="#";a.onclick=function(e){e.preventDefault();denForm(tipo,id)};return a}
+var _o6=openSheet;openSheet=function(c){_o6(c);var l=$("denad");if(!l)return;var a=c.sl?null:adAt(c.x,c.y);l.style.display=a?"inline-block":"none";l.onclick=function(e){e.preventDefault();if(a)denForm("anuncio",a.id)}};
+var _cc6=cupCard;cupCard=function(c,sv){var d=_cc6(c,sv);if(c&&c.id!=null&&/^\d+$/.test(String(c.id)))d.appendChild(denLink("cupom",c.id));return d};
 </script>
 </body>
 </html>
