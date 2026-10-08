@@ -483,7 +483,7 @@ function pixShow(j,m){m.innerHTML="";m.appendChild(el("b","","Pague via Pix (cop
   var b=el("button","go","Copiar código Pix");b.onclick=function(){t.select();try{navigator.clipboard.writeText(j.pix)}catch(e){document.execCommand("copy")}b.textContent="Copiado!"};m.appendChild(b);
   if(j.codigo)m.appendChild(el("p","","Seu código do Meu Espaço: "+j.codigo));m.appendChild(el("p","mut","Seu bloco aparece no mural assim que o pagamento for confirmado."))}
 $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
-  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><label>Imagem do anúncio (opcional)<input id="fi" type="file" accept="image/png,image/jpeg,image/webp"></label><p id="fim" class="mut">Sem nudez ou conteúdo obsceno, violência ou mutilação, nem conteúdo que viole os direitos humanos. Toda imagem passa por análise automática antes de ir ao ar.</p><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
+  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><label>Imagem do anúncio (opcional)<input id="fi" type="file" accept="image/png,image/jpeg,image/webp"></label><p id="fim" class="mut">Sem nudez ou conteúdo obsceno, violência ou mutilação, nem conteúdo que viole os direitos humanos. Toda imagem passa por análise automática antes de ir ao ar.</p><p id="fhint" class="mut"></p><div id="fopt" style="display:none"><label>Enquadramento<select id="ffit"><option value="c">Preencher (corta as bordas)</option><option value="f">Ajustar (mostra tudo, fundo na cor escolhida)</option></select></label><canvas id="fpv" style="display:block;margin:8px 0;border:1px solid var(--line);border-radius:8px;max-width:100%"></canvas></div><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
   modal("Comprar blocos",f);
   function upd(){var w=Math.max(1,+$("fw").value||1),h=Math.max(1,+$("fh").value||1);$("fp").textContent=w*h+" bloco(s) · R$ "+(w*h*PRECO).toLocaleString("pt-BR")+"/mês"+(fits(p,w,h)?"":" · não cabe aqui");return[w,h]}
   $("fw").oninput=$("fh").oninput=upd;upd();
@@ -538,11 +538,28 @@ function hotView(){var l=$("hl"),own=hotI===0,r=[];$("rl").style.display=own?"":
 function loadVT(){fetch(SUPABASE_URL+"/rest/v1/vitrine?select=titulo,link,secao",{headers:hdr()}).then(function(r){return r.ok?r.json():[]}).then(function(rows){VT=rows.filter(function(x){return x.secao&&safe(x.link)!=="#"}).map(function(x){return{t:x.titulo,l:safe(x.link),s:x.secao}});hotView()}).catch(function(){})}
 var _s2=stat;stat=function(){_s2();hotView()};hotTabs();loadVT();setInterval(loadVT,60000);
 var IMG="";
-function imgPick(){IMG="";var f=$("fi"),m=$("fim"),t0=m.textContent;f.onchange=function(){IMG="";var file=f.files[0];if(!file){m.textContent=t0;return}
-  if(!/^image\/(jpeg|png|webp)$/.test(file.type)){m.textContent="Use JPG, PNG ou WebP.";f.value="";return}
-  var im=new Image(),u=URL.createObjectURL(file);
-  im.onload=function(){var k=Math.min(1,400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);IMG=c.toDataURL("image/jpeg",.82);URL.revokeObjectURL(u);m.textContent="Imagem pronta ("+Math.round(IMG.length/1024)+" KB). Será analisada antes de ir ao ar."};
-  im.onerror=function(){m.textContent="Não foi possível ler essa imagem."};im.src=u}}
+var SRC=null,SRCU="";
+function gcd(a,b){return b?gcd(b,a%b):a}
+function imgDims(w,h){var tw=w*100,th=h*100,k=Math.min(1,400/Math.max(tw,th));return[Math.max(1,Math.round(tw*k)),Math.max(1,Math.round(th*k))]}
+function renderImg(){var hint=$("fhint");if(!hint)return;
+  var w=Math.max(1,+$("fw").value||1),h=Math.max(1,+$("fh").value||1),d=imgDims(w,h),g=gcd(w,h);
+  hint.textContent="Tamanho ideal da imagem: "+d[0]+" \u00d7 "+d[1]+" px (propor\u00e7\u00e3o "+w/g+":"+h/g+"). Ela \u00e9 ajustada a esse formato.";
+  if(!SRC)return;
+  var c=$("fpv"),x=c.getContext("2d"),iw=SRC.naturalWidth||SRC.width,ih=SRC.naturalHeight||SRC.height,k,ps;
+  c.width=d[0];c.height=d[1];
+  if($("ffit").value==="f"){x.fillStyle=$("fc").value;x.fillRect(0,0,d[0],d[1]);k=Math.min(d[0]/iw,d[1]/ih);x.drawImage(SRC,(d[0]-iw*k)/2,(d[1]-ih*k)/2,iw*k,ih*k)}
+  else{x.fillStyle="#fff";x.fillRect(0,0,d[0],d[1]);k=Math.max(d[0]/iw,d[1]/ih);var sw=d[0]/k,sh=d[1]/k;x.drawImage(SRC,(iw-sw)/2,(ih-sh)/2,sw,sh,0,0,d[0],d[1])}
+  ps=Math.min(260/d[0],150/d[1]);c.style.width=Math.round(d[0]*ps)+"px";c.style.height=Math.round(d[1]*ps)+"px";
+  IMG=c.toDataURL("image/jpeg",.82);
+  $("fim").textContent="Imagem pronta ("+Math.round(IMG.length/1024)+" KB). Ser\u00e1 analisada antes de ir ao ar."}
+function imgPick(){IMG="";SRC=null;var f=$("fi"),m=$("fim"),t0=m.textContent;
+  f.onchange=function(){IMG="";SRC=null;$("fopt").style.display="none";var file=f.files[0];if(!file){m.textContent=t0;return}
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type)){m.textContent="Use JPG, PNG ou WebP.";f.value="";return}
+    if(SRCU)URL.revokeObjectURL(SRCU);var im=new Image();SRCU=URL.createObjectURL(file);
+    im.onload=function(){SRC=im;$("fopt").style.display="block";renderImg()};
+    im.onerror=function(){m.textContent="N\u00e3o foi poss\u00edvel ler essa imagem."};im.src=SRCU};
+  ["fw","fh","fc"].forEach(function(id){$(id).addEventListener("input",renderImg)});
+  $("ffit").addEventListener("change",renderImg);renderImg()}
 var _m2=modal;modal=function(t,n){_m2(t,n);if($("fi"))imgPick()};
 var IMGS={};
 function adImg(a){if(!a.img)return null;var i=IMGS[a.img];if(!i){i=IMGS[a.img]=new Image();i.onload=function(){draw()};i.src=a.img}return i.complete&&i.naturalWidth?i:null}
