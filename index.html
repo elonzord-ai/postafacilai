@@ -261,6 +261,7 @@ body.sheet-open #zc{display:none}
   <a class="ni" href="#" id="mn"><svg class='ic'><use href='#i-map'/></svg> Mapa de Nichos</a>
   <a class="ni" href="#" id="me"><svg class='ic'><use href='#i-chart'/></svg> Meu Espaço</a>
   <a class="ni" href="#" id="cpn"><svg class='ic'><use href='#i-ticket'/></svg> Cupons <small id="cpb" style="display:none"></small></a>
+  <a class="ni" href="#" id="chn">💬 Chat da comunidade</a>
   
   <hr>
   <a class="ni" href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg> Termos de Uso</a>
@@ -289,6 +290,7 @@ body.sheet-open #zc{display:none}
 <footer id="mf" aria-label="Mais opções">
   <button type="button" id="mfl"><svg class='ic gd'><use href='#i-gavel'/></svg>Leilão</button>
   <button type="button" id="mfc"><svg class='ic gd'><use href='#i-ticket'/></svg>Cupons</button>
+  <button type="button" id="mfch">💬 Chat</button>
   <button type="button" id="mfa"><svg class='ic gd'><use href='#i-crown'/></svg>Maiores anunciantes</button>
   <a href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg>Termos de Uso</a>
   <a href="/privacidade.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg>Privacidade</a>
@@ -867,5 +869,60 @@ function place(){
 on(mq,place);place();
 })();
 </script>
+<style>
+.chl{height:50vh;max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:8px;margin:8px 0;background:var(--panel)}
+.chm{margin:0 0 8px;font-size:14px;word-break:break-word}.chm b{color:var(--accent)}.chm.ad b{color:var(--gold)}
+.chm small{color:var(--muted);margin-left:6px}.chm a{text-decoration:underline}
+.chm .cht{margin-left:8px;font-size:12px;cursor:pointer;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline}
+.chf{display:flex;gap:6px}.chf input{flex:1;min-width:0}
+</style>
+<script>
+(function(){
+var CH={t:null,last:0,n:0,code:"",role:"",list:null,inp:null,btn:null,msg:null,nodes:{}};
+var ERR={codigo_invalido:"Código inválido ou bloco vencido.",bloqueado:"Você está temporariamente bloqueado do chat.",texto_invalido:"Escreva de 1 a 500 caracteres.",devagar:"Calma! Espere alguns segundos entre mensagens.",limite_links:"Você já enviou um link na última hora. Tente mais tarde."};
+function call(fn,body){return fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:hdr(),body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error("http");return r.json()})}
+function hora(s){try{return new Date(s).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}catch(e){return""}}
+function lk(p,t){var re=/(https?:\/\/[^\s<>"]+)/g,i=0,m;while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var a=el("a","",m[1]);a.href=m[1];a.target="_blank";a.rel="noopener noreferrer nofollow ugc";p.appendChild(a);i=m.index+m[1].length}if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)))}
+function add(rows){var l=CH.list,near=l.scrollHeight-l.scrollTop-l.clientHeight<60||!l.children.length;
+  rows.forEach(function(m){if(CH.nodes[m.id]){return}
+    var d=el("div","chm"+(m.admin?" ad":""));d.appendChild(el("b","",(m.admin?"👑 ":"")+m.autor));d.appendChild(el("small","",hora(m.criado_em)));d.appendChild(document.createElement("br"));lk(d,m.texto);
+    if(CH.role==="admin"){
+      var x=el("button","cht","apagar");x.onclick=function(){call("chat_apagar",{p_codigo:CH.code,p_id:m.id}).then(function(){d.remove();delete CH.nodes[m.id]})};d.appendChild(x);
+      if(!m.admin){var y=el("button","cht","bloquear 24h");y.onclick=function(){if(confirm("Bloquear este membro por 24h?"))call("chat_bloquear",{p_codigo:CH.code,p_id:m.id,p_horas:24}).then(function(){y.textContent="bloqueado"})};d.appendChild(y)}}
+    l.appendChild(d);CH.nodes[m.id]=d;if(m.id>CH.last)CH.last=m.id});
+  if(near)l.scrollTop=l.scrollHeight}
+function poll(full){if(document.hidden||!CH.list)return;
+  call("chat_listar",{p_codigo:CH.code,p_desde:full?0:CH.last}).then(function(rows){if(!CH.list||!CH.list.isConnected)return;
+    if(full){var s={};rows.forEach(function(m){s[m.id]=1});Object.keys(CH.nodes).forEach(function(k){if(!s[k]){CH.nodes[k].remove();delete CH.nodes[k]}})}
+    add(rows)}).catch(function(){})}
+function send(){var t=CH.inp.value.trim();if(!t)return;CH.btn.disabled=true;CH.msg.textContent="";
+  call("chat_enviar",{p_codigo:CH.code,p_texto:t}).then(function(r){CH.btn.disabled=false;if(r==="ok"){CH.inp.value="";poll(false)}else CH.msg.textContent=ERR[r]||"Não foi possível enviar."})
+  .catch(function(){CH.btn.disabled=false;CH.msg.textContent="Falha de conexão. Tente de novo."})}
+function room(f){f.innerHTML="";CH.nodes={};CH.last=0;CH.n=0;
+  f.appendChild(el("p","mut","Chat exclusivo de quem tem bloco ativo. Respeito, sem golpes e sem spam: mensagens podem ser apagadas e o acesso bloqueado."));
+  CH.list=el("div","chl");f.appendChild(CH.list);
+  var w=el("div","chf");CH.inp=el("input");CH.inp.placeholder="Escreva sua mensagem…";CH.inp.maxLength=500;CH.inp.autocomplete="off";
+  CH.inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();send()}};
+  CH.btn=el("button","go","Enviar");CH.btn.onclick=send;w.appendChild(CH.inp);w.appendChild(CH.btn);f.appendChild(w);
+  CH.msg=el("p","mut");f.appendChild(CH.msg);
+  poll(true);clearInterval(CH.t);
+  CH.t=setInterval(function(){if(!CH.list||!CH.list.isConnected||$("md").className!=="on"){clearInterval(CH.t);CH.list=null;return}poll(++CH.n%6===0)},4000)}
+function gate(f,saved){f.innerHTML="";
+  f.appendChild(el("p","mut","Digite o código do seu bloco para entrar. O chat é só para quem tem bloco ativo e para o admin."));
+  var i=el("input");i.placeholder="Seu código";i.autocomplete="off";i.value=saved||"";var b=el("button","go","Entrar"),m=el("p","mut");
+  var tl=el("a","","Termos de Uso");tl.href="/termos.html";tl.target="_blank";tl.rel="noopener";
+  var p=el("p","mut","Ao entrar, você concorda com os ");p.appendChild(tl);p.appendChild(document.createTextNode("."));
+  f.appendChild(i);f.appendChild(b);f.appendChild(m);f.appendChild(p);
+  b.onclick=function(){var c=i.value.trim();if(!c)return;b.disabled=true;m.textContent="Verificando…";enter(f,c,function(msg){b.disabled=false;m.textContent=msg})}}
+function enter(f,c,fail){call("chat_acesso",{p_codigo:c}).then(function(r){
+    if(r==="admin"||r==="membro"||r==="bloqueado"){CH.code=c;CH.role=r;try{localStorage.setItem("pf_code",c)}catch(e){}room(f)}
+    else fail("Não encontrei um bloco ativo com esse código. O chat é exclusivo para quem compra blocos.")})
+  .catch(function(){fail("Não foi possível verificar agora. Tente de novo.")})}
+function openChat(){var f=el("div");modal("Chat da comunidade",f);var s="";try{s=localStorage.getItem("pf_code")||""}catch(e){}
+  gate(f,s);if(s)enter(f,s,function(){})}
+["chn","mfch"].forEach(function(id){var e=$(id);if(e)e.addEventListener("click",function(ev){ev.preventDefault();openChat()})})
+})();
+</script>
+
 </body>
 </html>
