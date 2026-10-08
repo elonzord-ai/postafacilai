@@ -870,66 +870,258 @@ on(mq,place);place();
 })();
 </script>
 <style>
-.chl{height:50vh;max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:8px;margin:8px 0;background:var(--panel)}
-.chm{margin:0 0 8px;font-size:14px;word-break:break-word}.chm b{color:var(--accent)}.chm.ad b{color:var(--gold)}
-.chm small{color:var(--muted);margin-left:6px}.chm a{text-decoration:underline}
-.chm .cht{margin-left:8px;font-size:12px;cursor:pointer;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline}
-.chf{display:flex;gap:6px;align-items:stretch}
-#md .chf input{flex:1 1 auto;width:auto;min-width:0;margin:0}
-#md .chf .go{flex:0 0 auto;width:auto;margin:0;padding:6px 18px}
+#md{--nl:38%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #md{--nl:70%}}
+:root[data-theme="dark"] #md{--nl:70%}
+#md.chat{padding:8px}
+#md.chat .mb{padding:0;width:min(560px,100%);height:min(94vh,800px);max-height:none;overflow:hidden;display:flex;flex-direction:column}
+@supports (height:1dvh){#md.chat .mb{height:min(94dvh,800px)}}
+#md.chat .mb>h2,#md.chat .mb>button:last-child{display:none}
+#md.chat .mb>div{flex:1;min-height:0;display:flex}
+.chroot{position:relative;flex:1;min-width:0;display:flex;flex-direction:column}
+.chh{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--panel);border-bottom:1px solid var(--line)}
+.chlg{width:36px;height:36px;border-radius:9px;object-fit:contain;flex:none}
+.chlgb{width:56px;height:56px;border-radius:12px;object-fit:contain;display:block;margin:0 0 8px}
+.chtt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.chtt b{font-size:16px}
+.chtt small{font-size:12px;color:var(--muted)}
+.chtt small::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:6px;vertical-align:1px}
+.chx{background:none;border:0;color:var(--muted);font-size:18px;line-height:1;padding:8px;border-radius:8px;cursor:pointer}
+.chx:hover{color:var(--ink)}
+.chtabs{display:flex;gap:2px;overflow-x:auto;padding:0 6px;background:var(--panel);border-bottom:1px solid var(--line);scrollbar-width:none}
+.chtabs::-webkit-scrollbar{display:none}
+.chtab{flex:none;display:flex;align-items:center;gap:5px;background:none;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--muted);padding:10px;font-size:13px;cursor:pointer}
+.chtab.on{color:var(--ink);border-bottom-color:var(--gold)}
+.chbd{background:#e5484d;color:#fff;border-radius:999px;font-size:11px;font-weight:700;padding:1px 6px}
+.chp{flex:1;min-height:0;display:flex;flex-direction:column;background-color:var(--bg);background-image:url("%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%238aa0ff' stroke-opacity='.11' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(18 20) rotate(-12)'%3E%3Cpath d='M2 9h20l-2 16H4z'/%3E%3Cpath d='M7 9V6a5 5 0 0 1 10 0v3'/%3E%3C/g%3E%3Cg transform='translate(122 14) rotate(14)'%3E%3Cpath d='M2 2h12l9 9-11 11L2 13z'/%3E%3Ccircle cx='8' cy='8' r='1.6'/%3E%3C/g%3E%3Cg transform='translate(165 84) rotate(-8)'%3E%3Cpath d='M12 21S3 15.5 3 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 2.5C21 15.5 12 21 12 21z'/%3E%3C/g%3E%3Cg transform='translate(66 78) rotate(10)'%3E%3Cpath d='M12 2l3 7 7 .6-5.3 4.7 1.7 7.2L12 17.8 5.6 21.5l1.7-7.2L2 9.6 9 9z'/%3E%3C/g%3E%3Cg transform='translate(14 130) rotate(8)'%3E%3Cpath d='M1 2h4l3 13h13l2-9H7'/%3E%3Ccircle cx='10' cy='20' r='1.6'/%3E%3Ccircle cx='19' cy='20' r='1.6'/%3E%3C/g%3E%3Cg transform='translate(110 128) rotate(-10)'%3E%3Cpath d='M3 4h18v12H9l-5 4V4z'/%3E%3C/g%3E%3Cg transform='translate(170 160) rotate(12)'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 6v12M9 9.5c0-1.4 1.3-2 3-2s3 .7 3 2-1.3 1.8-3 2.3-3 .9-3 2.3 1.3 2 3 2 3-.6 3-2'/%3E%3C/g%3E%3Cg transform='translate(70 176) rotate(-6)'%3E%3Cpath d='M4 20L20 4'/%3E%3Ccircle cx='7' cy='7' r='3'/%3E%3Ccircle cx='17' cy='17' r='3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");background-size:220px}
+.chcp{flex:1;min-height:0;display:flex;flex-direction:column}
+.chl{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:4px}
+.chl:empty::before{content:"Ninguém falou ainda. Mande o primeiro oi.";margin:auto;color:var(--muted);font-size:14px;background:var(--panel);padding:6px 14px;border-radius:999px}
+.chd{align-self:center;margin:8px 0 4px;font-size:12px;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:3px 12px;border-radius:999px}
+.chr{display:flex}
+.chr.me{justify-content:flex-end}
+.chb{max-width:82%;padding:6px 10px 4px;border-radius:4px 14px 14px 14px;background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.2);font-size:14.5px;line-height:1.35;word-break:break-word}
+.chr.me .chb{border-radius:14px 4px 14px 14px;background:linear-gradient(135deg,#2f6bf0,#6a3df0);border-color:transparent;color:#fff}
+.chr.ad .chb{background:linear-gradient(135deg,rgba(214,179,106,.3),rgba(214,179,106,.1)),var(--panel);border-color:var(--gold);color:var(--ink)}
+.chnm{display:block;font-size:12.5px;font-weight:700;color:hsl(var(--h,40) 65% var(--nl))}
+.chr.ad .chnm{color:var(--gold)}
+.chtx{white-space:pre-wrap}
+.chtx a{color:var(--accent);text-decoration:underline}
+.chr.me:not(.ad) .chtx a{color:#fff}
+.chft{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-top:1px}
+.chft small{font-size:11px;opacity:.65}
+.chmn{background:none;border:0;color:inherit;opacity:.55;font-size:16px;line-height:1;padding:0 4px;cursor:pointer}
+.chmn:hover{opacity:1}
+.chac{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px;padding-top:6px;border-top:1px solid rgba(128,128,128,.35)}
+.chac button,.chb2 button{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.chac .dg,.chb2 .dg{color:#ff6b6b;border-color:#ff6b6b}
+.chevw{align-self:center;margin:2px 0}
+.chev{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;padding:2px 9px 2px 3px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
+.chev b{color:var(--ok)}
+.chev b.bump{animation:chbump .35s}
+@keyframes chbump{50%{transform:scale(1.4)}}
+@media (prefers-reduced-motion:reduce){.chev b.bump{animation:none}}
+.chav{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;color:#fff;font-weight:700;flex:none}
+.chav img{width:100%;height:100%;object-fit:cover}
+.chf{display:flex;gap:8px;align-items:center;padding:8px 10px;background:var(--panel);border-top:1px solid var(--line)}
+#md .chf input{flex:1;min-width:0;margin:0;border-radius:999px;padding:10px 14px}
+.chsd{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;display:grid;place-items:center;cursor:pointer;padding:0}
+.chsd:disabled{opacity:.5}
+.chf.lock{justify-content:center;text-align:center;color:var(--muted);font-size:13px;padding:14px}
+.chmsg{margin:0;padding:0 12px 6px;background:var(--panel);color:#ff8b8b;font-size:12.5px}
+.chmsg:empty{display:none}
+.chap{flex:1;min-height:0;overflow-y:auto;padding:12px}
+.chnt{margin:0 0 10px;font-size:13px;background:var(--panel);border:1px solid var(--line);padding:8px 10px;border-radius:10px}
+.chc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.chc.you{border-color:var(--gold)}
+.chc p{margin:4px 0}
+.chch{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chpill{font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chpill.bad{color:#ff7b7b;border-color:#ff7b7b}
+.chpill.ok{color:var(--ok);border-color:var(--ok)}
+.chvb{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0}
+.chvb i{display:block;height:100%;background:linear-gradient(90deg,#2f6bf0,#6a3df0)}
+.chb2{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chb2 button{flex:1}
+.chb2 .yes.on{background:var(--ok);color:#06251a;border-color:transparent}
+.chb2 .no.on{background:#e5484d;color:#fff;border-color:transparent}
+.chq{margin:6px 0;padding:6px 10px;border-left:3px solid var(--gold);background:var(--bg);border-radius:0 8px 8px 0;font-size:13.5px;word-break:break-word}
+.che{text-align:center;color:var(--muted);padding:24px 8px;font-size:14px}
+.chrk{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px}
+.chpos{width:26px;text-align:center;font-weight:700}
+.chmid{flex:1;min-width:0}
+.chmid b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chcn{font-size:12px;color:var(--muted);white-space:nowrap}
+.chlnk{display:inline-block;margin:4px 0 8px;font-size:14px;font-weight:600;color:var(--accent)}
+.chs{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.5);display:flex;align-items:flex-end}
+.chsb{width:100%;background:var(--panel);border-top:1px solid var(--gold);border-radius:16px 16px 0 0;padding:12px 14px 16px}
+.chsh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.chto{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;background:#0e1a3d;color:#fff;border:1px solid var(--gold);padding:8px 14px;border-radius:999px;font-size:13px;max-width:90%;text-align:center}
+.chroot button:focus-visible,.chroot input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 #md .pwb{position:relative;margin:3px 0 6px}
 #md .pwb input{margin:0;padding-right:46px}
 #md .pwe{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:0;padding:4px 10px;font-size:18px;line-height:1;cursor:pointer}
 </style>
 <script>
 (function(){
-var CH={t:null,last:0,n:0,code:"",role:"",list:null,inp:null,btn:null,msg:null,nodes:{}};
-var ERR={codigo_invalido:"Código inválido ou bloco vencido.",bloqueado:"Você está temporariamente bloqueado do chat.",texto_invalido:"Escreva de 1 a 500 caracteres.",devagar:"Calma! Espere alguns segundos entre mensagens.",limite_links:"Você já enviou um link na última hora. Tente mais tarde."};
+var CH={t:null,last:0,ev:0,n:0,code:"",role:"",id:"",f:null,root:null,list:null,inp:null,btn:null,msg:null,on:null,cpane:null,apane:null,nodes:{},tabs:{},badge:{},tab:"chat",day:"",lastEv:null,stick:false};
+var MOT=[["spam","Spam"],["golpe","Golpe ou fraude"],["ofensa","Ofensa ou assédio"],["improprio","Conteúdo impróprio"],["outro","Outro motivo"]],MOTN={};
+MOT.forEach(function(m){MOTN[m[0]]=m[1]});
+var ERR={codigo_invalido:"Código inválido ou bloco vencido.",bloqueado:"Você está na Ala dos Bloqueados e não pode participar agora.",texto_invalido:"Escreva de 1 a 500 caracteres.",devagar:"Calma! Espere alguns segundos entre mensagens.",limite_links:"Você já enviou um link na última hora. Tente mais tarde.",propria:"Isso não vale para a sua própria mensagem.",ja_denunciada:"Você já denunciou esta mensagem.",limite:"Limite diário atingido. Tente amanhã.",ja_bloqueado:"Esta pessoa já está bloqueada.",ja_aberta:"Já existe uma votação aberta para esta pessoa.",alvo_admin:"O dono do site não pode ser alvo.",sem_permissao:"Você não tem permissão para isso.",encerrada:"Esta votação já foi encerrada.",alvo:"Você não pode votar numa votação sobre você.",mensagem_invalida:"Essa mensagem não existe mais.",motivo_invalido:"Escolha um motivo."};
+var TABS=[["chat","💬","Chat"],["vot","🗳️","Votar"],["den","🚩","Denúncias"],["blq","🚫","Bloqueados"],["top","🔥","Em alta"],["reg","📜","Regras"]];
 function call(fn,body){return fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:hdr(),body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error("http");return r.json()})}
 function hora(s){try{return new Date(s).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}catch(e){return""}}
 function lk(p,t){var re=/(https?:\/\/[^\s<>"]+)/g,i=0,m;while((m=re.exec(t))){if(m.index>i)p.appendChild(document.createTextNode(t.slice(i,m.index)));var a=el("a","",m[1]);a.href=m[1];a.target="_blank";a.rel="noopener noreferrer nofollow ugc";p.appendChild(a);i=m.index+m[1].length}if(i<t.length)p.appendChild(document.createTextNode(t.slice(i)))}
-function add(rows){var l=CH.list,near=l.scrollHeight-l.scrollTop-l.clientHeight<60||!l.children.length;
-  rows.forEach(function(m){if(CH.nodes[m.id]){return}
-    var d=el("div","chm"+(m.admin?" ad":""));d.appendChild(el("b","",(m.admin?"👑 ":"")+m.autor));d.appendChild(el("small","",hora(m.criado_em)));d.appendChild(document.createElement("br"));lk(d,m.texto);
-    if(CH.role==="admin"){
-      var x=el("button","cht","apagar");x.onclick=function(){call("chat_apagar",{p_codigo:CH.code,p_id:m.id}).then(function(){d.remove();delete CH.nodes[m.id]})};d.appendChild(x);
-      if(!m.admin){var y=el("button","cht","bloquear 24h");y.onclick=function(){if(confirm("Bloquear este membro por 24h?"))call("chat_bloquear",{p_codigo:CH.code,p_id:m.id,p_horas:24}).then(function(){y.textContent="bloqueado"})};d.appendChild(y)}}
-    l.appendChild(d);CH.nodes[m.id]=d;if(m.id>CH.last)CH.last=m.id});
+function hue(s){var h=0,i;s=String(s);for(i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%360;return h}
+function dayKey(s){return new Date(s).toLocaleDateString("sv")}
+function dayLabel(s){var k=dayKey(s);return k===dayKey(Date.now())?"Hoje":k===dayKey(Date.now()-864e5)?"Ontem":new Date(s).toLocaleDateString("pt-BR",{day:"2-digit",month:"long"})}
+function adById(id){for(var i=0;i<ADS.length;i++)if(ADS[i].id==id)return ADS[i];return null}
+function left(ms){var m=Math.max(0,Math.floor(ms/60000)),h=Math.floor(m/60);return h?h+"h "+(m%60)+"min":m+"min"}
+function av(a,nome,sz){var d=el("span","chav"),ini=function(){d.textContent=(nome||"?").trim().charAt(0).toUpperCase();d.style.background=(a&&a.c)||"#0b6bff";d.style.fontSize=Math.round(sz*.55)+"px"};
+  d.style.width=d.style.height=sz+"px";
+  if(a&&a.img){var i=new Image();i.alt="";i.src=a.img;i.onerror=function(){i.remove();ini()};d.appendChild(i)}else ini();return d}
+function flash(t){if(!CH.root)return;var n=el("div","chto",t);CH.root.appendChild(n);setTimeout(function(){n.remove()},3200)}
+function sheet(title,body){var s=el("div","chs"),b=el("div","chsb"),h=el("div","chsh"),x=el("button","chx","✕");
+  x.type="button";x.setAttribute("aria-label","Fechar");h.appendChild(el("b","",title));h.appendChild(x);b.appendChild(h);b.appendChild(body);s.appendChild(b);CH.root.appendChild(s);
+  function close(){s.remove()}x.onclick=close;s.onclick=function(e){if(e.target===s)close()};return close}
+function motivoForm(o){var f=el("div","chfm"),sel=el("select"),ta=null,b=el("button","go",o.cta),m=el("p","mut");
+  MOT.forEach(function(x){var op=el("option","",x[1]);op.value=x[0];sel.appendChild(op)});
+  f.appendChild(el("p","mut",o.hint));f.appendChild(sel);
+  if(o.detail){ta=el("textarea");ta.rows=3;ta.maxLength=300;ta.placeholder="Detalhes (opcional)";f.appendChild(ta)}
+  f.appendChild(b);f.appendChild(m);var close=sheet(o.title,f);
+  b.onclick=function(){b.disabled=true;m.textContent="Enviando…";
+    o.run(sel.value,ta?ta.value:"").then(function(r){if(r==="ok"){close();flash(o.ok)}else{b.disabled=false;m.textContent=ERR[r]||"Não foi possível agora."}}).catch(function(){b.disabled=false;m.textContent="Falha de conexão."})}}
+function go(b,fn,again){b.disabled=true;fn().then(function(r){if(typeof r==="string"&&r!=="ok"&&r!=="ja_bloqueado")flash(ERR[r]||"Não foi possível concluir.");again()}).catch(function(){b.disabled=false;flash("Falha de conexão.")})}
+function btn(txt,cls,fn){var b=el("button",cls||"",txt);b.type="button";b.onclick=function(){fn(b)};return b}
+
+/* ---------- mensagens ---------- */
+function acts(m,b){var o=b.querySelector(".chac");if(o){o.remove();return}o=el("div","chac");
+  function a(t,cls,fn){o.appendChild(btn(t,cls,function(){o.remove();fn()}))}
+  if(CH.role==="admin"){
+    a("Apagar","dg",function(){if(confirm("Apagar esta mensagem para todos?"))call("chat2_apagar",{p_codigo:CH.code,p_id:m.id}).then(function(ok){if(ok&&CH.nodes[m.id]){CH.nodes[m.id].remove();delete CH.nodes[m.id]}})});
+    if(!m.admin)a("Bloquear autor","",function(){motivoForm({title:"Bloquear "+m.autor,hint:"A pessoa vai para a Ala dos Bloqueados. Você pode liberar depois.",cta:"Bloquear",ok:"Autor bloqueado.",run:function(mot){return call("chat2_admin_bloquear",{p_codigo:CH.code,p_msg_id:m.id,p_motivo:MOTN[mot]})}})});
+  }else{
+    a("Denunciar","",function(){motivoForm({title:"Denunciar mensagem",hint:"O dono do site analisa. Os outros membros não veem quem denunciou.",detail:true,cta:"Enviar denúncia",ok:"Denúncia enviada ao dono do site.",run:function(mot,det){return call("chat2_denunciar",{p_codigo:CH.code,p_msg_id:m.id,p_motivo:mot,p_detalhe:det})}})});
+    a("Votar para expulsar","",function(){motivoForm({title:"Expulsar "+m.autor+"?",hint:"Abre uma votação de 24 horas. Para aprovar: pelo menos 5 votos a favor e nenhum contra. Se aprovada, a pessoa vai para a Ala dos Bloqueados e o dono decide.",cta:"Abrir votação",ok:"Votação aberta. Acompanhe na aba Votar.",run:function(mot){return call("chat2_abrir_votacao",{p_codigo:CH.code,p_msg_id:m.id,p_motivo:mot})}})});
+  }
+  b.appendChild(o)}
+function bubble(m){var me=m.membro===CH.id,r=el("div","chr"+(me?" me":"")+(m.admin?" ad":"")),b=el("div","chb"),t=el("div","chtx"),f=el("div","chft");
+  if(!me){var n=el("span","chnm",m.admin?"👑 Admin · dono do site":m.autor);n.style.setProperty("--h",hue(m.membro));b.appendChild(n)}
+  lk(t,m.texto);b.appendChild(t);
+  if(CH.role==="admin"||(CH.role==="membro"&&!me&&!m.admin)){var k=btn("⋯","chmn",function(){acts(m,b)});k.setAttribute("aria-label","Ações da mensagem");f.appendChild(k)}
+  f.appendChild(el("small","",hora(m.criado_em)));b.appendChild(f);r.appendChild(b);return r}
+function evChip(e){var l=CH.list,le=CH.lastEv;
+  if(le&&le.id==e.anuncio_id&&l.lastChild===le.node){le.n++;le.cnt.textContent="+"+le.n;le.cnt.classList.remove("bump");void le.cnt.offsetWidth;le.cnt.classList.add("bump");return}
+  var a=adById(e.anuncio_id),w=el("div","chevw"),c=el("b","","+1"),n=btn("","chev",function(){if(a){$("md").className="";try{focusAd(a)}catch(x){}}});
+  n.appendChild(av(a,e.nome,18));n.appendChild(el("span","",e.nome));n.appendChild(c);n.title="Alguém clicou neste anúncio";w.appendChild(n);l.appendChild(w);CH.lastEv={id:e.anuncio_id,node:w,cnt:c,n:1}}
+function addAll(ms,es){var l=CH.list,near=CH.stick||l.scrollHeight-l.scrollTop-l.clientHeight<80||!l.children.length,items=[];CH.stick=false;
+  ms.forEach(function(m){if(!CH.nodes[m.id])items.push({t:m.criado_em,m:m})});
+  if(!CH.ev&&!CH.last)es=es.slice(-5);
+  es.forEach(function(e){items.push({t:e.criado_em,e:e})});
+  items.sort(function(a,b){return new Date(a.t)-new Date(b.t)});
+  items.forEach(function(it){var k=dayKey(it.t);if(k!==CH.day){CH.day=k;CH.lastEv=null;l.appendChild(el("div","chd",dayLabel(it.t)))}
+    if(it.m){var n=bubble(it.m);l.appendChild(n);CH.nodes[it.m.id]=n;CH.lastEv=null;if(it.m.id>CH.last)CH.last=it.m.id}
+    else{evChip(it.e);if(it.e.id>CH.ev)CH.ev=it.e.id}});
   if(near)l.scrollTop=l.scrollHeight}
-function poll(full){if(document.hidden||!CH.list)return;
-  call("chat_listar",{p_codigo:CH.code,p_desde:full?0:CH.last}).then(function(rows){if(!CH.list||!CH.list.isConnected)return;
-    if(full){var s={};rows.forEach(function(m){s[m.id]=1});Object.keys(CH.nodes).forEach(function(k){if(!s[k]){CH.nodes[k].remove();delete CH.nodes[k]}})}
-    add(rows)}).catch(function(){})}
+function badge(k,n){var b=CH.badge[k];if(!b)return;b.style.display=n>0?"":"none";b.textContent=n>99?"99+":n}
+function sync(full){if(document.hidden||!CH.root||!CH.root.isConnected)return;
+  call("chat2_sync",{p_codigo:CH.code,p_msg:full?0:CH.last,p_ev:CH.ev}).then(function(d){if(!d||!CH.root||!CH.root.isConnected)return;
+    if(d.papel&&d.papel!==CH.role){CH.role=d.papel;return room(CH.f)}
+    CH.on.textContent=d.online+(d.online==1?" pessoa online":" pessoas online");badge("vot",d.votar);badge("den",d.denuncias);
+    if(full){var s={};d.msgs.forEach(function(m){s[m.id]=1});Object.keys(CH.nodes).forEach(function(k){if(!s[k]){CH.nodes[k].remove();delete CH.nodes[k]}})}
+    addAll(d.msgs,d.evs)}).catch(function(){})}
 function send(){var t=CH.inp.value.trim();if(!t)return;CH.btn.disabled=true;CH.msg.textContent="";
-  call("chat_enviar",{p_codigo:CH.code,p_texto:t}).then(function(r){CH.btn.disabled=false;if(r==="ok"){CH.inp.value="";poll(false)}else CH.msg.textContent=ERR[r]||"Não foi possível enviar."})
-  .catch(function(){CH.btn.disabled=false;CH.msg.textContent="Falha de conexão. Tente de novo."})}
-function room(f){f.innerHTML="";CH.nodes={};CH.last=0;CH.n=0;
-  f.appendChild(el("p","mut","Chat exclusivo de quem tem bloco ativo. Respeito, sem golpes e sem spam: mensagens podem ser apagadas e o acesso bloqueado."));
-  CH.list=el("div","chl");f.appendChild(CH.list);
-  var w=el("div","chf");CH.inp=el("input");CH.inp.placeholder="Escreva sua mensagem…";CH.inp.maxLength=500;CH.inp.autocomplete="off";
-  CH.inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();send()}};
-  CH.btn=el("button","go","Enviar");CH.btn.onclick=send;w.appendChild(CH.inp);w.appendChild(CH.btn);f.appendChild(w);
-  CH.msg=el("p","mut");f.appendChild(CH.msg);
-  poll(true);clearInterval(CH.t);
-  CH.t=setInterval(function(){if(!CH.list||!CH.list.isConnected||$("md").className!=="on"){clearInterval(CH.t);CH.list=null;return}poll(++CH.n%6===0)},4000)}
-function gate(f,saved){f.innerHTML="";
-  f.appendChild(el("p","mut","Digite o código do seu bloco para entrar. O chat é só para quem tem bloco ativo e para o admin."));
-  var i=el("input");i.type="password";i.placeholder="Seu código";i.autocomplete="new-password";i.value=saved||"";
-  var pw=el("div","pwb"),eye=el("button","pwe","👁");eye.type="button";eye.setAttribute("aria-label","Mostrar código");
-  eye.onclick=function(){var h=i.type==="password";i.type=h?"text":"password";eye.textContent=h?"🙈":"👁";eye.setAttribute("aria-label",h?"Esconder código":"Mostrar código")};
-  pw.appendChild(i);pw.appendChild(eye);
-  var b=el("button","go","Entrar"),m=el("p","mut");
-  var tl=el("a","","Termos de Uso");tl.href="/termos.html";tl.target="_blank";tl.rel="noopener";
-  var p=el("p","mut","Ao entrar, você concorda com os ");p.appendChild(tl);p.appendChild(document.createTextNode("."));
+  call("chat2_enviar",{p_codigo:CH.code,p_texto:t}).then(function(r){CH.btn.disabled=false;if(r==="ok"){CH.inp.value="";CH.stick=true;sync(false)}else CH.msg.textContent=ERR[r]||"Não foi possível enviar."}).catch(function(){CH.btn.disabled=false;CH.msg.textContent="Falha de conexão. Tente de novo."})}
+function buildChat(){var c=el("div","chcp"),w=el("div","chf");CH.list=el("div","chl");c.appendChild(CH.list);
+  if(CH.role==="bloqueado"){w.className="chf lock";w.appendChild(el("span","","Você está na Ala dos Bloqueados. Dá para ler o chat, mas não enviar."))}
+  else{CH.inp=el("input");CH.inp.placeholder="Escreva uma mensagem";CH.inp.maxLength=500;CH.inp.autocomplete="off";CH.inp.setAttribute("aria-label","Mensagem");
+    CH.inp.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();send()}};
+    CH.btn=el("button","chsd");CH.btn.type="button";CH.btn.setAttribute("aria-label","Enviar");CH.btn.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>';CH.btn.onclick=send;
+    w.appendChild(CH.inp);w.appendChild(CH.btn)}
+  c.appendChild(w);CH.msg=el("p","chmsg");c.appendChild(CH.msg);return c}
+
+/* ---------- abas ---------- */
+function put(n){CH.apane.appendChild(n)}
+function note(t){return el("p","chnt",t)}
+function empty(t){return el("div","che",t)}
+function tabVot(){put(note("Qualquer membro pode pedir a expulsão de quem quebrou as regras. A votação dura 24 horas e só é aprovada com pelo menos 5 votos a favor e nenhum contra. A decisão final é do dono."));var L=el("div");put(L);
+  function draw(){call("chat2_votacoes",{p_codigo:CH.code}).then(function(rows){if(CH.tab!=="vot")return;L.innerHTML="";if(!rows||!rows.length){L.appendChild(empty("Nenhuma votação por enquanto."));return}
+    rows.forEach(function(v){var c=el("div","chc"),hd=el("div","chch"),tot=(+v.sim)+(+v.nao),p=tot?Math.round(v.sim/tot*100):0,bar=el("div","chvb"),i=el("i");
+      hd.appendChild(el("b","","Expulsar "+v.alvo_nome+"?"));
+      hd.appendChild(v.aberta?el("span","chpill","fecha em "+left(new Date(v.fecha_em)-Date.now())):el("span","chpill "+(v.status==="aprovada"?"bad":"ok"),v.status==="aprovada"?"Aprovada":"Reprovada"));
+      c.appendChild(hd);c.appendChild(el("p","mut","Motivo: "+(MOTN[v.motivo]||v.motivo)));i.style.width=p+"%";bar.appendChild(i);c.appendChild(bar);c.appendChild(el("p","mut",v.sim+" a favor, "+v.nao+" contra"));
+      if(v.aberta&&v.sou_alvo)c.appendChild(el("p","mut","Esta votação é sobre você. Você não pode votar nela."));
+      else if(v.aberta&&CH.role==="membro"){var r=el("div","chb2");
+        [[true,"A favor","yes"],[false,"Contra","no"]].forEach(function(o){r.appendChild(btn(o[1],o[2]+(v.meu_voto===o[0]?" on":""),function(b){go(b,function(){return call("chat2_votar",{p_codigo:CH.code,p_votacao:v.id,p_voto:o[0]})},draw)}))});c.appendChild(r)}
+      L.appendChild(c)})}).catch(function(){L.innerHTML="";L.appendChild(empty("Não foi possível carregar."))})}
+  draw()}
+function tabDen(){put(note("Denúncias abertas, agrupadas por mensagem."));var L=el("div");put(L);
+  function draw(){sync(false);call("chat2_denuncias",{p_codigo:CH.code}).then(function(rows){if(CH.tab!=="den")return;L.innerHTML="";if(!rows||!rows.length){L.appendChild(empty("Nenhuma denúncia aberta."));return}
+    rows.forEach(function(d){var c=el("div","chc"),hd=el("div","chch"),q=el("blockquote","chq"),r=el("div","chb2");
+      hd.appendChild(el("b","",d.alvo_nome));hd.appendChild(el("span","chpill bad",d.qtd+(d.qtd>1?" denúncias":" denúncia")));c.appendChild(hd);
+      c.appendChild(el("p","mut","Motivo: "+(MOTN[d.motivo]||d.motivo)));q.textContent=d.texto;c.appendChild(q);
+      if(d.detalhe)c.appendChild(el("p","mut","Detalhe: "+d.detalhe));
+      function res(a){return function(){return call("chat2_denuncia_resolver",{p_codigo:CH.code,p_msg_id:d.msg_id,p_acao:a})}}
+      r.appendChild(btn("Arquivar","",function(b){go(b,res("arquivar"),draw)}));
+      r.appendChild(btn("Apagar mensagem","dg",function(b){go(b,res("apagar"),draw)}));
+      r.appendChild(btn("Bloquear autor","dg",function(b){go(b,function(){return call("chat2_admin_bloquear",{p_codigo:CH.code,p_msg_id:d.msg_id,p_motivo:MOTN[d.motivo]||"Regras da comunidade"}).then(function(x){return res("apagar")().then(function(){return x})})},draw)}));
+      c.appendChild(r);L.appendChild(c)})}).catch(function(){L.innerHTML="";L.appendChild(empty("Não foi possível carregar."))})}
+  draw()}
+function tabBlq(){put(note("Quem é expulso por votação ou pelo dono vem para cá. O dono confirma o bloqueio ou libera o acesso de volta."));var L=el("div");put(L);
+  function draw(){call("chat2_bloqueados",{p_codigo:CH.code}).then(function(rows){if(CH.tab!=="blq")return;L.innerHTML="";if(!rows||!rows.length){L.appendChild(empty("Ninguém está na Ala dos Bloqueados."));return}
+    rows.forEach(function(b){var c=el("div","chc"+(b.voce?" you":"")),hd=el("div","chch"),st=b.status;
+      hd.appendChild(el("b","",b.alvo_nome+(b.voce?" (você)":"")));
+      hd.appendChild(el("span","chpill "+(st==="confirmado"?"bad":st==="liberado"?"ok":""),st==="confirmado"?"Bloqueio confirmado":st==="liberado"?"Liberado":"Aguardando o dono"));c.appendChild(hd);
+      c.appendChild(el("p","mut","Motivo: "+b.motivo+". Origem: "+(b.origem==="votacao"?"votação da comunidade":"decisão do dono")+", em "+new Date(b.desde).toLocaleDateString("pt-BR")+"."));
+      if(b.voce){var a=el("a","chlnk","Falar com o dono no WhatsApp");a.href="https://wa.me/"+WHATSAPP;a.target="_blank";a.rel="noopener";c.appendChild(a)}
+      if(CH.role==="admin"&&st!=="liberado"){var r=el("div","chb2");
+        if(st==="ativo")r.appendChild(btn("Confirmar bloqueio","dg",function(x){go(x,function(){return call("chat2_admin_decidir",{p_codigo:CH.code,p_bloqueio:b.id,p_acao:"confirmar"})},draw)}));
+        r.appendChild(btn("Liberar","yes",function(x){go(x,function(){return call("chat2_admin_decidir",{p_codigo:CH.code,p_bloqueio:b.id,p_acao:"liberar"})},draw)}));c.appendChild(r);
+        if(st==="confirmado")c.appendChild(el("p","mut","Para remover o bloco desta pessoa do mural, apague-o no Supabase."))}
+      L.appendChild(c)})}).catch(function(){L.innerHTML="";L.appendChild(empty("Não foi possível carregar."))})}
+  draw()}
+function tabTop(){put(note("Os blocos mais clicados da semana. Cada clique em um anúncio também aparece no chat."));var L=el("div");put(L);
+  call("chat2_ranking",{p_codigo:CH.code}).then(function(rows){if(CH.tab!=="top")return;if(!rows||!rows.length){L.appendChild(empty("Os cliques da semana aparecem aqui."));return}
+    var mx=rows[0].cliques||1;rows.forEach(function(r,i){var a=adById(r.anuncio_id),w=el("div","chrk"),mid=el("div","chmid"),bar=el("div","chvb"),f=el("i");
+      w.appendChild(el("span","chpos",["🥇","🥈","🥉"][i]||String(i+1)));w.appendChild(av(a,r.nome,34));mid.appendChild(el("b","",r.nome));f.style.width=Math.max(6,r.cliques/mx*100)+"%";bar.appendChild(f);mid.appendChild(bar);w.appendChild(mid);
+      w.appendChild(el("span","chcn",r.cliques+(r.cliques==1?" clique":" cliques")));L.appendChild(w)})}).catch(function(){L.appendChild(empty("Não foi possível carregar."))})}
+function tabReg(){[["Respeito","Ofensa e assédio levam à expulsão."],["Sem golpe e sem spam","Um link por hora por pessoa. Golpe ou spam leva a denúncia e possível bloqueio."],["Quem apaga","Só o dono do site apaga mensagens."],["Denúncia e votação","Use o botão ⋯ em qualquer mensagem para denunciar ou abrir uma votação de 24 horas. Aprovada por pelo menos 5 votos e nenhum contra, a pessoa vai para a Ala dos Bloqueados."],["Seu bloco, sua vaga","O chat é só de quem tem bloco ativo: se o seu vencer, o acesso fecha. Se o dono confirmar que as diretrizes foram quebradas, o bloco pode ser removido do mural."]].forEach(function(x){var c=el("div","chc");c.appendChild(el("b","",x[0]));c.appendChild(el("p","mut",x[1]));put(c)});
+  var a=el("a","chlnk","Ler os Termos de Uso");a.href="/termos.html";a.target="_blank";a.rel="noopener";put(a)}
+function setTab(k){CH.tab=k;Object.keys(CH.tabs).forEach(function(t){CH.tabs[t].className="chtab"+(t===k?" on":"");CH.tabs[t].setAttribute("aria-selected",t===k?"true":"false")});
+  var c=k==="chat";CH.cpane.style.display=c?"flex":"none";CH.apane.style.display=c?"none":"block";
+  if(c){CH.list.scrollTop=CH.list.scrollHeight;return}
+  CH.apane.innerHTML="";CH.apane.scrollTop=0;({vot:tabVot,den:tabDen,blq:tabBlq,top:tabTop,reg:tabReg})[k]()}
+
+/* ---------- entrada ---------- */
+function room(f){clearInterval(CH.t);CH.f=f;f.innerHTML="";$("md").classList.add("chat");
+  CH.nodes={};CH.tabs={};CH.badge={};CH.last=0;CH.ev=0;CH.n=0;CH.day="";CH.lastEv=null;CH.tab="chat";
+  var root=el("div","chroot"),h=el("div","chh"),tt=el("div","chtt"),x=el("button","chx","✕"),tb=el("div","chtabs"),p=el("div","chp"),lg=document.querySelector("header .logo");
+  CH.root=root;f.appendChild(root);
+  if(lg){var im=el("img","chlg");im.src=lg.src;im.alt="";h.appendChild(im)}
+  tt.appendChild(el("b","","Chat da comunidade"));CH.on=el("small","","conectando…");tt.appendChild(CH.on);h.appendChild(tt);
+  x.type="button";x.setAttribute("aria-label","Fechar chat");x.onclick=function(){$("md").className=""};h.appendChild(x);root.appendChild(h);
+  tb.setAttribute("role","tablist");
+  TABS.forEach(function(t){if(t[0]==="den"&&CH.role!=="admin")return;var b=el("button","chtab"),bd=el("span","chbd");bd.style.display="none";b.type="button";b.setAttribute("role","tab");
+    b.appendChild(el("span","",t[1]));b.appendChild(el("span","",t[2]));b.appendChild(bd);b.onclick=function(){setTab(t[0])};tb.appendChild(b);CH.tabs[t[0]]=b;CH.badge[t[0]]=bd});
+  root.appendChild(tb);CH.cpane=buildChat();CH.apane=el("div","chap");p.appendChild(CH.cpane);p.appendChild(CH.apane);root.appendChild(p);
+  setTab("chat");sync(true);
+  CH.t=setInterval(function(){if(!CH.root||!CH.root.isConnected||!$("md").classList.contains("on")){clearInterval(CH.t);CH.root=null;return}sync(++CH.n%6===0)},4000)}
+function gate(f,saved){f.innerHTML="";$("md").classList.remove("chat");var lg=document.querySelector("header .logo");
+  if(lg){var im=el("img","chlgb");im.src=lg.src;im.alt="";f.appendChild(im)}
+  f.appendChild(el("p","mut","Digite o código do seu bloco para entrar. O chat é só para quem tem bloco ativo e para o dono do site."));
+  var i=el("input"),pw=el("div","pwb"),eye=el("button","pwe","👁"),b=el("button","go","Entrar"),m=el("p","mut"),tl=el("a","","Termos de Uso"),p=el("p","mut","Ao entrar, você concorda com os ");
+  i.type="password";i.placeholder="Seu código";i.autocomplete="new-password";i.value=saved||"";
+  eye.type="button";eye.setAttribute("aria-label","Mostrar código");eye.onclick=function(){var h=i.type==="password";i.type=h?"text":"password";eye.textContent=h?"🙈":"👁";eye.setAttribute("aria-label",h?"Esconder código":"Mostrar código")};
+  pw.appendChild(i);pw.appendChild(eye);tl.href="/termos.html";tl.target="_blank";tl.rel="noopener";p.appendChild(tl);p.appendChild(document.createTextNode("."));
   f.appendChild(pw);f.appendChild(b);f.appendChild(m);f.appendChild(p);i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();b.click()}};
-  b.onclick=function(){var c=i.value.trim();if(!c)return;b.disabled=true;m.textContent="Verificando…";enter(f,c,function(msg){b.disabled=false;m.textContent=msg})}}
-function enter(f,c,fail){call("chat_acesso",{p_codigo:c}).then(function(r){
-    if(r==="admin"||r==="membro"||r==="bloqueado"){CH.code=c;CH.role=r;try{localStorage.setItem("pf_code",c)}catch(e){}room(f)}
-    else fail("Não encontrei um bloco ativo com esse código. O chat é exclusivo para quem compra blocos.")})
-  .catch(function(){fail("Não foi possível verificar agora. Tente de novo.")})}
-function openChat(){var f=el("div");modal("Chat da comunidade",f);var s="";try{s=localStorage.getItem("pf_code")||""}catch(e){}
-  gate(f,s);if(s)enter(f,s,function(){})}
-["chn","mfch"].forEach(function(id){var e=$(id);if(e)e.addEventListener("click",function(ev){ev.preventDefault();openChat()})})
+  b.onclick=function(){var c=i.value.trim();if(!c)return;b.disabled=true;m.textContent="Verificando…";enter(f,c,function(t){b.disabled=false;m.textContent=t})}}
+function enter(f,c,fail){call("chat2_entrar",{p_codigo:c}).then(function(r){
+    if(r&&r.papel){CH.code=c;CH.role=r.papel;CH.id=r.id;try{localStorage.setItem("pf_code",c)}catch(e){}room(f)}
+    else fail("Não encontrei um bloco ativo com esse código. O chat é exclusivo para quem compra blocos.")}).catch(function(){fail("Não foi possível verificar agora. Tente de novo.")})}
+function openChat(){var f=el("div"),s="";modal("Chat da comunidade",f);try{s=localStorage.getItem("pf_code")||""}catch(e){}gate(f,s);if(s)enter(f,s,function(){})}
+["chn","mfch"].forEach(function(id){var e=$(id);if(e)e.addEventListener("click",function(ev){ev.preventDefault();openChat()})});
+/* cada clique num anúncio vira um "+1" no chat (o servidor limita o ritmo) */
+$("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd&&curAd.l!=="#")rpc("chat2_evento_clique",JSON.stringify({p_id:curAd.id}))});
 })();
 </script>
 
