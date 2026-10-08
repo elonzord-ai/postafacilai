@@ -57,11 +57,6 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-acti
 #rank #re{margin-top:12px;line-height:1.4}
 @media (min-width:1100px){#sheet{left:12px;right:auto;top:160px;bottom:auto;width:250px;max-height:calc(100vh - 176px);overflow:auto}}
 #bn{font:inherit;font-size:14px;width:118px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 8px}
-#palco{display:none;align-items:center;gap:10px;margin:0 14px 8px;padding:8px 12px;border:1px solid var(--line);border-left:4px solid var(--c,#6a3df0);border-radius:10px;background:var(--panel);color:var(--ink);text-decoration:none;font-size:14px;min-height:46px;transition:opacity .35s}
-#palco.on{display:flex}#palco.fade{opacity:0}
-#palco .pt{font-weight:700;white-space:nowrap}#palco .px{color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#palco .pi{height:34px;width:34px;object-fit:cover;border-radius:6px}
-#palco .pl{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 8px;white-space:nowrap}
 #bid input{font:inherit;font-size:14px;width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:7px 9px;margin:0 0 6px}
 #bid button{width:100%;margin-bottom:6px;background:linear-gradient(135deg,#1aa97a,#2ee59d);border-color:transparent;color:#05281c;font-weight:700}
 #bid button:disabled{background:var(--line);color:var(--muted);cursor:not-allowed}
@@ -191,7 +186,6 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   </div>
 </header>
 <div id="nbar"><input id="nq" type="search" placeholder="Buscar nicho: capacete, air fryer..." aria-label="Buscar nicho" autocomplete="off"><div id="nichos" aria-label="Filtrar por nicho"></div></div>
-<a id="palco" target="_blank" rel="noopener"></a>
 <div id="tk" aria-label="Produtos em destaque"><span class="tkl">Anúncios<span class="lg">&nbsp;· links de afiliado</span></span><div class="tkv" id="tkv"><div id="tkt"></div></div></div>
 <div id="app">
 <nav id="nav" aria-label="Navegação">
@@ -327,7 +321,7 @@ function tick(){var i=tick.i||0,a=fresh.shift()||recent[i%Math.max(recent.length
 function load(first){
   fetch(SUPABASE_URL+"/rest/v1/anunciantes?select=*&order=criado_em.desc",{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}})
   .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
-  .then(function(rows){ADS=map(rows);ADS.forEach(function(a){if(!seen[a.id]){seen[a.id]=1;if(!first)fresh.push(a)}});recent=ADS.slice(0,5);stat();draw();loadRank();loadSp();loadVit();
+  .then(function(rows){ADS=map(rows);ADS.forEach(function(a){if(!seen[a.id]){seen[a.id]=1;if(!first)fresh.push(a)}});recent=ADS.slice(0,5);stat();draw();loadRank();loadSp();
     if(first&&!started){started=true;setTimeout(tick,2500)}})
   .catch(function(){if(first)$("stat").textContent="Não foi possível carregar os anunciantes. Tente recarregar a página."});
 }
