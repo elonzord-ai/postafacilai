@@ -199,6 +199,34 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 #fmts .chip:disabled{opacity:.4;cursor:not-allowed}
 .den{display:inline-block;margin-top:8px;font-size:12px;color:var(--muted);text-decoration:underline}
 .cup .den{display:block}
+
+/* ===== Ajustes só para celular (até 700px). Computador não é afetado. ===== */
+@media (max-width:700px){
+header{gap:6px 10px;padding:8px 12px 4px}
+h1{font-size:17px}
+.logo{height:26px}
+.stat{font-size:12px;line-height:1.3;min-width:0;flex:1 1 120px}
+#prog{flex:1 1 100%;min-width:0}
+#prog .bar{flex:1;width:auto}
+.btns{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -12px;padding:2px 12px 6px;scrollbar-width:none}
+.btns::-webkit-scrollbar{display:none}
+.btns>*{flex:none;white-space:nowrap}
+.btns button{display:inline-flex;align-items:center;font-size:14px;line-height:1.2;padding:0 12px;height:36px}
+.btns button .ic{width:17px;height:17px;margin-right:5px}
+#bn{width:108px;height:36px;padding:0 10px}
+#nbar{gap:8px;padding:6px 12px}
+#nq{width:44vw;max-width:200px;padding:7px 12px}
+#tk{margin:0 12px 6px}
+.tkl{padding:0 10px}
+.tkl .lg{display:none}
+main{margin:0 6px 6px;border-radius:14px}
+#zc{position:absolute;right:10px;bottom:10px;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+#zc button{width:42px;height:42px;padding:0;border-radius:50%;font-size:22px;line-height:1;display:inline-flex;align-items:center;justify-content:center;background:var(--panel);box-shadow:0 4px 14px rgba(0,0,0,.22)}
+#zc #zr{width:auto;height:34px;padding:0 14px;border-radius:999px;font-size:13px}
+body.sheet-open #zc{display:none}
+#mf{padding:2px 8px;gap:0 2px}
+#mf a,#mf button{min-height:34px;padding:4px 7px;font-size:12.5px}
+}
 </style>
 </head>
 <body>
@@ -453,14 +481,14 @@ setInterval(function(){if(DISP){draw();renderBid()}},1000);
 stat();fit();load(true);visit();loadDisp();setInterval(function(){if(!document.hidden)load(false)},30000);
 </script>
 <script>
-setInterval(function(){var l=document.getElementById("lvl");if(!l)return;
+setInterval(function(){var l=document.getElementById("lvl");if(!l||!l.offsetParent)return;
 if(typeof DISP==="undefined"||!DISP){l.textContent="Nenhuma disputa aberta no momento.";return}
 var st=dst(),has=DISP.maior_lance!=null;
 l.textContent=has?"MAIOR LANCE":"SEM LANCES · MÍNIMO";
 document.getElementById("lvv").textContent=has?money(DISP.maior_lance)+" · "+DISP.vencedor:money(DISP.lance_minimo);
 document.getElementById("lvk").textContent=st==="aguardando"?"COMEÇA EM":st==="ao_vivo"?"TERMINA EM":"ENCERRADA";
 document.getElementById("lvt").textContent=st==="encerrada"?"–":fmt((st==="aguardando"?DISP.inicio:DISP.fim)-nowS())},1000);
-function lvLoad(){if(document.hidden||typeof DISP==="undefined"||!DISP)return;
+function lvLoad(){if(document.hidden||typeof DISP==="undefined"||!DISP||!document.getElementById("lv").offsetParent)return;
 fetch(SUPABASE_URL+"/rest/v1/rpc/historico_lances",{method:"POST",headers:hdr(),body:"{}"}).then(function(r){return r.ok?r.json():null}).then(function(j){
 if(!j)return;document.getElementById("lvn").textContent=j.total+(j.total===1?" LANCE":" LANCES");
 var ol=document.getElementById("lvh");ol.textContent="";
@@ -808,6 +836,36 @@ function denForm(tipo,id){var f=el("div");f.appendChild(el("p","mut","Conte o mo
 function denLink(tipo,id){var a=el("a","den","Denunciar");a.href="#";a.onclick=function(e){e.preventDefault();denForm(tipo,id)};return a}
 var _o6=openSheet;openSheet=function(c){_o6(c);var l=$("denad");if(!l)return;var a=c.sl?null:adAt(c.x,c.y);l.style.display=a?"inline-block":"none";l.onclick=function(e){e.preventDefault();if(a)denForm("anuncio",a.id)}};
 var _cc6=cupCard;cupCard=function(c,sv){var d=_cc6(c,sv);if(c&&c.id!=null&&/^\d+$/.test(String(c.id)))d.appendChild(denLink("cupom",c.id));return d};
+</script>
+<script>
+/* Celular (até 700px): desempenho e controles de zoom. No computador nada muda. */
+(function(){
+var mq=window.matchMedia("(max-width:700px)");
+function on(m,f){if(m.addEventListener)m.addEventListener("change",f);else m.addListener(f)}
+/* 1) redesenhar no máximo 1x por quadro e parar com a aba oculta */
+var _draw=draw,pend=0;
+draw=function(){
+  if(!mq.matches){_draw();return}
+  if(document.hidden||pend)return;
+  pend=requestAnimationFrame(function(){pend=0;_draw()})};
+document.addEventListener("visibilitychange",function(){if(!document.hidden)draw()});
+/* 2) cores lidas uma vez (getComputedStyle a cada desenho é lento) */
+var _css=css,cc={};
+css=function(v){if(!mq.matches)return _css(v);return cc[v]||(cc[v]=_css(v))};
+function clr(){cc={};draw()}
+on(window.matchMedia("(prefers-color-scheme:dark)"),clr);
+if(window.MutationObserver)new MutationObserver(clr).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+/* 3) zoom flutuante sobre o mural e placeholder curto */
+var zc=null;
+function place(){
+  var zo=$("zo"),zi=$("zi"),zr=$("zr"),bt=document.querySelector(".btns"),mn=document.querySelector("main"),q=$("nq");
+  if(q)q.placeholder=mq.matches?"Buscar nicho...":"Buscar nicho: capacete, air fryer...";
+  if(!zo||!zi||!zr||!bt||!mn)return;
+  if(mq.matches){if(!zc){zc=document.createElement("div");zc.id="zc";mn.appendChild(zc)}zc.appendChild(zi);zc.appendChild(zo);zc.appendChild(zr)}
+  else if(zc&&zo.parentNode===zc){bt.appendChild(zo);bt.appendChild(zi);bt.appendChild(zr)}
+  draw()}
+on(mq,place);place();
+})();
 </script>
 </body>
 </html>
