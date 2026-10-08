@@ -184,6 +184,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 #cur{position:absolute;z-index:5;pointer-events:none;display:none;padding:5px 9px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-size:12px;line-height:1.4;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.35);white-space:nowrap}
 #cur b{color:var(--gold)}#cur small{display:block;color:var(--muted);font-size:11px}
 @media (prefers-reduced-motion:reduce){#tkt{animation:none}.tkv{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.tg+.tg{display:none}}
+.cup>button{background:linear-gradient(135deg,#1aa97a,#2ee59d);color:#05281c;font-weight:700;border-color:transparent;padding:9px 18px}
+.cup>button:disabled{opacity:.6}
+.cup a.lj{display:block;margin-top:10px}
+#md .mb>div>a.lj{display:block;margin:14px 0 6px;font-size:14px;font-weight:600;color:var(--accent);text-decoration:none}
+#md .mb>div>a.lj:hover{text-decoration:underline}
+#md .cupn a{color:var(--accent)}
+#md .mb>button:last-child{margin-top:14px}
+#sheet{max-height:72vh;overflow:auto}
 </style>
 </head>
 <body>
@@ -235,7 +243,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button id="lvb" type="button">Abrir painel de lances</button></section>
 <aside id="rank" aria-label="Ofertas mais clicadas hoje"><h2><svg class='ic gd'><use href='#i-flame'/></svg>Em destaque</h2><div id="ht"></div><div id="hl" style="display:none"></div><ol id="rl"></ol><p id="re">Ainda sem cliques hoje. Visite uma loja para abrir o ranking.</p></aside>
   <div id="sheet" role="dialog" aria-live="polite">
-    <h2 id="sh"></h2><p id="sp"></p>
+    <h2 id="sh"></h2><p id="sp"></p><div id="spc"></div>
     <div id="bid" style="display:none"><p id="bs"></p><input id="bc" placeholder="Seu código" autocomplete="off"><input id="bv" inputmode="numeric" placeholder="Seu lance em R$ (inteiro)"><button id="bb">Dar lance</button><p id="bm"></p></div>
     <div class="row"><button id="buy" style="display:none">Comprar agora</button><a class="btn primary" id="sa" target="_blank" rel="noopener"></a><button id="x">Fechar</button></div>
   </div>
@@ -380,7 +388,7 @@ $("hot").onclick=function(){var on=$("rank").classList.toggle("on");$("hot").set
 if(innerWidth>=900)$("hot").onclick();
 var VIT=[],vi=0,vtm=null,vsig="";
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
-function showV(){var p=$("palco");clearTimeout(vtm);if(!VIT.length){p.className="";return}
+function showV(){var p=$("palco");if(!p)return;clearTimeout(vtm);if(!VIT.length){p.className="";return}
   var v=VIT[vi%VIT.length];vi++;if(p.classList.contains("on"))p.classList.add("fade");
   setTimeout(function(){p.innerHTML="";if(v.l!=="#")p.href=v.l;else p.removeAttribute("href");
     p.rel=v.af?"noopener noreferrer sponsored":"noopener";p.style.setProperty("--c",v.c);
@@ -692,7 +700,7 @@ function openCup(){var f=el("div");f.appendChild(el("p","mut","Códigos promocio
   if(old.length){f.appendChild(el("p","mut","Seus códigos revelados"));old.forEach(function(id){var v=CUPR[id];f.appendChild(cupCard({id:id,loja:v.l,descricao:v.d,link:v.u},v))})}
   if(!CUP.length&&!old.length){f.appendChild(el("p","mut","Nenhum cupom disponível agora."));}
   var w=el("a","lj","Comprou um bloco? Lance seu cupom em Meu Espaço");w.href="#";w.onclick=function(e){e.preventDefault();meuEspaco()};f.appendChild(w);
-  f.appendChild(el("p","cupn","Os códigos são de responsabilidade de cada lojista e podem ter prazo e limite de uso."));
+  var cn=el("p","cupn","Os códigos são de responsabilidade de cada lojista e podem ter prazo e limite de uso. "),tl=el("a","","Termos de Uso");tl.href="/termos.html";tl.target="_blank";tl.rel="noopener";cn.appendChild(tl);f.appendChild(cn);
   modal("Cupons dos afiliados",f)}
 $("cpn").onclick=function(e){e.preventDefault();openCup()};$("cupv").onclick=openCup;$("mfc").onclick=openCup;
 cupBadge();loadCup();setInterval(loadCup,120000);
@@ -745,6 +753,26 @@ $("mfl").onclick=function(){if(DISP)openDisp({id:DISP.slot||1});else modal("Leil
 $("md").addEventListener("click",function(e){if(e.target===this)this.className=""});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")$("md").className=""});
 window.addEventListener("appinstalled",function(){$("inst").style.display="none"});
+/* Cupom dentro do bloco do anunciante */
+function cupBloco(a,box){
+  var l=CUP.filter(function(c){return a.l!=="#"&&c.link?c.link===a.l:c.loja===a.n}).slice(0,2);
+  if(!l.length)return;
+  l.forEach(function(c){var d=el("div","cup"),sv=CUPR[c.id];
+    d.appendChild(el("b","","Cupom disponível"));d.appendChild(el("span","d",c.descricao));
+    if(sv){var r=el("div","code"),cp=el("button","","Copiar");r.appendChild(el("code","",sv.c));cp.onclick=function(){cupCopy(sv.c,cp)};r.appendChild(cp);d.appendChild(r)}
+    else{var b=el("button","","Revelar código");b.onclick=function(){b.disabled=true;b.textContent="Revelando...";
+      fetch(SUPABASE_URL+"/rest/v1/rpc/revelar_cupom",{method:"POST",headers:hdr(),body:JSON.stringify({p_id:c.id})})
+      .then(function(r){return r.ok?r.json():null}).then(function(code){
+        if(!code||typeof code!=="string"){b.textContent="Esgotado";loadCup();return}
+        CUPR[c.id]={c:code,l:c.loja,d:c.descricao,u:c.link||""};cupSave();c.usos=(c.usos||0)+1;box.innerHTML="";cupBloco(a,box)})
+      .catch(function(){b.disabled=false;b.textContent="Tentar de novo"})};d.appendChild(b)}
+    var m=[];if(c.validade)m.push("até "+c.validade.slice(8,10)+"/"+c.validade.slice(5,7));if(c.limite!=null)m.push("restam "+Math.max(0,c.limite-c.usos));
+    if(m.length)d.appendChild(el("div","meta",m.join(" · ")));
+    box.appendChild(d)});
+  var n=el("p","cupn");n.appendChild(document.createTextNode("Código e oferta são de responsabilidade do anunciante. "));
+  var t=el("a","","Termos de Uso");t.href="/termos.html";t.target="_blank";t.rel="noopener";n.appendChild(t);box.appendChild(n)}
+var _os9=openSheet;openSheet=function(c){_os9(c);var box=$("spc");if(!box)return;box.innerHTML="";if(c.sl)return;var a=adAt(c.x,c.y);if(a)cupBloco(a,box)};
+var _cb9=cupBadge;cupBadge=function(){_cb9();var box=$("spc");if(box&&curAd&&$("sheet").style.display==="block"){box.innerHTML="";cupBloco(curAd,box)}};
 </script>
 </body>
 </html>
