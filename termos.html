@@ -1,120 +1,155 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Termos de Uso: Leilão da Placa 1 | Posta Fácil AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Termos de Uso e Privacidade · Posta Fácil AI</title>
+<meta name="theme-color" content="#0a1128">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <style>
-:root{--bg:#0b1020;--panel:#121a33;--line:#26305a;--text:#e6e9f5;--muted:#9aa3c0;--gold:#e8c872;--blue:#4f6bff}
+:root{--bg:#f3f5fb;--ink:#0e1a3d;--muted:#5a6784;--line:#dde3f0;--accent:#5a3fe8;--panel:#fff;--gold:#b8923f;--gold2:#d6b36a;color-scheme:light;
+--gb:linear-gradient(135deg,rgba(214,179,106,.75),rgba(106,61,240,.45) 55%,rgba(27,191,216,.45))}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0a1128;--ink:#e8edf8;--muted:#9aa8c7;--line:#26345c;--accent:#8aa4ff;--panel:#131f40;--gold:#e8c26c;--gold2:#d6b36a}}
 *{box-sizing:border-box}
-html{scroll-padding-top:16px}
-body{margin:0;background:var(--bg);color:var(--text);font:17px/1.7 Georgia,"Times New Roman",serif}
-header,main,footer{max-width:760px;margin:0 auto;padding:0 20px}
-header{padding-top:32px}
-.back{font:600 14px/1 system-ui,sans-serif;color:var(--muted);text-decoration:none}
-.back:hover,.back:focus-visible{color:var(--gold)}
-h1{font:700 clamp(28px,5vw,40px)/1.15 system-ui,sans-serif;margin:24px 0 8px;color:var(--gold)}
-.meta{color:var(--muted);font:14px/1.5 system-ui,sans-serif;margin:0}
-.resumo{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:8px;padding:16px 20px;margin:28px 0}
-.resumo h2{margin:0 0 8px;font-size:18px;color:var(--text)}
-.resumo ul{margin:0;padding-left:20px}
-h2{font:700 21px/1.3 system-ui,sans-serif;color:var(--gold);margin:36px 0 8px}
-p,li{margin:8px 0}
-ul{padding-left:22px}
-mark{background:#3a3220;color:var(--gold);padding:0 4px;border-radius:3px}
-a{color:var(--blue)}
-footer{padding:32px 20px 48px;color:var(--muted);font:14px/1.5 system-ui,sans-serif}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.6;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+header{display:flex;align-items:center;gap:12px;padding:10px 14px;flex-wrap:wrap;max-width:860px;margin:0 auto}
+h1.brand{font-size:19px;margin:0;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex:1}
+.logo{height:30px;width:auto}
+.ai{background:linear-gradient(135deg,#2f6bf0,#8b5cf6,#1bbfd8);-webkit-background-clip:text;background-clip:text;color:transparent}
+a.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 14px;text-decoration:none;display:inline-block}
+a.btn:hover{border-color:var(--gold2)}
+a.primary{background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;border-color:transparent;font-weight:700}
+main{max-width:860px;margin:8px auto 40px;padding:0 14px}
+.doc{border:1px solid transparent;background:linear-gradient(var(--panel),var(--panel)) padding-box,var(--gb) border-box;border-radius:16px;padding:26px clamp(16px,4vw,34px);box-shadow:0 8px 28px rgba(0,0,0,.18)}
+h1.t{font-size:clamp(26px,5vw,36px);margin:0 0 4px;color:var(--gold);letter-spacing:-.02em;line-height:1.15}
+.meta{color:var(--muted);font-size:14px;margin:0 0 18px}
+.meta a,.doc p a,.doc li a{color:var(--accent)}
+.resumo{border:1px solid var(--line);border-left:4px solid var(--gold2);border-radius:12px;padding:14px 18px;background:rgba(138,164,255,.07);margin:0 0 8px}
+.resumo h2{margin:0 0 6px;border:0;padding:0;font-size:17px;color:var(--ink)}
+h2{font-size:20px;color:var(--gold);margin:30px 0 6px;padding-top:6px;border-top:1px solid var(--line);letter-spacing:-.01em}
+.resumo+h2{border-top:0;margin-top:22px}
+p{margin:6px 0 10px}
+ul{margin:6px 0 10px;padding-left:22px}
+li{margin:5px 0}
+b{color:var(--ink)}
+.nota{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:30px;padding-top:12px}
+footer{text-align:center;color:var(--muted);font-size:13px;margin:0 0 30px}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6a3df0,#1bbfd8);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
+@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:#6a3df0 transparent}}
 </style>
 </head>
 <body>
 <header>
-<a class="back" href="/">Voltar ao mural</a>
-<h1>Termos de Uso: Leilão da Placa 1</h1>
-<p class="meta">Posta Fácil AI · Contato: <a href="https://wa.me/5562998309271">+55 62 99830-9271</a> · <a href="mailto:postafacilai@gmail.com">postafacilai@gmail.com</a></p>
+  <h1 class="brand"><img class="logo" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjdmNzg3ODI1LTRiMzYtNDk1ZS05MDFhLTAzNzIyOTU3Yjg0MwAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNogJtvbCpqHEIgL2uUixe+MgAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6NzRmN2JlYmYtMDI2Ny00ZDNlLThlMWQtN2Q1ZGUwOTliODIybHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaMNH2/S5bZ5Ex99tmyHonbcAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIKZkgeoHcxMDg2amiUkn6VyIecj7XYRZ/wih6pD3Cz+FpGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2g2cCxwF4PXBJX9wptQwgDKAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFgg64lw59P4IaGISMZibK7bZ5CJkJkWWAP5+QleS35DQqFkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo3Zjc4NzgyNS00YjM2LTQ5NWUtOTAxYS0wMzcyMjk1N2I4NDMvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDplZjI5ZDllYy1jMGMwLTQwN2YtOWQxOC04ZGI4NjIzYjAyZjZyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggpmSB6gdzEwODZqaJSSfpXIh5yPtdhFn/CKHqkPcLP4WiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIF2kYQo5oOAw8G1uUrtFFFjo0R5HnpnkKQToZQ/m47obomN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIDLHSslBao9ABjiV+4pEoHh5jBwbbU+KKR5EUGAq3x98dGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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">Posta Fácil <span class="ai">AI</span></h1>
+  <a class="btn primary" href="/">← Voltar ao mural</a>
 </header>
 <main>
-<section class="resumo" aria-label="Resumo">
-<h2>Resumo</h2>
+<article class="doc">
+<h1 class="t">Termos de Uso e Privacidade</h1>
+<p class="meta">Posta Fácil AI · Atualizado em 08/10/2026 · Contato: <a href="https://wa.me/5562998309271">+55 62 99830-9271</a> · <a href="mailto:postafacilai@gmail.com">postafacilai@gmail.com</a></p>
+
+<div class="resumo"><h2>Resumo</h2><ul>
+<li>O Posta Fácil AI é um <b>espaço de divulgação</b>: não vendemos os produtos das lojas.</li>
+<li>Cada bloco custa o valor exibido na compra (hoje R$ 5 por bloco por mês), pago por Pix, e vale por 30 dias depois da confirmação.</li>
+<li><b>Anúncio, imagem, link, cupom e oferta são de responsabilidade do anunciante.</b></li>
+<li>O código do Meu Espaço funciona como senha: guarde e não compartilhe.</li>
+<li>Podemos remover qualquer anúncio, cupom ou produto que viole estas regras.</li>
+<li>A Placa 1 é disputada por lances. O lance é um compromisso de compra e não pode ser retirado.</li>
+</ul></div>
+
+<h2>1. O que é o Posta Fácil AI</h2>
+<p>É um mural de lojas e afiliados formado por blocos, placas de patrocinador, uma faixa de produtos, cupons e o leilão da Placa 1. Funcionamos como vitrine publicitária. A compra de qualquer produto acontece no site da loja, e a relação de consumo é entre o visitante e a loja.</p>
+
+<h2>2. Quem pode usar</h2>
+<p>Qualquer pessoa pode navegar. Para comprar blocos, lançar cupons ou participar do leilão é preciso ser maior de 18 anos ou empresa com CNPJ ativo. Ao usar o site, você aceita estes termos.</p>
+
+<h2>3. Blocos do mural</h2>
 <ul>
-<li>Só participa quem recebe um código de licitante.</li>
-<li>O lance é um compromisso de compra e não pode ser retirado.</li>
-<li>Não há caução. Só o vencedor paga, e só o valor do seu lance.</li>
-<li>O vencedor tem 30 minutos para pagar por Pix. Se não pagar, perde a placa.</li>
-</ul>
-</section>
-
-<h2>1. Do que se trata</h2>
-<p>O Posta Fácil AI oferece a <strong>Placa 1</strong> do mural por leilão de lances. Quem vence usa a placa por 7 (sete) dias para divulgar seus links e produtos de afiliado. As demais placas têm preço fixo e seguem a seção 9. Os blocos comuns do mural (R$ 5 por bloco por mês) têm regras próprias.</p>
-
-<h2>2. Quem pode participar</h2>
-<ul>
-<li>Pessoas maiores de 18 anos ou empresas com CNPJ ativo.</li>
-<li>É necessário um <strong>código de licitante</strong>, emitido e aprovado por nós após cadastro com nome (exibido publicamente) e WhatsApp.</li>
-<li>O código é pessoal e intransferível. Todo lance dado com ele é de responsabilidade do titular.</li>
-<li>Podemos recusar, suspender ou cancelar um código a qualquer momento, em caso de descumprimento destes termos ou de suspeita de irregularidade.</li>
-</ul>
-
-<h2>3. Como funciona a disputa</h2>
-<ul>
-<li>O lance mínimo e o aumento mínimo aparecem no painel da placa. Na data de publicação: lance mínimo de R$ 500,00 e aumento mínimo de R$ 50,00 sobre o maior lance.</li>
-<li>Se um lance for dado nos <strong>últimos 15 segundos</strong>, o cronômetro é estendido em 15 segundos. Isso pode se repetir quantas vezes houver lances nessa janela.</li>
-<li>Vence quem tiver o maior lance quando o cronômetro terminar. Vale o horário do servidor do site, não o do aparelho do participante.</li>
-<li>Em caso de falha técnica, irregularidade ou suspeita de fraude, podemos pausar, reabrir ou cancelar a disputa, avisando os participantes.</li>
-</ul>
-
-<h2>4. O lance é um compromisso</h2>
-<p>Cada lance é uma proposta firme de compra pelo valor ofertado. Não pode ser retirado, cancelado ou reduzido. Ao dar um lance, o participante declara que leu e aceitou estes termos.</p>
-
-<h2>5. Pagamento</h2>
-<ul>
-<li>Não há depósito nem caução para participar. Só o vencedor paga, e apenas o valor do seu lance vencedor.</li>
-<li>Ao fim da disputa, entramos em contato com o vencedor pelo WhatsApp cadastrado, com os dados para pagamento via Pix.</li>
-<li>O vencedor tem <strong>30 (trinta) minutos</strong>, contados do envio dessa mensagem, para pagar. Por isso, deve estar disponível no WhatsApp quando a disputa terminar.</li>
-<li>Emitimos o comprovante ou documento fiscal cabível, conforme a legislação.</li>
+<li>O preço é o exibido na tela de compra. Podemos alterá-lo para compras futuras.</li>
+<li>O pagamento é feito por Pix, processado pelo Mercado Pago. Ao gerar o Pix, a área escolhida fica reservada por 30 minutos.</li>
+<li>O bloco entra no ar depois da confirmação do pagamento e vale por 30 dias a partir dela. Para continuar, é preciso comprar de novo.</li>
+<li>Se o pagamento for confirmado e a área não puder mais ser entregue, devolvemos o valor.</li>
+<li>Depois que o anúncio vai ao ar não há reembolso, exceto falha nossa ou direito garantido por lei, como o de arrependimento quando a lei o prever.</li>
 </ul>
 
-<h2>6. Se o vencedor não pagar</h2>
+<h2>4. Conteúdo, imagens e moderação</h2>
+<p>O anunciante responde por tudo o que publica (nome, link, imagem, cor e cupom) e declara ter o direito de usar esse conteúdo. É proibido publicar:</p>
 <ul>
-<li>Passado o prazo, o vencedor <strong>perde o direito à placa</strong>.</li>
-<li>Podemos oferecer a placa ao participante com o segundo maior lance, pelo valor do lance dele, com novo prazo de 30 minutos, e assim por diante.</li>
-<li>O código do participante inadimplente pode ser suspenso de disputas futuras, e novas participações podem exigir pagamento antecipado.</li>
-<li>Se ninguém pagar, a placa pode ir para nova disputa ou ficar disponível a preço fixo.</li>
+<li>nudez, conteúdo sexual ou obsceno;</li>
+<li>violência explícita, mutilação ou crueldade;</li>
+<li>discriminação, ódio ou qualquer conteúdo que viole os direitos humanos;</li>
+<li>conteúdo ilegal, golpes, ofertas enganosas, produtos proibidos ou cópias de marcas e obras protegidas.</li>
+</ul>
+<p>As imagens enviadas passam por análise automática, feita por serviço de terceiros, antes de irem ao ar. Podemos recusar ou remover conteúdo a qualquer momento, inclusive depois de publicado, e nesse caso não há reembolso se houve violação destes termos.</p>
+
+<h2>5. Faixa de produtos e links de afiliado</h2>
+<p>A faixa “Anúncios · links de afiliado” e os anúncios do mural podem conter links de afiliado. Se você comprar depois de clicar, a loja pode pagar comissão ao anunciante ou ao Posta Fácil AI, sem custo extra para você. Preço, estoque, prazo de entrega, troca e garantia são definidos pela loja. Confirme as condições no site dela antes de comprar. Anunciantes devem respeitar as regras dos programas de afiliados que usam.</p>
+
+<h2>6. Cupons</h2>
+<ul>
+<li>Só quem tem um bloco ativo pode lançar cupons, e o link do cupom é o do próprio anúncio.</li>
+<li><b>O código e a oferta são do anunciante.</b> Não garantimos que funcionem, o desconto, o estoque nem a validade, e podem ter prazo e limite de usos.</li>
+<li>O contador de “código revelado” mostra quantas pessoas viram o código, e não quantas compraram.</li>
+<li>Cada anunciante pode ter até 5 cupons ativos e publicar até 10 por dia. Cupons falsos, enganosos ou com links na descrição são proibidos.</li>
+<li>Podemos tirar um cupom do ar a qualquer momento, sem aviso.</li>
 </ul>
 
-<h2>7. Uso da placa</h2>
-<ul>
-<li>Os 7 dias de uso começam na <strong>confirmação do pagamento</strong>, salvo outra data informada no painel.</li>
-<li>O conteúdo é de responsabilidade do vencedor. É proibido: conteúdo ilegal, adulto, violento ou discriminatório; golpes, promessas de ganho garantido e propaganda enganosa; violação de direitos autorais ou de marca; links que violem as regras das plataformas de afiliados ou levem a páginas fraudulentas ou com vírus.</li>
-<li>Podemos remover conteúdo que viole estes termos, sem reembolso do período restante.</li>
-<li>A placa não pode ser transferida sem nossa autorização.</li>
-</ul>
+<h2>7. Meu Espaço e código de acesso</h2>
+<p>Quando um bloco é comprado, o site mostra um código de acesso ao Meu Espaço. Ele é pessoal e funciona como senha: quem o tiver pode ver as métricas e lançar ou encerrar cupons daquele anúncio. Guarde-o e não o compartilhe. O titular responde pelo que for feito com o código. Se perder, fale com a gente.</p>
 
-<h2>8. Sem garantia de resultado e sem reembolso</h2>
-<p>Não garantimos visitas, cliques, vendas ou comissões. O desempenho depende de fatores fora do nosso controle, e o vencedor responde pelas regras do programa de afiliados que utiliza. Como o serviço é a exibição da placa no período contratado, não há reembolso após o início do uso. Se uma falha nossa impedir a exibição, ofereceremos compensação proporcional ou nova exibição.</p>
+<h2>8. Métricas</h2>
+<p>Visualizações e cliques são contados automaticamente e podem ter variações (robôs, repetições, bloqueadores de anúncio). Não prometemos quantidade de acessos, cliques, cupons usados ou vendas.</p>
 
 <h2>9. Placas de preço fixo</h2>
+<p>As placas de 2 a 12 têm preço fixo, informado no momento da contratação, pelo período contratado. Valem as mesmas regras de conteúdo, remoção, métricas e responsabilidade desta página. A Placa 1 segue a seção 10.</p>
+
+<h2>10. Leilão da Placa 1</h2>
 <ul>
-<li>As placas 2, 3 e 4 custam R$ 1.500,00 por 7 dias. As placas 5, 6 e 7 a 12 custam R$ 1.100,00 por 7 dias.</li>
-<li>O pagamento é antecipado, por Pix. A placa só é reservada após a confirmação do pagamento, e os 7 dias contam a partir dela.</li>
-<li>Valem as mesmas regras de conteúdo (seção 7) e de ausência de garantia e reembolso (seção 8).</li>
+<li>Só participa quem recebe um <b>código de licitante</b>, emitido e aprovado por nós depois de cadastro com nome (exibido publicamente) e WhatsApp.</li>
+<li>O código é pessoal e intransferível, e todo lance dado com ele é de responsabilidade do titular.</li>
+<li>O lance mínimo e o aumento mínimo aparecem no painel da placa. Se houver diferença entre esta página e o painel, vale o painel, salvo erro evidente.</li>
+<li><b>O lance é um compromisso de compra e não pode ser retirado.</b> Não há caução: só o vencedor paga, e só o valor do seu lance.</li>
+<li>O vencedor tem 30 minutos para pagar por Pix depois do encerramento. Se não pagar, perde a placa.</li>
+<li>Quem vence usa a placa por 7 (sete) dias, para divulgar seus links e produtos de afiliado, observadas as regras de conteúdo da seção 4.</li>
+<li>Podemos recusar, suspender ou cancelar um código em caso de descumprimento ou suspeita de irregularidade.</li>
 </ul>
 
-<h2>10. Dados pessoais (LGPD)</h2>
+<h2>11. Nosso direito de remover e suspender</h2>
+<p>Podemos remover ou suspender anúncios, cupons, produtos da faixa, placas e códigos de acesso, por violação destes termos, suspeita de fraude, denúncia, ordem de autoridade ou por critério editorial razoável. A faixa de produtos é uma curadoria nossa.</p>
+
+<h2>12. Denúncias</h2>
+<p>Para denunciar um anúncio, imagem ou cupom, escreva para <a href="mailto:postafacilai@gmail.com">postafacilai@gmail.com</a> ou chame no <a href="https://wa.me/5562998309271">WhatsApp</a>, com o número do bloco ou o nome da loja.</p>
+
+<h2>13. Privacidade (LGPD)</h2>
 <ul>
-<li>Coletamos nome, código e WhatsApp para operar a disputa e entrar em contato.</li>
-<li>O <strong>nome</strong> informado é exibido publicamente durante e após a disputa. O WhatsApp <strong>não</strong> é exibido.</li>
-<li>Para pedir acesso, correção ou exclusão dos seus dados, escreva para <a href="mailto:postafacilai@gmail.com">postafacilai@gmail.com</a>. Podemos manter registros necessários para cumprir obrigações legais e fiscais.</li>
+<li><b>O que guardamos:</b> os dados do anúncio (nome da loja, link, imagem, cor e nicho, que são públicos); o nome e o WhatsApp de quem pede código de licitante (o nome aparece nos lances); métricas de visitas, visualizações e cliques; o status e o valor dos pagamentos.</li>
+<li><b>Pagamentos:</b> o Pix é processado pelo Mercado Pago, e não recebemos dados de cartão nem de banco.</li>
+<li><b>No seu aparelho:</b> o site guarda localmente, por exemplo, os cupons que você já revelou.</li>
+<li><b>Quem trata os dados por nós:</b> Supabase (banco de dados e arquivos), Vercel (hospedagem), Mercado Pago (pagamentos) e um serviço de análise automática das imagens enviadas.</li>
+<li><b>Para quê:</b> executar a compra, exibir o anúncio, medir resultados, prevenir fraudes e cumprir a lei.</li>
+<li><b>Seus direitos:</b> pode pedir acesso, correção ou exclusão dos seus dados, e outros direitos da LGPD, pelos contatos abaixo. Guardamos os dados pelo tempo necessário e pelo que a lei exigir.</li>
+<li>Os sites das lojas, para onde os links levam, têm as próprias regras de privacidade.</li>
 </ul>
 
-<h2>11. Alterações</h2>
-<p>Podemos atualizar estes termos. Em cada disputa, vale a versão publicada no momento em que ela começa.</p>
+<h2>14. Responsabilidade</h2>
+<p>O site é oferecido como está, sem garantia de funcionar o tempo todo. Não respondemos por ofertas, produtos, preços, entregas ou perdas decorrentes de compras feitas nas lojas, nem por resultados de vendas. Nossa responsabilidade se limita ao valor pago pelo anúncio no período em questão, naquilo que a lei permitir. Nada aqui exclui direitos do consumidor ou responsabilidades que a lei não deixa afastar.</p>
 
-<h2>12. Dúvidas, lei aplicável e foro</h2>
-<ul>
-<li><strong>Dúvidas e reclamações:</strong> escreva para <a href="mailto:postafacilai@gmail.com">postafacilai@gmail.com</a> ou chame no WhatsApp <a href="https://wa.me/5562998309271">+55 62 99830-9271</a>. Procuramos resolver cada caso de forma amigável, em até 5 dias úteis.</li>
-<li><strong>Lei aplicável:</strong> estes termos seguem as leis do Brasil.</li>
-<li><strong>Foro:</strong> se não houver acordo, as partes elegem o foro da comarca do domicílio do responsável pelo Posta Fácil AI. Quando o participante for consumidor, vale o foro previsto na legislação de defesa do consumidor.</li>
-</ul>
+<h2>15. Mudanças nestes termos</h2>
+<p>Podemos atualizar esta página. A data no topo mostra a última versão, e continuar usando o site significa concordar com ela.</p>
+
+<h2>16. Lei aplicável e foro</h2>
+<p>Valem as leis do Brasil. Fica eleito o foro da comarca do responsável pelo Posta Fácil AI, ressalvado o direito do consumidor de escolher o foro do seu domicílio.</p>
+
+<h2>17. Contato</h2>
+<p>Posta Fácil AI · <a href="mailto:postafacilai@gmail.com">postafacilai@gmail.com</a> · <a href="https://wa.me/5562998309271">+55 62 99830-9271</a></p>
+
+<p class="nota">Este texto é um modelo de boa-fé e não substitui a orientação de um advogado.</p>
+</article>
 </main>
+<footer>© Posta Fácil AI</footer>
 </body>
 </html>
