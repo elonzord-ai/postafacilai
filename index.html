@@ -874,7 +874,12 @@ on(mq,place);place();
 .chm{margin:0 0 8px;font-size:14px;word-break:break-word}.chm b{color:var(--accent)}.chm.ad b{color:var(--gold)}
 .chm small{color:var(--muted);margin-left:6px}.chm a{text-decoration:underline}
 .chm .cht{margin-left:8px;font-size:12px;cursor:pointer;color:var(--muted);background:none;border:0;padding:0;text-decoration:underline}
-.chf{display:flex;gap:6px}.chf input{flex:1;min-width:0}
+.chf{display:flex;gap:6px;align-items:stretch}
+#md .chf input{flex:1 1 auto;width:auto;min-width:0;margin:0}
+#md .chf .go{flex:0 0 auto;width:auto;margin:0;padding:6px 18px}
+#md .pwb{position:relative;margin:3px 0 6px}
+#md .pwb input{margin:0;padding-right:46px}
+#md .pwe{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:0;padding:4px 10px;font-size:18px;line-height:1;cursor:pointer}
 </style>
 <script>
 (function(){
@@ -909,10 +914,14 @@ function room(f){f.innerHTML="";CH.nodes={};CH.last=0;CH.n=0;
   CH.t=setInterval(function(){if(!CH.list||!CH.list.isConnected||$("md").className!=="on"){clearInterval(CH.t);CH.list=null;return}poll(++CH.n%6===0)},4000)}
 function gate(f,saved){f.innerHTML="";
   f.appendChild(el("p","mut","Digite o código do seu bloco para entrar. O chat é só para quem tem bloco ativo e para o admin."));
-  var i=el("input");i.placeholder="Seu código";i.autocomplete="off";i.value=saved||"";var b=el("button","go","Entrar"),m=el("p","mut");
+  var i=el("input");i.type="password";i.placeholder="Seu código";i.autocomplete="new-password";i.value=saved||"";
+  var pw=el("div","pwb"),eye=el("button","pwe","👁");eye.type="button";eye.setAttribute("aria-label","Mostrar código");
+  eye.onclick=function(){var h=i.type==="password";i.type=h?"text":"password";eye.textContent=h?"🙈":"👁";eye.setAttribute("aria-label",h?"Esconder código":"Mostrar código")};
+  pw.appendChild(i);pw.appendChild(eye);
+  var b=el("button","go","Entrar"),m=el("p","mut");
   var tl=el("a","","Termos de Uso");tl.href="/termos.html";tl.target="_blank";tl.rel="noopener";
   var p=el("p","mut","Ao entrar, você concorda com os ");p.appendChild(tl);p.appendChild(document.createTextNode("."));
-  f.appendChild(i);f.appendChild(b);f.appendChild(m);f.appendChild(p);
+  f.appendChild(pw);f.appendChild(b);f.appendChild(m);f.appendChild(p);i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();b.click()}};
   b.onclick=function(){var c=i.value.trim();if(!c)return;b.disabled=true;m.textContent="Verificando…";enter(f,c,function(msg){b.disabled=false;m.textContent=msg})}}
 function enter(f,c,fail){call("chat_acesso",{p_codigo:c}).then(function(r){
     if(r==="admin"||r==="membro"||r==="bloqueado"){CH.code=c;CH.role=r;try{localStorage.setItem("pf_code",c)}catch(e){}room(f)}
