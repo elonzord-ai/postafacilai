@@ -160,6 +160,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .ti .n{max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ti:hover .n,.ti:focus-visible .n{text-decoration:underline}
 .ti:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:8px}
+#cur{position:absolute;z-index:5;pointer-events:none;display:none;padding:5px 9px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-size:12px;line-height:1.4;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.35);white-space:nowrap}
+#cur b{color:var(--gold)}#cur small{display:block;color:var(--muted);font-size:11px}
 @media (prefers-reduced-motion:reduce){#tkt{animation:none}.tkv{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.tg+.tg{display:none}}
 </style>
 </head>
@@ -617,6 +619,24 @@ loadTk();setInterval(loadTk,60000);
 function scSheet(){if(innerWidth<1100)return;var sh=$("sheet");if(sh&&getComputedStyle(sh).display!=="none"&&sh.scrollIntoView)sh.scrollIntoView({block:"nearest",behavior:"smooth"})}
 var _os4=openSheet;openSheet=function(c){var r=_os4(c);scSheet();return r};
 var _od=openDisp;openDisp=function(q){var r=_od(q);scSheet();return r};
+var curEl=el("div");curEl.id="cur";cv.parentNode.appendChild(curEl);
+var _d4=draw;draw=function(){_d4();
+  if(!hover||hover.sl)return;
+  ctx.save();ctx.globalAlpha=.10;ctx.fillStyle=css("--hl");
+  ctx.fillRect(hover.x*C,0,C,N*C);ctx.fillRect(0,hover.y*C,N*C,C);ctx.restore()};
+function curHide(){curEl.style.display="none"}
+cv.addEventListener("pointermove",function(e){
+  if(e.pointerType==="touch"||Object.keys(pts).length){curHide();return}
+  var p=pos(e),c=cellAt(p.x,p.y);if(!c){curHide();return}
+  curEl.textContent="";
+  if(c.sl){curEl.appendChild(el("b","","Placa "+c.sl.id))}
+  else{var a=adAt(c.x,c.y),b=el("span");b.appendChild(document.createTextNode("Coluna "));b.appendChild(el("b","",String(c.x+1)));b.appendChild(document.createTextNode(" \u00b7 Linha "));b.appendChild(el("b","",String(c.y+1)));curEl.appendChild(b);
+    curEl.appendChild(el("small","",num(c)+" \u00b7 "+(a?a.n:"livre")))}
+  curEl.style.display="block";
+  var r=cv.getBoundingClientRect(),w=curEl.offsetWidth,h=curEl.offsetHeight,l=p.x+16,t=p.y+18;
+  if(l+w>r.width-4)l=p.x-16-w;if(t+h>r.height-4)t=p.y-18-h;
+  curEl.style.left=Math.max(4,l)+"px";curEl.style.top=Math.max(4,t)+"px"});
+cv.addEventListener("pointerleave",curHide);cv.addEventListener("pointerdown",curHide);
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){})}catch(e){}
 var instEv=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();instEv=e;$("inst").style.display=""});
 var IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),
