@@ -18,10 +18,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <style>
-:root{--bg:#f3f5fb;--ink:#0e1a3d;--muted:#5a6784;--board:#ffffff;--gridline:#e3e8f3;--frame:#0e1a3d;--slot:#17285a;--line:#dde3f0;--hl:#6a3df0;--accent:#5a3fe8;--panel:#ffffff;--gold:#d6b36a;color-scheme:light;
+:root{--bg:#f3f5fb;--ink:#0e1a3d;--muted:#5a6784;--board:#ffffff;--gridline:#e3e8f3;--frame:#0e1a3d;--slot:#17285a;--line:#dde3f0;--hl:#6a3df0;--accent:#5a3fe8;--panel:#ffffff;--gold:#d6b36a;color-scheme:light;--ok:#0b8a5f;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0a1128;--ink:#e8edf8;--muted:#9aa8c7;--board:#111a35;--gridline:#1c2a50;--frame:#060b1c;--slot:#101b3a;--line:#26345c;--hl:#1bbfd8;--accent:#8aa4ff;--panel:#131f40}}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#0a1128;--ink:#e8edf8;--muted:#9aa8c7;--board:#111a35;--gridline:#1c2a50;--frame:#060b1c;--slot:#101b3a;--line:#26345c;--hl:#1bbfd8;--accent:#8aa4ff;--panel:#131f40}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--ok:#2ee59d;--bg:#0a1128;--ink:#e8edf8;--muted:#9aa8c7;--board:#111a35;--gridline:#1c2a50;--frame:#060b1c;--slot:#101b3a;--line:#26345c;--hl:#1bbfd8;--accent:#8aa4ff;--panel:#131f40}}
+:root[data-theme="dark"]{color-scheme:dark;--ok:#2ee59d;--bg:#0a1128;--ink:#e8edf8;--muted:#9aa8c7;--board:#111a35;--gridline:#1c2a50;--frame:#060b1c;--slot:#101b3a;--line:#26345c;--hl:#1bbfd8;--accent:#8aa4ff;--panel:#131f40}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;overscroll-behavior:none;-webkit-text-size-adjust:100%}
 canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -149,6 +149,10 @@ button:not(:disabled):hover,a.btn:hover{border-color:var(--gold)}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 #md input[type=file]{padding:6px;font-size:13px}
+#md .fbtn{display:inline-block;margin-top:3px;padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:14px;cursor:pointer}
+#md .fbtn:hover{border-color:var(--gold)}
+#md #fi:focus-visible+.fbtn{outline:2px solid var(--accent,#6a3df0);outline-offset:2px}
+#fnm{display:inline-block;max-width:55%;margin-left:10px;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
 #tk{display:none;flex:none;margin:0 14px 6px;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
 #tk.on{display:flex;align-items:stretch}
 .tkl{flex:none;display:flex;align-items:center;padding:0 12px;font-size:12px;font-weight:700;color:var(--muted);border-right:1px solid var(--line);white-space:nowrap}
@@ -164,6 +168,19 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .ti .n{max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ti:hover .n,.ti:focus-visible .n{text-decoration:underline}
 .ti:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:8px}
+.ni small.g{background:#2ee59d;border-color:#2ee59d;color:#04130d;font-weight:700}
+#cupc{margin-top:14px;padding:14px;border-radius:14px;border:1px solid transparent;background:linear-gradient(var(--panel),var(--panel)) padding-box,var(--gb) border-box}
+#cupc h3{margin:0 0 6px;font-size:15px;display:flex;align-items:center;gap:8px}
+#cupc p{margin:0 0 12px;font-size:13px;line-height:1.45;color:var(--muted)}
+#cupv{width:100%;border:0;color:#fff;font-weight:700;background:linear-gradient(135deg,#2f6bf0,#6a3df0)}
+.cup{border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0;background:var(--bg)}
+.cup>b{display:block;font-size:15px}
+.cup .d{display:block;font-size:13px;color:var(--muted);margin:3px 0 10px}
+.cup .code{display:flex;gap:8px;align-items:stretch}
+.cup code{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 10px;border:1px dashed var(--ok);border-radius:8px;font:700 15px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:var(--ok);-webkit-user-select:all;user-select:all}
+.cup .meta{margin-top:8px;font-size:12px;color:var(--muted)}
+.cup a.lj{display:inline-block;margin-top:8px;font-size:13px;color:var(--muted)}
+.cupn{font-size:12px;color:var(--muted);margin:12px 0 0}
 #cur{position:absolute;z-index:5;pointer-events:none;display:none;padding:5px 9px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-size:12px;line-height:1.4;color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.35);white-space:nowrap}
 #cur b{color:var(--gold)}#cur small{display:block;color:var(--muted);font-size:11px}
 @media (prefers-reduced-motion:reduce){#tkt{animation:none}.tkv{overflow-x:auto;-webkit-mask-image:none;mask-image:none}.tg+.tg{display:none}}
@@ -179,6 +196,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M5 20h14"/></symbol>
 <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
 <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 11v2"/><path d="M13 17v2"/></symbol>
 <symbol id="i-wa" viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.8h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88a9.83 9.83 0 0 1 6.99 2.9 9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88zM20.46 3.49A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.68 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.17-3.48-8.42z"/></symbol>
 </defs></svg>
 <header>
@@ -199,10 +217,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <a class="ni on" href="/"><svg class='ic'><use href='#i-grid'/></svg> Mural</a>
   <a class="ni" href="#" id="mn"><svg class='ic'><use href='#i-map'/></svg> Mapa de Nichos</a>
   <a class="ni" href="#" id="me"><svg class='ic'><use href='#i-chart'/></svg> Meu Espaço</a>
+  <a class="ni" href="#" id="cpn"><svg class='ic'><use href='#i-ticket'/></svg> Cupons <small id="cpb" style="display:none"></small></a>
   <span class="ni soon"><svg class='ic'><use href='#i-trophy'/></svg> Rankings <small>em breve</small></span>
   <hr>
   <a class="ni" href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg> Termos de Uso</a>
   <a class="ni" href="https://wa.me/5562998309271" target="_blank" rel="noopener"><svg class='ic wa'><use href='#i-wa'/></svg> Fale conosco</a>
+  <div id="cupc"><h3><svg class='ic'><use href='#i-ticket'/></svg> Cupons dos afiliados</h3><p id="cupt"></p><button type="button" id="cupv">Ver cupons</button></div>
 </nav>
 <main>
   <canvas id="c" aria-label="Mural de blocos. Arraste para mover, use a roda ou pinça para dar zoom."></canvas>
@@ -224,6 +244,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 </div>
 <footer id="mf" aria-label="Mais opções">
   <button type="button" id="mfl"><svg class='ic gd'><use href='#i-gavel'/></svg>Leilão</button>
+  <button type="button" id="mfc"><svg class='ic gd'><use href='#i-ticket'/></svg>Cupons</button>
   <button type="button" id="mfa"><svg class='ic gd'><use href='#i-crown'/></svg>Maiores anunciantes</button>
   <a href="/termos.html" target="_blank" rel="noopener"><svg class='ic'><use href='#i-doc'/></svg>Termos de Uso</a>
   <a href="https://wa.me/5562998309271" target="_blank" rel="noopener"><svg class='ic wa'><use href='#i-wa'/></svg>Fale conosco</a>
@@ -487,9 +508,9 @@ function modal(t,n){var m=$("md"),b=el("div","mb"),x=el("button","","Fechar");x.
 function fits(p,w,h){return p.x+w<=N&&p.y+h<=N&&!ADS.some(function(a){return p.x<a.x+a.w&&p.x+w>a.x&&p.y<a.y+a.h&&p.y+h>a.y})}
 function pixShow(j,m){m.innerHTML="";m.appendChild(el("b","","Pague via Pix (copia e cola):"));var t=el("textarea");t.readOnly=true;t.rows=3;t.value=j.pix;m.appendChild(t);
   var b=el("button","go","Copiar código Pix");b.onclick=function(){t.select();try{navigator.clipboard.writeText(j.pix)}catch(e){document.execCommand("copy")}b.textContent="Copiado!"};m.appendChild(b);
-  if(j.codigo)m.appendChild(el("p","","Seu código do Meu Espaço: "+j.codigo));m.appendChild(el("p","mut","Seu bloco aparece no mural assim que o pagamento for confirmado."))}
+  if(j.codigo){m.appendChild(el("p","","Seu código do Meu Espaço: "+j.codigo));m.appendChild(el("p","mut","Com o bloco no ar, abra Meu Espaço e lance um cupom de desconto para quem visita o mural."))}m.appendChild(el("p","mut","Seu bloco aparece no mural assim que o pagamento for confirmado."))}
 $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
-  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30"></label><label>Link da loja (https://)<input id="fl"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><label>Imagem do anúncio (opcional)<input id="fi" type="file" accept="image/png,image/jpeg,image/webp"></label><p id="fim" class="mut">Sem nudez ou conteúdo obsceno, violência ou mutilação, nem conteúdo que viole os direitos humanos. Toda imagem passa por análise automática antes de ir ao ar.</p><p id="fhint" class="mut"></p><div id="fopt" style="display:none"><label>Enquadramento<select id="ffit"><option value="c">Preencher (corta as bordas)</option><option value="f">Ajustar (mostra tudo, fundo na cor escolhida)</option></select></label><canvas id="fpv" style="display:block;margin:8px 0;border:1px solid var(--line);border-radius:8px;max-width:100%"></canvas></div><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
+  f.innerHTML='<p class="mut">Início: bloco '+num(p)+' · R$ '+PRECO+' por bloco/mês</p><label>Largura (blocos)<input id="fw" type="number" min="1" value="1"></label><label>Altura (blocos)<input id="fh" type="number" min="1" value="1"></label><label>Nome da loja<input id="fn" maxlength="30" placeholder="Ex.: Loja do João"></label><label>Link da loja (https://)<input id="fl" placeholder="https://sualoja.com.br"></label><label>Cor<input id="fc" type="color" value="#2f6bf0"></label><label>Nicho<input id="fsq" placeholder="Digite para buscar: capacete, perfume, air fryer..." autocomplete="off"></label><div id="fsl"></div><input type="hidden" id="fs" value=""><label>Imagem do anúncio (opcional)<input id="fi" type="file" accept="image/png,image/jpeg,image/webp" style="position:absolute;opacity:0;width:1px;height:1px;margin:0;padding:0;border:0"><span class="fbtn">Escolher imagem</span><span id="fnm" class="mut">Nenhum arquivo selecionado</span></label><p id="fim" class="mut">Sem nudez ou conteúdo obsceno, violência ou mutilação, nem conteúdo que viole os direitos humanos. Toda imagem passa por análise automática antes de ir ao ar.</p><p id="fhint" class="mut"></p><div id="fopt" style="display:none"><label>Enquadramento<select id="ffit"><option value="c">Preencher (corta as bordas)</option><option value="f">Ajustar (mostra tudo, fundo na cor escolhida)</option></select></label><canvas id="fpv" style="display:block;margin:8px 0;border:1px solid var(--line);border-radius:8px;max-width:100%"></canvas></div><p id="fp" class="tot"></p><button class="go" id="fg">Gerar Pix</button><div id="fm" class="mut"></div>';
   modal("Comprar blocos",f);
   function upd(){var w=Math.max(1,+$("fw").value||1),h=Math.max(1,+$("fh").value||1);$("fp").textContent=w*h+" bloco(s) · R$ "+(w*h*PRECO).toLocaleString("pt-BR")+"/mês"+(fits(p,w,h)?"":" · não cabe aqui");return[w,h]}
   $("fw").oninput=$("fh").oninput=upd;upd();
@@ -508,7 +529,7 @@ function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu cód
       if(!rows||!rows.length){r.textContent="Nenhum espaço encontrado para esse código.";return}
       rows.forEach(function(o){var a={vis:o.visualizacoes||0,cli:o.cliques||0},d=dl(br(o.vencimento)),k=el("div","kard");
         k.appendChild(el("b","",o.nome));k.appendChild(el("p","mut",o.w*o.h+" bloco(s) · "+(o.nicho||"Outros")));
-        k.appendChild(el("p","","👁 "+a.vis+" visualizações · 🖱 "+a.cli+" cliques · CTR "+ctr(a)+" · "+(d>0?d+" dias restantes":"vencido")));k.appendChild(el("p","mut","🔗 "+o.link));r.appendChild(k)})})
+        k.appendChild(el("p","","👁 "+a.vis+" visualizações · 🖱 "+a.cli+" cliques · CTR "+ctr(a)+" · "+(d>0?d+" dias restantes":"vencido")));k.appendChild(el("p","mut","🔗 "+o.link));r.appendChild(k)});cupBox(r,c,rows)})
     .catch(function(){r.textContent="Não foi possível carregar. Confira o código e tente de novo."})}}
 function how(){var f=el("div");f.innerHTML='<p class="mut">Mural de lojas, afiliados e achadinhos em promoção. Toque em um bloco para ver a oferta. Para anunciar o seu:</p><ol class="how"><li><b>Escolha um bloco livre</b> no mural (zoom e arraste) ou filtre por nicho.</li><li><b>Defina tamanho, nome, link, cor e nicho</b>. Se quiser, envie uma imagem.</li><li><b>Pague via Pix</b>. Seu anúncio entra no mural após a confirmação (imagens passam por análise automática).</li><li>Acompanhe <b>cliques e CTR</b> em Meu Espaço.</li><li><b>Placas de patrocinador</b> ao redor do mural são alugadas por semana, e algumas são disputadas em leilão ao vivo.</li></ol>';modal("Como funciona",f)}
 function bind(i,fn){var e=$(i);if(e)e.onclick=function(ev){ev.preventDefault();fn()}}
@@ -559,8 +580,8 @@ function renderImg(){var hint=$("fhint");if(!hint)return;
   IMG=c.toDataURL("image/jpeg",.82);
   $("fim").textContent="Imagem pronta ("+Math.round(IMG.length/1024)+" KB). Ser\u00e1 analisada antes de ir ao ar."}
 function imgPick(){IMG="";SRC=null;var f=$("fi"),m=$("fim"),t0=m.textContent;
-  f.onchange=function(){IMG="";SRC=null;$("fopt").style.display="none";var file=f.files[0];if(!file){m.textContent=t0;return}
-    if(!/^image\/(jpeg|png|webp)$/.test(file.type)){m.textContent="Use JPG, PNG ou WebP.";f.value="";return}
+  f.onchange=function(){IMG="";SRC=null;$("fopt").style.display="none";var file=f.files[0],fnm=$("fnm");fnm.textContent=file?file.name:"Nenhum arquivo selecionado";if(!file){m.textContent=t0;return}
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type)){m.textContent="Use JPG, PNG ou WebP.";f.value="";fnm.textContent="Nenhum arquivo selecionado";return}
     if(SRCU)URL.revokeObjectURL(SRCU);var im=new Image();SRCU=URL.createObjectURL(file);
     im.onload=function(){SRC=im;$("fopt").style.display="block";renderImg()};
     im.onerror=function(){m.textContent="N\u00e3o foi poss\u00edvel ler essa imagem."};im.src=SRCU};
@@ -622,7 +643,7 @@ window.addEventListener("resize",function(){clearTimeout(tkTm);tkTm=setTimeout(b
 loadTk();setInterval(loadTk,60000);
 function scSheet(){if(innerWidth<1100)return;var sh=$("sheet");if(sh&&getComputedStyle(sh).display!=="none"&&sh.scrollIntoView)sh.scrollIntoView({block:"nearest"})}
 var _os4=openSheet;openSheet=function(c){var r=_os4(c);scSheet();return r};
-var _od=openDisp;openDisp=function(q){var r=_od(q);scSheet();return r};
+var _od=openDisp;openDisp=function(q){$("buy").style.display="none";curBuy=null;var r=_od(q);scSheet();return r};
 var curEl=el("div");curEl.id="cur";cv.parentNode.appendChild(curEl);
 var _d4=draw;draw=function(){_d4();
   if(!hover||hover.sl)return;
@@ -641,6 +662,72 @@ cv.addEventListener("pointermove",function(e){
   if(l+w>r.width-4)l=p.x-16-w;if(t+h>r.height-4)t=p.y-18-h;
   curEl.style.left=Math.max(4,l)+"px";curEl.style.top=Math.max(4,t)+"px"});
 cv.addEventListener("pointerleave",function(){curHide();if(hover){hover=null;draw()}});cv.addEventListener("pointerdown",curHide);
+var CUP=[],CUPR={};try{CUPR=JSON.parse(localStorage.getItem("pf_cup")||"{}")}catch(e){}
+function cupSave(){try{localStorage.setItem("pf_cup",JSON.stringify(CUPR))}catch(e){}}
+function cupBadge(){var n=CUP.length,b=$("cpb");
+  b.style.display=n?"":"none";b.textContent=n;b.className=n?"g":"";
+  $("cupt").textContent=n?"Encontre seu código promocional entregue pelos afiliados dos blocos.":"Em breve: códigos promocionais entregues pelos afiliados dos blocos. É lojista? Lance seu código em Meu Espaço.";
+  $("cupv").textContent=n?"Ver cupons":"Saiba mais";
+  $("mfc").lastChild.textContent=n?"Cupons ("+n+")":"Cupons"}
+function loadCup(){fetch(SUPABASE_URL+"/rest/v1/cupons?select=id,loja,descricao,link,limite,usos,validade&order=ordem.asc,id.asc",{headers:hdr()})
+  .then(function(r){return r.ok?r.json():[]}).then(function(rows){var hoje=new Date().toLocaleDateString("sv");
+    CUP=(rows||[]).filter(function(c){return c.loja&&c.descricao&&(!c.validade||c.validade>=hoje)&&(c.limite==null||c.usos<c.limite)});cupBadge()}).catch(function(){})}
+function cupCopy(t,b){var ok=function(){b.textContent="Copiado!";setTimeout(function(){b.textContent="Copiar"},1500)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){b.textContent="Selecione o código"});else b.textContent="Selecione o código"}
+function cupReveal(c,b){b.disabled=true;b.textContent="Revelando...";
+  fetch(SUPABASE_URL+"/rest/v1/rpc/revelar_cupom",{method:"POST",headers:hdr(),body:JSON.stringify({p_id:c.id})})
+  .then(function(r){return r.ok?r.json():null}).then(function(code){
+    if(!code||typeof code!=="string"){b.textContent="Esgotado";loadCup();return}
+    CUPR[c.id]={c:code,l:c.loja,d:c.descricao,u:c.link||""};cupSave();c.usos=(c.usos||0)+1;openCup()})
+  .catch(function(){b.disabled=false;b.textContent="Tentar de novo"})}
+function cupCard(c,sv){var d=el("div","cup");d.appendChild(el("b","",c.loja));d.appendChild(el("span","d",c.descricao));
+  if(sv){var r=el("div","code"),cp=el("button","","Copiar");r.appendChild(el("code","",sv.c));cp.onclick=function(){cupCopy(sv.c,cp)};r.appendChild(cp);d.appendChild(r)}
+  else{var b=el("button","","Revelar código");b.onclick=function(){cupReveal(c,b)};d.appendChild(b)}
+  var u=c.link||(sv&&sv.u);if(u&&/^https:\/\//i.test(u)){var a=el("a","lj","Ir à loja");a.href=u;a.target="_blank";a.rel="noopener noreferrer sponsored nofollow";d.appendChild(a)}
+  var m=[];if(c.validade)m.push("até "+c.validade.slice(8,10)+"/"+c.validade.slice(5,7));if(c.limite!=null)m.push("restam "+Math.max(0,c.limite-c.usos));
+  if(m.length)d.appendChild(el("div","meta",m.join(" · ")));return d}
+function openCup(){var f=el("div");f.appendChild(el("p","mut","Códigos promocionais oferecidos pelos lojistas e afiliados do mural. Toque em Revelar para ver o código."));
+  CUP.forEach(function(c){f.appendChild(cupCard(c,CUPR[c.id]))});
+  var old=Object.keys(CUPR).filter(function(id){return!CUP.some(function(c){return String(c.id)===id})});
+  if(old.length){f.appendChild(el("p","mut","Seus códigos revelados"));old.forEach(function(id){var v=CUPR[id];f.appendChild(cupCard({id:id,loja:v.l,descricao:v.d,link:v.u},v))})}
+  if(!CUP.length&&!old.length){f.appendChild(el("p","mut","Nenhum cupom disponível agora."));}
+  var w=el("a","lj","Comprou um bloco? Lance seu cupom em Meu Espaço");w.href="#";w.onclick=function(e){e.preventDefault();meuEspaco()};f.appendChild(w);
+  f.appendChild(el("p","cupn","Os códigos são de responsabilidade de cada lojista e podem ter prazo e limite de uso."));
+  modal("Cupons dos afiliados",f)}
+$("cpn").onclick=function(e){e.preventDefault();openCup()};$("cupv").onclick=openCup;$("mfc").onclick=openCup;
+cupBadge();loadCup();setInterval(loadCup,120000);
+var CUPERR={anuncio_nao_encontrado:"N\u00e3o achei um an\u00fancio ativo com esse c\u00f3digo.",descricao_invalida:"A descri\u00e7\u00e3o precisa ter de 5 a 120 caracteres.",codigo_invalido:"O c\u00f3digo deve ter de 3 a 40 caracteres: letras, n\u00fameros, - ou _.",validade_invalida:"Escolha uma data de hoje at\u00e9 30 dias \u00e0 frente.",limite_invalido:"Quantidade inv\u00e1lida (de 1 a 10000).",limite_de_cupons:"Voc\u00ea j\u00e1 tem 5 cupons ativos. Encerre um para publicar outro.",limite_diario:"Limite de 10 cupons por dia atingido."};
+function dBR(d){return d?d.slice(8,10)+"/"+d.slice(5,7):""}
+function cupBox(r,code,rows){var box=el("div","kard"),hoje=new Date().toLocaleDateString("sv"),max=new Date(Date.now()+30*864e5).toLocaleDateString("sv");
+  box.appendChild(el("b","","Cupom de desconto"));
+  box.appendChild(el("p","mut","Lance um c\u00f3digo promocional para quem passa pelo mural. Ele aparece em Cupons assim que voc\u00ea publicar."));
+  var form=el("div");form.style.display="none";
+  var sel=el("select");sel.id="cfa";rows.forEach(function(o){var op=el("option","",o.nome);op.value=o.link;sel.appendChild(op)});
+  var L=function(t,n){var l=el("label","",t);l.appendChild(n);return l};
+  var d=el("input");d.id="cfd";d.maxLength=120;d.placeholder="Ex.: 10% de desconto na primeira compra";
+  var k=el("input");k.id="cfk";k.maxLength=40;k.placeholder="Ex.: ACHADO10";
+  var v=el("input");v.id="cfv";v.type="date";v.value=hoje;v.min=hoje;v.max=max;
+  var q=el("input");q.id="cfq";q.type="number";q.min="1";q.placeholder="Opcional: quantos c\u00f3digos podem ser revelados";
+  if(rows.length>1)form.appendChild(L("Qual an\u00fancio",sel));
+  form.appendChild(L("O que o cupom oferece",d));form.appendChild(L("C\u00f3digo do cupom",k));form.appendChild(L("V\u00e1lido at\u00e9 (hoje ou at\u00e9 30 dias)",v));form.appendChild(L("Quantidade m\u00e1xima",q));
+  var pub=el("button","go","Publicar cupom"),msg=el("p","mut");form.appendChild(pub);form.appendChild(msg);
+  var open=el("button","go","Lan\u00e7ar cupom"),mine=el("div");
+  open.onclick=function(){form.style.display=form.style.display==="none"?"block":"none"};
+  function listMine(){fetch(SUPABASE_URL+"/rest/v1/rpc/meus_cupons",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code})})
+    .then(function(x){return x.ok?x.json():[]}).then(function(cs){mine.innerHTML="";var hj=new Date().toLocaleDateString("sv");
+      (cs||[]).forEach(function(c){var on=c.ativo&&c.validade>=hj,it=el("p","",c.codigo+" \u00b7 "+c.descricao);it.style.margin="8px 0 2px";mine.appendChild(it);
+        var m=el("p","mut",(on?"no ar":"encerrado")+" \u00b7 at\u00e9 "+dBR(c.validade)+" \u00b7 "+c.usos+(c.limite!=null?" de "+c.limite:"")+" revelados");m.style.margin="0 0 4px";mine.appendChild(m);
+        if(on){var e=el("button","","Encerrar");e.onclick=function(){e.disabled=true;fetch(SUPABASE_URL+"/rest/v1/rpc/encerrar_cupom",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code,p_id:c.id})}).then(function(){loadCup();listMine()}).catch(function(){e.disabled=false})};mine.appendChild(e)}})}).catch(function(){})}
+  pub.onclick=function(){var desc=d.value.trim(),cp=k.value.trim(),lim=parseInt(q.value,10);
+    if(!desc||!cp){msg.textContent="Preencha a descri\u00e7\u00e3o e o c\u00f3digo.";return}
+    pub.disabled=true;msg.textContent="Publicando...";
+    fetch(SUPABASE_URL+"/rest/v1/rpc/postar_cupom",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:code,p_link:rows.length>1?sel.value:rows[0].link,p_descricao:desc,p_cupom:cp,p_validade:v.value,p_limite:lim>0?lim:null})})
+    .then(function(x){return x.json().then(function(j){return{ok:x.ok,j:j}},function(){return{ok:x.ok,j:null}})})
+    .then(function(x){pub.disabled=false;
+      if(!x.ok){msg.textContent=CUPERR[x.j&&x.j.message]||"N\u00e3o foi poss\u00edvel publicar. Tente de novo.";return}
+      msg.textContent="Cupom publicado! Ele j\u00e1 aparece em Cupons.";d.value="";k.value="";q.value="";loadCup();listMine()})
+    .catch(function(){pub.disabled=false;msg.textContent="Sem conex\u00e3o. Tente de novo."})};
+  box.appendChild(open);box.appendChild(form);box.appendChild(mine);r.appendChild(box);listMine()}
 try{if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){})}catch(e){}
 var instEv=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();instEv=e;$("inst").style.display=""});
 var IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),
