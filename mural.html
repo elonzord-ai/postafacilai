@@ -316,7 +316,7 @@ var SLOTS = [];(function(){var id=1,i;function add(x,y,w,h){SLOTS.push({id:id++,
 var FACE=(function(){
   var q=0;try{q=parseInt(new URLSearchParams(location.search).get("f"),10)}catch(e){}
   if(!(q>=0&&q<22))q=0;
-  var nm0=q===0?"Shopee · Mercado Livre":q<6?"Cubo · face "+(q+1):"Triângulo "+"ABCD".charAt(Math.floor((q-6)/4))+" · "+(((q-6)%4)<3?"lado "+(((q-6)%4)+1):"base");
+  var nm0=q===0?"Shopee · Mercado Livre":q===1?"Hotmart":q<6?"Cubo · face "+(q+1):"Triângulo "+"ABCD".charAt(Math.floor((q-6)/4))+" · "+(((q-6)%4)<3?"lado "+(((q-6)%4)+1):"base");
   var F={id:q,tri:q>=6,name:nm0,W:T*C,H:T*C,gw:N*C,gh:N*C,blocks:N*N,cx0:18,cy0:43,OX:B*C,OY:B*C};
   if(!F.tri)return F;
   var SQ3=Math.sqrt(3),w=B*C;

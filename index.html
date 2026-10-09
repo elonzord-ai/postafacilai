@@ -53,6 +53,15 @@ h1{display:flex;align-items:center;gap:8px;margin:0;font-size:19px;font-weight:8
 .ring.r2{border-color:rgba(46,229,157,.16)}
 .ring.dim{opacity:0}
 
+.br{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;pointer-events:none}
+.bl{position:absolute;left:-1px;top:0;width:2px;height:60px;transform-origin:50% 0;transform:rotateX(90deg);background:linear-gradient(180deg,rgba(214,179,106,.2),var(--gold));pointer-events:none}
+.bl.b2{transform:rotateZ(90deg) rotateX(90deg)}
+.bd{position:absolute;left:0;top:0;width:6px;height:6px;pointer-events:none}
+.tag{position:fixed;z-index:4;left:0;top:0;display:flex;align-items:center;gap:8px;padding:5px 12px 5px 9px;border-radius:999px;background:rgba(10,17,40,.82);border:1px solid rgba(214,179,106,.7);color:#f4e6bf;font:600 12.5px/1.2 inherit;font-family:inherit;white-space:nowrap;cursor:pointer;box-shadow:0 2px 14px rgba(0,0,0,.45);transition:opacity .25s,border-color .15s,background .15s;transform:translate(-7px,-50%)}
+.tag:hover{border-color:var(--gold);background:rgba(20,30,64,.95)}
+.tag .td{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.tag.off{opacity:0;pointer-events:none}
+@media(max-width:700px){.tag{font-size:11px;padding:4px 10px 4px 8px}}
 #tip{position:fixed;z-index:6;display:none;pointer-events:none;padding:5px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--line);font-size:12.5px;line-height:1.35;box-shadow:0 4px 14px rgba(0,0,0,.4)}
 #tip b{color:var(--gold)}#tip small{display:block;color:var(--muted);font-size:11.5px}
 
@@ -106,7 +115,7 @@ body.opening #stage{cursor:progress}
 (function(){
 "use strict";
 // ===== CONFIGURAÇÃO (edite aqui) =====
-var CFG={preco:5,nomeFace0:"Shopee · Mercado Livre"};
+var CFG={preco:5,nomeFace0:"Shopee · Mercado Livre",nomeFace1:"Hotmart"};
 // Página que cada face abre (0 = Shopee/Mercado Livre, 1-5 = outras faces do cubo, 6-21 = triângulos A-D: lado 1, 2, 3 e base).
 // Para apontar uma face para outra página, é só trocar o endereço dela aqui.
 var LINKS={};
@@ -237,11 +246,11 @@ function makeTri(idx,label){
 // ---- montagem das faces ----
 var cube=[],tets=[],FACES=[],K=0;
 cube.push(makeSq(K++,"Cubo · face 1",true));
-for(var q=2;q<=6;q++)cube.push(makeSq(K++,"Cubo · face "+q,false));
+for(var q=2;q<=6;q++)cube.push(makeSq(K++,q===2?CFG.nomeFace1:"Cubo · face "+q,false));
 var LET=["A","B","C","D"];
 for(var t=0;t<4;t++){var fs=[];["lado 1","lado 2","lado 3","base"].forEach(function(n){fs.push(makeTri(K++,"Triângulo "+LET[t]+" · "+n))});tets.push(fs)}
 FACES=cube.slice();tets.forEach(function(fs){fs.forEach(function(f){FACES.push(f)})});
-function nameOf(f){return f.idx===0?CFG.nomeFace0:f.label}
+function nameOf(f){return f.idx===0?CFG.nomeFace0:f.idx===1?CFG.nomeFace1:f.label}
 
 $("stat").textContent=brl(6*N*N)+" blocos no cubo · 16 faces triangulares de ~"+Math.round(TRI.n/1000)+" mil · R$ "+CFG.preco+"/bloco por mês";
 
@@ -259,6 +268,15 @@ tets.forEach(function(fs){
   var orb=document.createElement("div"),tet=document.createElement("div");orb.className="orb";tet.className="tet";
   fs.forEach(function(f){tet.appendChild(mkFace(f))});orb.appendChild(tet);plane.appendChild(orb);orbs.push(orb);tetEls.push(tet)});
 FACES.forEach(paint);
+// ramificações: uma linha sai da face e leva a etiqueta com o nome do nicho (face 0 = Shopee/ML, face 1 = Hotmart)
+var BR=[0,1].map(function(i){var f=cube[i],br=document.createElement("div");br.className="br";br.innerHTML='<i class="bl"></i><i class="bl b2"></i><i class="bd"></i>';cubeG.appendChild(br);
+  var tg=document.createElement("button");tg.type="button";tg.className="tag";tg.setAttribute("aria-label","Abrir "+nameOf(f));tg.innerHTML='<span class="td"></span><span>'+nameOf(f)+'</span>';
+  tg.addEventListener("click",function(){if(!anim)openFace(f)});document.body.appendChild(tg);
+  return{br:br,tg:tg,dot:br.lastChild,ls:br.querySelectorAll(".bl")}});
+function updTags(){BR.forEach(function(b){
+  if(anim){b.tg.classList.add("off");return}
+  var r=b.dot.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;
+  b.tg.style.left=Math.max(10,Math.min(innerWidth-b.tg.offsetWidth-4,x))+"px";b.tg.style.top=Math.max(60,Math.min(innerHeight-30,y))+"px";b.tg.classList.remove("off")})}
 
 var u=100;
 function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]}
@@ -271,7 +289,8 @@ function layout(){
   var E=2*u,R=(portrait?3.05:3.85)*u;
   cube.forEach(function(f,i){var s=f.el.style;s.width=s.height=E+"px";s.left=s.top=(-E/2)+"px";
     var tf=["","rotateY(90deg)","rotateY(180deg)","rotateY(-90deg)","rotateX(90deg)","rotateX(-90deg)"][i];
-    s.transform=tf+" translateZ("+(E/2)+"px)"});
+    s.transform=tf+" translateZ("+(E/2)+"px)";
+    var b=BR[i];if(b){var L=.9*u;b.br.style.transform=tf+" translateZ("+(E/2)+"px)";b.ls[0].style.height=b.ls[1].style.height=L+"px";b.dot.style.transform="translate3d(-3px,-3px,"+L+"px)"}});
   [ring1,ring2].forEach(function(r,i){var rr=R*(i?1.22:1);r.style.width=r.style.height=(2*rr)+"px";r.style.left=r.style.top=(-rr)+"px";r.style.transform="rotateX(90deg)"});
   // tetraedro regular (coordenadas CSS: y para baixo), vértice no topo
   var Rt=1.15*u,A=[0,-Rt,0],rho=Rt*Math.sqrt(8)/3,V=[0,1,2].map(function(k){var a=(k*120+30)*Math.PI/180;return[rho*Math.cos(a),Rt/3,rho*Math.sin(a)]});
@@ -299,7 +318,8 @@ function update(t){
   for(var i=0;i<4;i++){
     orbs[i].style.transform="rotateY("+(i*90-t*26)+"deg) translateZ("+R+"px)";
     tetEls[i].style.transform="translateY("+(Math.sin(t*1.1+i*1.7)*.2*u)+"px) rotateY("+(-t*48)+"deg) rotateZ("+(Math.sin(t*.7+i)*14)+"deg)"}
-  if(!anim)scene.style.transform="scale("+zoom+") rotateX("+pitch+"deg) rotateY("+yaw+"deg)"}
+  if(!anim)scene.style.transform="scale("+zoom+") rotateX("+pitch+"deg) rotateY("+yaw+"deg)";
+  updTags()}
 function frame(now){
   var dt=Math.min(.05,(now-last)/1000);last=now;
   if(anim){stepAnim(now)}
@@ -364,7 +384,7 @@ function openFace(f){
   document.body.classList.add("opening");
   FACES.forEach(function(o){if(o!==f)o.el.classList.add("dim")});ring1.classList.add("dim");ring2.classList.add("dim");
   $("tip").style.display="none"}
-function stepAnim(now){
+function stepAnim(now){updTags();
   var a=anim,p=Math.min(1,(now-a.t0)/a.dur),e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
   var R=mFromQ(slerp(a.q0,a.q1,e)),z=a.z0+(a.z1-a.z0)*e;
   scene.style.transform="scale3d("+z+","+z+","+z+") matrix3d("+[R[0][0],R[1][0],R[2][0],0,R[0][1],R[1][1],R[2][1],0,R[0][2],R[1][2],R[2][2],0,0,0,0,1].join(",")+") translate3d("+(-a.c[0]*e)+"px,"+(-a.c[1]*e)+"px,"+(-a.c[2]*e)+"px)";
