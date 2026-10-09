@@ -1186,6 +1186,23 @@ function meusAnuncios(rows){var seen=Object.create(null),out=[];if(!Array.isArra
     if(h&&h.n===o.nome){if(!seen[h.id]){seen[h.id]=1;out.push(h)}return}
     ADS.forEach(function(a){if(a.n===o.nome&&!seen[a.id]){seen[a.id]=1;out.push(a)}})});
   return out.filter(ativo)}
+function painelDono(){var f=el("div","chfm"),lst=rankBlocos(),tot=0,ex=el("div","chpf");
+  ADS.forEach(function(a){if(ativo(a))tot+=a.w*a.h});
+  closeSheets();sheet("Mapa do mural",f);
+  f.appendChild(el("p","mut",tot.toLocaleString("pt-BR")+" de "+(N*N).toLocaleString("pt-BR")+" blocos ativos · "+lst.length+(lst.length===1?" anunciante":" anunciantes")));
+  f.appendChild(miniMapa([]));
+  if(!lst.length){
+    f.appendChild(el("p","mut","Ainda não há blocos no mural. Quando houver, cada anunciante aparece aqui e dá para ver onde fica o bloco dele."));
+    f.appendChild(btn("Ver exemplo","go",function(){ex.innerHTML="";
+      ex.appendChild(el("p","mut","EXEMPLO: é assim que o bloco de um anunciante aparece no mapa. Não é um bloco real."));
+      ex.appendChild(miniMapa([{x:44,y:37,w:2,h:2,c:"#6a3df0",n:"Exemplo"}]))}));
+    f.appendChild(ex);return}
+  f.appendChild(el("b","chsec","Anunciantes (toque para ver no mapa)"));
+  lst.slice(0,20).forEach(function(r){var w=el("div","chrk"),mid=el("div","chmid");
+    w.appendChild(av(r.a,r.a.n,34));mid.appendChild(el("b","",r.a.n));w.appendChild(mid);
+    w.appendChild(el("span","chcn",r.b+(r.b===1?" bloco":" blocos")));
+    tap(w,function(){perfilPublico(r.a.n)},r.a.n+", "+r.b+(r.b===1?" bloco ativo":" blocos ativos")+". Ver no mapa");f.appendChild(w)});
+  if(lst.length>20)f.appendChild(el("p","mut","Mostrando os 20 maiores de "+lst.length+" anunciantes."))}
 function perfil(){var f=el("div","chfm"),i=el("input"),b=el("button","go","Salvar nome"),m=el("p","mut"),mp=el("div","chpf");
   i.maxLength=30;i.placeholder="Seu nome no chat";i.value=CH.nome||"";i.autocomplete="off";i.setAttribute("aria-label","Seu nome no chat");
   f.appendChild(el("b","chsec","Nome no chat"));
@@ -1230,7 +1247,7 @@ function room(f){clearInterval(CH.t);CH.f=f;f.innerHTML="";$("md").classList.add
   CH.root=root;f.appendChild(root);
   if(lg){var im=el("img","chlg");im.src=lg.src;im.alt="";h.appendChild(im)}
   tt.appendChild(el("b","","Chat da comunidade"));CH.on=el("small","","conectando…");tt.appendChild(CH.on);h.appendChild(tt);
-  if(CH.role!=="admin"){var ed=el("button","chx","⚙");ed.type="button";ed.title="Meu perfil";ed.setAttribute("aria-label","Abrir meu perfil");ed.onclick=perfil;h.appendChild(ed)}
+  {var adm=CH.role==="admin",ed=el("button","chx","⚙");ed.type="button";ed.title=adm?"Mapa do mural":"Meu perfil";ed.setAttribute("aria-label",adm?"Abrir mapa do mural":"Abrir meu perfil");ed.onclick=adm?painelDono:perfil;h.appendChild(ed)}
   var mn=el("button","chx","−");mn.type="button";mn.title="Minimizar";mn.setAttribute("aria-label","Minimizar chat");mn.onclick=minimize;h.appendChild(mn);
   x.type="button";x.title="Fechar";x.setAttribute("aria-label","Fechar chat");x.onclick=closeChat;h.appendChild(x);root.appendChild(h);dragInit(h);
   tb.setAttribute("role","tablist");
