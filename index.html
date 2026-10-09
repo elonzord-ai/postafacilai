@@ -90,6 +90,10 @@ h1{display:flex;align-items:center;gap:8px;margin:0;font-size:19px;font-weight:8
 #toast{position:fixed;left:50%;bottom:64px;transform:translate(-50%,12px);z-index:30;padding:8px 16px;border-radius:999px;background:rgba(19,31,64,.95);border:1px solid var(--gold);color:var(--ink);font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 .dwcw{position:relative}.dwcw .dwc{width:100%;height:100%}
+#lockd{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,9,22,.7);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#lockd[hidden]{display:none}
+.lkb{max-width:380px;text-align:center;padding:26px 24px 22px;border-radius:16px;background:linear-gradient(180deg,#16244a,#0e1733);border:1px solid rgba(214,179,106,.7);box-shadow:0 18px 60px rgba(0,0,0,.6)}
+.lki{font-size:44px;line-height:1}.lkb h3{margin:10px 0 6px;font-size:19px;color:var(--gold)}.lkb p{margin:0 0 18px;color:var(--muted);line-height:1.5;font-size:14px}
 .cp{position:absolute;top:11px;right:11px;min-height:0;width:26px;height:26px;padding:0;border-radius:50%;font-size:13px;line-height:1;background:rgba(10,17,40,.8);opacity:.85}
 .cp:hover{opacity:1;border-color:var(--gold)}
 .nv{position:absolute;top:12px;left:12px;font-style:normal;font-weight:800;font-size:10px;letter-spacing:.8px;padding:2px 7px;border-radius:999px;background:#2ee59d;color:#06241a;box-shadow:0 0 10px rgba(46,229,157,.6)}
@@ -142,6 +146,7 @@ body.opening #stage{cursor:progress}
 </main>
 
 <div id="toast" role="status"></div>
+<div id="lockd" role="alertdialog" aria-modal="true" aria-labelledby="lkt" hidden><div class="lkb"><div class="lki">🔒</div><h3 id="lkt">Face bloqueada</h3><p id="lkp"></p><button id="lko" type="button" class="primary">Entendi</button></div></div>
 <aside id="dw" aria-label="Todos os blocos">
   <button id="dwh" type="button" aria-expanded="false" aria-controls="dwp" title="Ver todos os blocos"><span class="dwi">‹</span><span class="dwt">Todos os blocos</span></button>
   <div id="dwp">
@@ -163,7 +168,7 @@ body.opening #stage{cursor:progress}
 (function(){
 "use strict";
 // ===== CONFIGURAÇÃO (edite aqui) =====
-var CFG={preco:5,nomeFace0:"Shopee · Mercado Livre",nomeFace1:"Hotmart",novas:[1]};
+var CFG={preco:5,nomeFace0:"Shopee · Mercado Livre",nomeFace1:"Hotmart",novas:[1],abertas:[0,1]};
 // Página que cada face abre (0 = Shopee/Mercado Livre, 1-5 = outras faces do cubo, 6-21 = triângulos A-D: lado 1, 2, 3 e base).
 // Para apontar uma face para outra página, é só trocar o endereço dela aqui.
 var LINKS={};
@@ -214,13 +219,18 @@ function callout(ctx,sc,cx,cy,w,h){
     ctx.font="700 "+(h*.42)+"px "+FONT;ctx.fillText("Seu achadinho aqui",0,-h*.13);
     ctx.font="700 "+(h*.22)+"px "+FONT;ctx.fillText("Toque num bloco · R$ "+CFG.preco+"/mês",0,h*.26)}
   ctx.restore()}
+function isLocked(i){return CFG.abertas.indexOf(i)<0}
+function lockIcon(ctx,cx,cy,s){ctx.save();ctx.translate(cx,cy);ctx.lineCap="round";
+  ctx.strokeStyle=COL.gold;ctx.lineWidth=s*.11;ctx.beginPath();ctx.moveTo(-s*.26,-s*.1);ctx.lineTo(-s*.26,-s*.3);ctx.arc(0,-s*.3,s*.26,Math.PI,0);ctx.lineTo(s*.26,-s*.1);ctx.stroke();
+  ctx.fillStyle=COL.gold;rrect(ctx,-s*.4,-s*.12,s*.8,s*.62,s*.1);ctx.fill();
+  ctx.fillStyle="#1b1405";ctx.beginPath();ctx.arc(0,s*.14,s*.07,0,6.2832);ctx.fill();ctx.fillRect(-s*.03,s*.14,s*.06,s*.17);
+  ctx.fillStyle="rgba(214,179,106,.85)";ctx.font="800 "+(s*.17)+"px "+FONT;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("EM BREVE",0,s*.75);ctx.restore()}
 function freeOf(f){return f.idx===0&&DATA.ads.length?1-Math.min(1,occ(f).p/100):1}
 function ringPath(ctx,pts,frac){var n=pts.length,L=[],tot=0,i;for(i=0;i<n;i++){var a=pts[i],b=pts[(i+1)%n];L.push(Math.hypot(b[0]-a[0],b[1]-a[1]));tot+=L[i]}
   var rem=tot*frac;ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
   for(i=0;i<n&&rem>0;i++){var a2=pts[i],b2=pts[(i+1)%n],k=Math.min(1,rem/L[i]);ctx.lineTo(a2[0]+(b2[0]-a2[0])*k,a2[1]+(b2[1]-a2[1])*k);rem-=L[i]}}
 function ringDraw(ctx,pts,frac,lw){ctx.save();ctx.lineJoin="round";ctx.lineCap="round";
-  ctx.globalAlpha=.2;ctx.strokeStyle=COL.ok;ctx.lineWidth=lw*.45;ringPath(ctx,pts,1);ctx.closePath();ctx.stroke();
-  if(frac>0){ctx.globalAlpha=1;ctx.lineWidth=lw;ctx.shadowColor=COL.ok;ctx.shadowBlur=lw*3;ringPath(ctx,pts,Math.min(1,frac));ctx.stroke()}
+  if(frac>0){ctx.strokeStyle=COL.ok;ctx.lineWidth=lw;ctx.shadowColor=COL.ok;ctx.shadowBlur=lw*3;ringPath(ctx,pts,Math.min(1,frac));ctx.stroke()}
   ctx.restore()}
 function edgeGlow(ctx,W,H,free){var g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.28,W/2,H/2,Math.max(W,H)*.78);
   g.addColorStop(0,"rgba(46,229,157,0)");g.addColorStop(1,"rgba(46,229,157,"+(.2*free).toFixed(3)+")");ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
@@ -260,9 +270,9 @@ function makeSq(idx,label,main){
       ctx.fillStyle="#d6b36a";var tw=150;rrect(ctx,X+Ww/2-tw/2,Math.max(4,Y-52),tw,36,18);ctx.fill();ctx.fillStyle="#1b1405";ctx.font="800 20px "+FONT;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("SEU BLOCO",X+Ww/2,Math.max(4,Y-52)+19);ctx.restore()});
     caption(ctx,sc,N*C/2,36,main?CFG.nomeFace0.toUpperCase():label.toUpperCase(),main);
     if(CFG.novas.indexOf(idx)>=0){ctx.save();ctx.fillStyle="#2ee59d";rrect(ctx,N*C-170,16,150,40,20);ctx.fill();ctx.fillStyle="#06241a";ctx.font="800 22px "+FONT;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("NOVO",N*C-95,37);ctx.restore()}
-    if(!nads)callout(ctx,sc,N*C/2,N*C/2,520,112);
+    if(isLocked(idx)){ctx.fillStyle="rgba(6,11,28,.55)";ctx.fillRect(0,0,N*C,N*C);lockIcon(ctx,N*C/2,N*C/2-20,N*C*.26)}
+    else if(!nads)callout(ctx,sc,N*C/2,N*C/2,520,112);
     ctx.restore();
-    edgeGlow(ctx,W,W,freeOf(f));
     var ri=12;ringDraw(ctx,[[ri,ri],[W-ri,ri],[W-ri,W-ri],[ri,W-ri]],f.idx===0?occ(f).p/100:0,5);
     ctx.strokeStyle=COL.gold;ctx.globalAlpha=.6;ctx.lineWidth=4;ctx.strokeRect(2,2,W-4,W-4);ctx.globalAlpha=1};
   return f}
@@ -297,7 +307,8 @@ function makeTri(idx,label){
       for(var i=0;i<=cols;i++){ctx.moveTo(G.x0+i*C,G.yTop);ctx.lineTo(G.x0+i*C,G.yBot)}
       for(var j=0;j<=rows;j++){ctx.moveTo(G.x0,G.yTop+j*C);ctx.lineTo(G.x0+cols*C,G.yTop+j*C)}ctx.stroke()}
     caption(ctx,sc,G.c[0],G.yBot-26,label.toUpperCase(),false);
-    callout(ctx,sc,G.c[0],G.c[1]+G.sb*.04,430,94);
+    if(isLocked(idx)){ctx.fillStyle="rgba(6,11,28,.55)";path(ctx,G.I);ctx.fill();lockIcon(ctx,G.c[0],G.c[1]-G.sb*.02,G.sb*.34)}
+    else callout(ctx,sc,G.c[0],G.c[1]+G.sb*.04,430,94);
     ctx.restore();
     plates.forEach(function(q){
       ctx.beginPath();q.poly.forEach(function(p,n){n?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])});ctx.closePath();
@@ -305,7 +316,6 @@ function makeTri(idx,label){
       ctx.lineJoin="round";ctx.strokeStyle=COL.frame;ctx.lineWidth=6;ctx.stroke();
       ctx.strokeStyle=COL.gold;ctx.globalAlpha=.5;ctx.lineWidth=2;ctx.stroke();ctx.globalAlpha=1;
       plateLabel(ctx,sc,q.cx,q.cy,q.ang,q.L,B*C,"Placa "+q.id+" · disponível",COL.gold,null)});
-    edgeGlow(ctx,f.W,f.H,1);ringDraw(ctx,G.O,0,4);
     ctx.lineJoin="miter";ctx.strokeStyle=COL.gold;ctx.globalAlpha=.55;ctx.lineWidth=3;path(ctx,G.O);ctx.stroke();ctx.globalAlpha=1};
   return f}
 
@@ -490,8 +500,9 @@ function faceInfo(f){
   ex=ex.map(function(v){return v/n1});ey=ey.map(function(v){return v/n2});
   var ez=cross(ex,ey);
   return{c:[c.x,c.y,c.z],L:[ex,ey,ez],w:parseFloat(f.el.style.width),h:parseFloat(f.el.style.height)}}
+function showLock(f){$("lkp").textContent=nameOf(f)+" ainda não foi liberada para compra. Em breve você poderá anunciar aqui.";$("lockd").hidden=false;$("lko").focus()}
 function openFace(f,o){
-  if(anim)return;o=o||{};
+  if(anim)return;o=o||{};if(!o.fly&&isLocked(f.idx)){showLock(f);return}
   target=0;spd=0;update(tt);
   var fi=faceInfo(f),Lt=fi.L,
       q1=qFromM(Lt),
@@ -546,6 +557,9 @@ function endPtr(e,cancel){
   if(Object.keys(ptr).length||!down)return;var d=down;down=null;
   if(cancel||d.moved||anim)return;
   if(d.face)openFace(d.face);else toggleRun()}
+$("lko").addEventListener("click",function(){$("lockd").hidden=true});
+$("lockd").addEventListener("pointerdown",function(e){if(e.target===this)this.hidden=true});
+addEventListener("keydown",function(e){if(e.key==="Escape")$("lockd").hidden=true});
 window.addEventListener("pointerup",function(e){endPtr(e,false)});
 window.addEventListener("pointercancel",function(e){endPtr(e,true)});
 // dica ao passar o mouse sobre uma face
@@ -554,7 +568,7 @@ stage.addEventListener("pointermove",function(e){
   if(e.pointerType==="touch"||down||anim){return}
   var f=faceOf(e.target);stage.style.cursor=f?"pointer":"";
   if(!f){tip.style.display="none";return}
-  tip.innerHTML="<b>"+nameOf(f)+"</b><small>"+brl(f.blocks)+" blocos · clique para abrir o mural</small>";
+  tip.innerHTML="<b>"+nameOf(f)+"</b><small>"+(isLocked(f.idx)?"🔒 bloqueada · em breve":brl(f.blocks)+" blocos · clique para abrir o mural")+"</small>";
   tip.style.display="block";
   var l=e.clientX+16,tp=e.clientY+18;if(l+tip.offsetWidth>innerWidth-8)l=e.clientX-16-tip.offsetWidth;if(tp+tip.offsetHeight>innerHeight-8)tp=e.clientY-18-tip.offsetHeight;
   tip.style.left=Math.max(8,l)+"px";tip.style.top=Math.max(8,tp)+"px"});

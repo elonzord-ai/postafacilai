@@ -1363,6 +1363,13 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
   if(tg){tg.title="Copiar o link desta face";tg.style.cursor="pointer";tg.onclick=function(){var u=location.href.split("#")[0].split("?")[0]+"?f="+FACE.id,ok=function(){tg.textContent="Link copiado ✓";setTimeout(function(){tg.textContent=FACE.name},1600)};
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,function(){tg.textContent=u});else ok()}}
   if(FACE.id!==0)document.title=FACE.name+" · Posta Fácil AI";
+  /* Hotmart: sem a faixa de produtos passando */
+  if(FACE.id===1){var sk=document.createElement("style");sk.textContent="#tk,#tk.on{display:none!important}";document.head.appendChild(sk)}
+  /* faces ainda não liberadas (só Shopee/ML e Hotmart estão abertas): ninguém compra pixel por aqui */
+  if(FACE.id>1){var lk=document.createElement("div");lk.setAttribute("role","alertdialog");lk.setAttribute("aria-modal","true");
+    lk.style.cssText="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,9,22,.92)";
+    lk.innerHTML='<div style="max-width:380px;text-align:center;padding:26px 24px 22px;border-radius:16px;background:linear-gradient(180deg,#16244a,#0e1733);border:1px solid rgba(214,179,106,.7);color:#e8edf8;font-family:inherit"><div style="font-size:44px;line-height:1">🔒</div><h3 style="margin:10px 0 6px;font-size:19px;color:#d6b36a">Face bloqueada</h3><p style="margin:0 0 18px;color:#9aa8c7;line-height:1.5;font-size:14px">'+FACE.name+' ainda não foi liberada para compra. Em breve você poderá anunciar aqui.</p><a href="index.html" style="display:inline-block;padding:9px 18px;border-radius:9px;background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;font-weight:700;text-decoration:none">Voltar ao cubo 3D</a></div>';
+    document.body.appendChild(lk)}
   /* nichos: só o botão "Todos"; o campo de busca acha o nicho e destaca os blocos dele */
   nichos=function(){var b=$("nichos");b.innerHTML="";var k=el("button",FILTER===null?"chip on":"chip","Todos");
     k.onclick=function(){FILTER=null;NQ="";$("nq").value="";nichos();draw()};b.appendChild(k)};
