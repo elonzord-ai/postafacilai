@@ -957,12 +957,18 @@ on(mq,place);place();
 .chtg{display:flex;gap:6px;margin:0 0 10px}
 .chtgb{flex:1;font-size:13px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
 .chtgb.on{background:linear-gradient(135deg,#2f6bf0,#6a3df0);border-color:transparent;color:#fff;font-weight:700}
-.chrk.jmp{cursor:pointer}
-.chrk.jmp:hover{border-color:var(--gold)}
-.chrk.jmp:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pfl{cursor:pointer}
+.chnm.pfl,.chbl.pfl{width:fit-content}
+.chnm.pfl:hover,.chbl.pfl:hover{text-decoration:underline}
+.chrk.pfl:hover{border-color:var(--gold)}
+.pfl:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.chsec{display:block;margin:12px 0 4px;font-size:14px}
+.chmap{display:flex;justify-content:center;margin:8px 0}
+.chmap canvas{position:static;inset:auto;display:block;max-width:100%;height:auto;cursor:default;touch-action:auto;border-radius:10px;border:1px solid var(--line)}
+.chpf p{margin:4px 0}
 .chlnk{display:inline-block;margin:4px 0 8px;font-size:14px;font-weight:600;color:var(--accent)}
 .chs{position:absolute;inset:0;z-index:5;background:rgba(0,0,0,.5);display:flex;align-items:flex-end}
-.chsb{width:100%;background:var(--panel);border-top:1px solid var(--gold);border-radius:16px 16px 0 0;padding:12px 14px 16px}
+.chsb{width:100%;max-height:100%;overflow-y:auto;background:var(--panel);border-top:1px solid var(--gold);border-radius:16px 16px 0 0;padding:12px 14px 16px}
 .chsh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .chto{position:absolute;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;background:#0e1a3d;color:#fff;border:1px solid var(--gold);padding:8px 14px;border-radius:999px;font-size:13px;max-width:90%;text-align:center}
 .chroot button:focus-visible,.chroot input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -1044,7 +1050,8 @@ function blocos(loja){var n=0;if(loja)ADS.forEach(function(a){if(a.n===loja&&ati
 function bubble(m){var me=m.membro===CH.id,r=el("div","chr"+(me?" me":"")+(m.admin?" ad":"")),b=el("div","chb"),t=el("div","chtx"),f=el("div","chft"),k=null;
   if(CH.role==="admin"||(CH.role==="membro"&&!me&&!m.admin)){k=btn("⋯","chmn",function(){acts(m,b)});k.setAttribute("aria-label","Ações da mensagem")}
   if(m.admin){var h=el("div","chhd");h.appendChild(el("span","chnm","👑 Admin"));h.appendChild(el("small","",hora(m.criado_em)));if(k){k.className+=" fr";h.appendChild(k)}b.appendChild(h)}
-  else{var n=el("span","chnm",m.autor),nb=blocos(m.loja);n.style.setProperty("--h",hue(m.membro));b.appendChild(n);if(nb)b.appendChild(el("span","chbl",nb+(nb===1?" bloco ativo":" blocos ativos")))}
+  else{var n=el("span","chnm",m.autor),nb=blocos(m.loja),bl=nb?el("span","chbl",nb+(nb===1?" bloco ativo":" blocos ativos")):null;n.style.setProperty("--h",hue(m.membro));b.appendChild(n);if(bl)b.appendChild(bl);
+    if(me||m.loja){var op=function(){me?perfil():perfilPublico(m.loja,m.autor)},lb=me?"Abrir meu perfil":"Ver perfil e mapa de "+m.autor;tap(n,op,lb);if(bl)tap(bl,op,lb)}}
   lk(t,m.texto);b.appendChild(t);
   if(!m.admin){if(k)f.appendChild(k);f.appendChild(el("small","",hora(m.criado_em)));b.appendChild(f)}
   r.appendChild(b);return r}
@@ -1126,19 +1133,17 @@ function tabTop(){var mode=CH.topMode||"cli",sw=el("div","chtg"),L=el("div");
   call("chat2_ranking",{p_codigo:CH.code}).then(function(rows){if(CH.tab!=="top"||(CH.topMode||"cli")!=="cli")return;if(!rows||!rows.length){L.appendChild(empty("Os cliques da semana aparecem aqui."));return}
     var mx=rows[0].cliques||1;rows.forEach(function(r,i){var a=adById(r.anuncio_id),w=el("div","chrk"),mid=el("div","chmid"),bar=el("div","chvb"),f=el("i");
       w.appendChild(el("span","chpos",["🥇","🥈","🥉"][i]||String(i+1)));w.appendChild(av(a,r.nome,34));mid.appendChild(el("b","",r.nome));f.style.width=Math.max(6,r.cliques/mx*100)+"%";bar.appendChild(f);mid.appendChild(bar);w.appendChild(mid);
-      w.appendChild(el("span","chcn",r.cliques+(r.cliques==1?" clique":" cliques")));L.appendChild(w)})}).catch(function(){L.appendChild(empty("Não foi possível carregar."))})}
+      w.appendChild(el("span","chcn",r.cliques+(r.cliques==1?" clique":" cliques")));tap(w,function(){perfilPublico(r.nome)},r.nome+", "+r.cliques+(r.cliques==1?" clique":" cliques")+". Ver perfil e mapa");L.appendChild(w)})}).catch(function(){L.appendChild(empty("Não foi possível carregar."))})}
 function topBlocos(L){put(note("Quem tem mais blocos ativos no mural agora. Bloco vencido deixa de contar."));put(L);
   var rows=rankBlocos();
   if(!rows.length){L.appendChild(empty("Ainda não há blocos ativos no mural."));return}
   var mx=rows[0].b||1,pos=0;
   rows.slice(0,20).forEach(function(r,i){if(i===0||r.b!==rows[i-1].b)pos=i+1;
-    var w=el("div","chrk jmp"),mid=el("div","chmid"),bar=el("div","chvb"),f=el("i");
-    w.tabIndex=0;w.setAttribute("role","button");w.setAttribute("aria-label",r.a.n+", "+r.b+(r.b===1?" bloco ativo":" blocos ativos")+". Ver no mural");
+    var w=el("div","chrk"),mid=el("div","chmid"),bar=el("div","chvb"),f=el("i");
+    tap(w,function(){perfilPublico(r.a.n)},r.a.n+", "+r.b+(r.b===1?" bloco ativo":" blocos ativos")+". Ver perfil e mapa");
     w.appendChild(el("span","chpos",["🥇","🥈","🥉"][pos-1]||String(pos)));w.appendChild(av(r.a,r.a.n,34));
     mid.appendChild(el("b","",r.a.n));f.style.width=Math.max(6,r.b/mx*100)+"%";bar.appendChild(f);mid.appendChild(bar);w.appendChild(mid);
     w.appendChild(el("span","chcn",r.b+(r.b===1?" bloco":" blocos")));
-    function go(){focusAd(r.a);if(innerWidth<1100)minimize()}
-    w.onclick=go;w.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}};
     L.appendChild(w)});
   if(rows.length>20)L.appendChild(el("p","mut","Mostrando os 20 primeiros de "+rows.length+" anunciantes."))}
 function tabReg(){[["Respeito","Ofensa e assédio levam à expulsão."],["Sem golpe e sem spam","Um link por hora por pessoa. Golpe ou spam leva a denúncia e possível bloqueio."],["Quem apaga","Só o dono do site apaga mensagens."],["Denúncia e votação","Use o botão ⋯ em qualquer mensagem para denunciar ou abrir uma votação de 24 horas. Aprovada por pelo menos 5 votos e nenhum contra, a pessoa vai para a Ala dos Bloqueados."],["Seu bloco, sua vaga","O chat é só de quem tem bloco ativo: se o seu vencer, o acesso fecha. Se o dono confirmar que as diretrizes foram quebradas, o bloco pode ser removido do mural."]].forEach(function(x){var c=el("div","chc");c.appendChild(el("b","",x[0]));c.appendChild(el("p","mut",x[1]));put(c)});
@@ -1149,13 +1154,57 @@ function setTab(k){CH.tab=k;Object.keys(CH.tabs).forEach(function(t){CH.tabs[t].
   CH.apane.innerHTML="";CH.apane.scrollTop=0;({vot:tabVot,den:tabDen,blq:tabBlq,top:tabTop,reg:tabReg})[k]()}
 
 /* ---------- janela: nome, arrastar, minimizar ---------- */
-function perfil(){var f=el("div","chfm"),i=el("input"),b=el("button","go","Salvar nome"),m=el("p","mut");
+function closeSheets(){if(!CH.root)return;[].forEach.call(CH.root.querySelectorAll(".chs"),function(x){x.remove()})}
+function tap(e,fn,label){e.className+=" pfl";e.tabIndex=0;e.setAttribute("role","button");e.setAttribute("aria-label",label);e.onclick=fn;e.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();fn()}}}
+function corOk(c){return/^#[0-9a-f]{3,8}$/i.test(c||"")?c:"#2f6bf0"}
+function irMural(a,close){close();focusAd(a);if(innerWidth<1100)minimize()}
+/* mapinha: o mural inteiro em miniatura; os blocos da pessoa em destaque, cada um com um anel dourado */
+function miniMapa(mine){var wrap=el("div","chmap"),cv=document.createElement("canvas"),S=240,d=window.devicePixelRatio||1,g,k;
+  cv.width=cv.height=Math.round(S*d);cv.style.width=S+"px";cv.setAttribute("role","img");cv.setAttribute("aria-label","Mapa do mural com a posição dos blocos");
+  g=cv.getContext("2d");k=S*d/T;g.scale(k,k);
+  g.fillStyle=css("--frame")||"#0e1a3d";g.fillRect(0,0,T,T);
+  g.fillStyle=css("--board")||"#ffffff";g.fillRect(B,B,N,N);
+  g.strokeStyle=css("--gridline")||"#e3e8f3";g.lineWidth=.25;
+  for(var i=0;i<=N;i+=10){g.beginPath();g.moveTo(B+i,B);g.lineTo(B+i,B+N);g.moveTo(B,B+i);g.lineTo(B+N,B+i);g.stroke()}
+  g.globalAlpha=.5;ADS.forEach(function(a){if(!ativo(a))return;g.fillStyle=corOk(a.c);g.fillRect(B+a.x,B+a.y,a.w,a.h)});g.globalAlpha=1;
+  mine.forEach(function(a,n){g.fillStyle=corOk(a.c);g.fillRect(B+a.x,B+a.y,a.w,a.h);
+    if(n>=8)return;var cx=B+a.x+a.w/2,cy=B+a.y+a.h/2,r=Math.max(a.w,a.h)/2+3.5;
+    g.lineWidth=2.4;g.strokeStyle="#0e1a3d";g.beginPath();g.arc(cx,cy,r,0,6.2832);g.stroke();
+    g.lineWidth=1.2;g.strokeStyle="#d6b36a";g.beginPath();g.arc(cx,cy,r,0,6.2832);g.stroke()});
+  wrap.appendChild(cv);return wrap}
+/* cartão público de uma loja: só leitura, usa apenas o que já é público no mural */
+function perfilPublico(loja,titulo){if(!CH.root)return;closeSheets();
+  var mine=ADS.filter(function(a){return a.n===loja&&ativo(a)}),f=el("div","chfm"),close=sheet(titulo||loja,f),n=0;
+  if(!mine.length){f.appendChild(el("p","mut","Esta loja não tem blocos ativos no mural agora."));return}
+  mine.forEach(function(a){n+=a.w*a.h});
+  f.appendChild(el("p","mut",(titulo&&titulo!==loja?"Loja: "+loja+" · ":"")+n+(n===1?" bloco ativo":" blocos ativos")+(mine[0].nicho?" · "+mine[0].nicho:"")));
+  f.appendChild(miniMapa(mine));
+  f.appendChild(btn("Ver no mural","go",function(){irMural(mine[0],close)}))}
+/* quais anúncios são meus: usa o que "Meu Espaço" já devolve para o código; confere o id pelo nome antes de confiar */
+function meusAnuncios(rows){var seen=Object.create(null),out=[];if(!Array.isArray(rows))return out;
+  rows.forEach(function(o){var h=o.id!=null?adById(o.id):null;
+    if(h&&h.n===o.nome){if(!seen[h.id]){seen[h.id]=1;out.push(h)}return}
+    ADS.forEach(function(a){if(a.n===o.nome&&!seen[a.id]){seen[a.id]=1;out.push(a)}})});
+  return out.filter(ativo)}
+function perfil(){var f=el("div","chfm"),i=el("input"),b=el("button","go","Salvar nome"),m=el("p","mut"),mp=el("div","chpf");
   i.maxLength=30;i.placeholder="Seu nome no chat";i.value=CH.nome||"";i.autocomplete="off";i.setAttribute("aria-label","Seu nome no chat");
+  f.appendChild(el("b","chsec","Nome no chat"));
   f.appendChild(el("p","mut","É o nome que os outros membros veem nas suas mensagens, com o número dos seus blocos ativos logo abaixo. De 2 a 30 caracteres."));f.appendChild(i);f.appendChild(b);f.appendChild(m);
-  var close=sheet("Meu nome no chat",f);
+  f.appendChild(el("b","chsec","Meu bloco no mapa"));mp.appendChild(el("p","mut","Carregando seus blocos…"));f.appendChild(mp);
+  f.appendChild(el("p","mut","Por segurança, foto e link do anúncio não podem ser alterados pelo chat."));
+  closeSheets();var close=sheet("Meu perfil",f);
   b.onclick=function(){var v=i.value.trim();b.disabled=true;m.textContent="Salvando…";
     call("chat2_definir_nome",{p_codigo:CH.code,p_nome:v}).then(function(r){if(r==="ok"){CH.nome=v;close();room(CH.f);flash("Nome atualizado.")}else{b.disabled=false;m.textContent=ERR[r]||"Não foi possível salvar."}}).catch(function(){b.disabled=false;m.textContent="Falha de conexão."})};
-  setTimeout(function(){i.focus()},60)}
+  call("meu_espaco",{p_codigo:CH.code}).then(function(rows){mp.innerHTML="";var mine=meusAnuncios(rows),n=0;
+    if(!mine.length){mp.appendChild(el("p","mut","Não encontrei blocos ativos seus no mural agora."));return}
+    mine.forEach(function(a){n+=a.w*a.h});
+    mp.appendChild(el("p","mut",n+(n===1?" bloco ativo":" blocos ativos")+" em "+mine.length+(mine.length===1?" anúncio":" anúncios")+"."));
+    mp.appendChild(miniMapa(mine));
+    mine.slice(0,5).forEach(function(a){var d=dl(a.v);mp.appendChild(el("p","mut",num(a)+" · "+a.w+"×"+a.h+(d>0?" · vence em "+d+(d===1?" dia":" dias"):"")))});
+    if(mine.length>5)mp.appendChild(el("p","mut","e mais "+(mine.length-5)+"…"));
+    mp.appendChild(btn("Ver no mural","go",function(){irMural(mine[0],close)}))
+  }).catch(function(){mp.innerHTML="";mp.appendChild(el("p","mut","Não foi possível carregar seus blocos agora."))});
+  if(!(window.matchMedia&&matchMedia("(hover:none)").matches))setTimeout(function(){i.focus()},60)}
 function win(){return CH.root&&CH.root.closest(".mb")}
 function placeWin(){var w=win();if(!w||CH.min)return;var r=w.getBoundingClientRect(),p=CH.pos,x=p?p.x:innerWidth-r.width-24,y=p?p.y:(innerHeight-r.height)/2;
   w.style.left=Math.min(Math.max(0,x),Math.max(0,innerWidth-r.width))+"px";w.style.top=Math.min(Math.max(0,y),Math.max(0,innerHeight-60))+"px"}
@@ -1181,7 +1230,7 @@ function room(f){clearInterval(CH.t);CH.f=f;f.innerHTML="";$("md").classList.add
   CH.root=root;f.appendChild(root);
   if(lg){var im=el("img","chlg");im.src=lg.src;im.alt="";h.appendChild(im)}
   tt.appendChild(el("b","","Chat da comunidade"));CH.on=el("small","","conectando…");tt.appendChild(CH.on);h.appendChild(tt);
-  if(CH.role!=="admin"){var ed=el("button","chx","✎");ed.type="button";ed.title="Meu nome no chat";ed.setAttribute("aria-label","Editar meu nome");ed.onclick=perfil;h.appendChild(ed)}
+  if(CH.role!=="admin"){var ed=el("button","chx","⚙");ed.type="button";ed.title="Meu perfil";ed.setAttribute("aria-label","Abrir meu perfil");ed.onclick=perfil;h.appendChild(ed)}
   var mn=el("button","chx","−");mn.type="button";mn.title="Minimizar";mn.setAttribute("aria-label","Minimizar chat");mn.onclick=minimize;h.appendChild(mn);
   x.type="button";x.title="Fechar";x.setAttribute("aria-label","Fechar chat");x.onclick=closeChat;h.appendChild(x);root.appendChild(h);dragInit(h);
   tb.setAttribute("role","tablist");
