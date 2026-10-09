@@ -982,6 +982,9 @@ on(mq,place);place();
 #chpill:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media (max-width:700px){#md.on.chat .mb{left:6px!important;top:6px!important;width:calc(100vw - 12px);height:calc(100vh - 12px)}.chh{cursor:default}#chpill{bottom:76px}}
 #md.chat.min .mb{display:none}
+#md .chsv{display:flex;align-items:center;gap:8px;margin:10px 0 2px;font-size:14px;color:var(--ink);cursor:pointer}
+#md .chsv input{display:inline-block;width:18px;height:18px;margin:0;padding:0;flex:none;accent-color:var(--accent)}
+#md .chsh2{margin:0 0 8px;font-size:12px}
 #md .pwb{position:relative;margin:3px 0 6px}
 #md .pwb input{margin:0;padding-right:46px}
 #md .pwe{position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:0;padding:4px 10px;font-size:18px;line-height:1;cursor:pointer}
@@ -1163,17 +1166,23 @@ function room(f){clearInterval(CH.t);CH.f=f;f.innerHTML="";$("md").classList.add
   CH.t=setInterval(function(){if(!CH.root||!CH.root.isConnected||!$("md").classList.contains("on")){clearInterval(CH.t);CH.root=null;var q=$("chpill");if(q)q.remove();return}sync(++CH.n%6===0)},4000)}
 function gate(f,saved){f.innerHTML="";$("md").classList.remove("chat","min");var pl=$("chpill");if(pl)pl.remove();var lg=document.querySelector("header .logo");
   if(lg){var im=el("img","chlgb");im.src=lg.src;im.alt="";f.appendChild(im)}
-  f.appendChild(el("p","mut","Digite o código do seu bloco para entrar. O chat é só para quem tem bloco ativo e para o dono do site."));
+  f.appendChild(el("p","mut","Digite o código do seu bloco e aperte Enter para entrar. O chat é só para quem tem bloco ativo e para o dono do site."));
   var i=el("input"),pw=el("div","pwb"),eye=el("button","pwe","👁"),b=el("button","go","Entrar"),m=el("p","mut"),tl=el("a","","Termos de Uso"),p=el("p","mut","Ao entrar, você concorda com os ");
-  i.type="password";i.placeholder="Seu código";i.autocomplete="new-password";i.value=saved||"";
+  var sv=el("label","chsv"),ck=el("input"),sh=el("p","mut chsh2","Marque só em um aparelho seu. Sem salvar, o código é pedido toda vez."),fg=el("a","chlnk","Esquecer a senha salva");
+  ck.type="checkbox";ck.checked=!!saved;sv.appendChild(ck);sv.appendChild(document.createTextNode("Salvar senha neste aparelho"));
+  i.type="password";i.placeholder="Seu código";i.autocomplete="new-password";i.value=saved||"";i.setAttribute("aria-label","Código do seu bloco");
   eye.type="button";eye.setAttribute("aria-label","Mostrar código");eye.onclick=function(){var h=i.type==="password";i.type=h?"text":"password";eye.textContent=h?"🙈":"👁";eye.setAttribute("aria-label",h?"Esconder código":"Mostrar código")};
   pw.appendChild(i);pw.appendChild(eye);tl.href="/termos.html";tl.target="_blank";tl.rel="noopener";p.appendChild(tl);p.appendChild(document.createTextNode("."));
-  f.appendChild(pw);f.appendChild(b);f.appendChild(m);f.appendChild(p);i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();b.click()}};
-  b.onclick=function(){var c=i.value.trim();if(!c)return;b.disabled=true;m.textContent="Verificando…";enter(f,c,function(t){b.disabled=false;m.textContent=t})}}
-function enter(f,c,fail){call("chat2_entrar",{p_codigo:c}).then(function(r){
-    if(r&&r.papel){CH.code=c;CH.role=r.papel;CH.id=r.id;CH.nome=r.nome;try{localStorage.setItem("pf_code",c)}catch(e){}room(f)}
+  fg.href="#";fg.style.display=saved?"":"none";
+  fg.onclick=function(e){e.preventDefault();try{localStorage.removeItem("pf_chat_code")}catch(x){}i.value="";ck.checked=false;fg.style.display="none";m.textContent="Senha apagada deste aparelho.";i.focus()};
+  f.appendChild(pw);f.appendChild(sv);f.appendChild(sh);f.appendChild(fg);f.appendChild(b);f.appendChild(m);f.appendChild(p);
+  i.onkeydown=function(e){if(e.key==="Enter"){e.preventDefault();b.click()}};
+  b.onclick=function(){var c=i.value.trim();if(!c)return;b.disabled=true;m.textContent="Verificando…";enter(f,c,function(t){b.disabled=false;m.textContent=t},ck.checked)};
+  if(!(window.matchMedia&&matchMedia("(hover:none)").matches))setTimeout(function(){i.focus()},60)}
+function enter(f,c,fail,save){call("chat2_entrar",{p_codigo:c}).then(function(r){
+    if(r&&r.papel){CH.code=c;CH.role=r.papel;CH.id=r.id;CH.nome=r.nome;try{if(save)localStorage.setItem("pf_chat_code",c);else localStorage.removeItem("pf_chat_code")}catch(e){}room(f)}
     else fail("Não encontrei um bloco ativo com esse código. O chat é exclusivo para quem compra blocos.")}).catch(function(){fail("Não foi possível verificar agora. Tente de novo.")})}
-function openChat(){var f=el("div"),s="";modal("Chat da comunidade",f);try{s=localStorage.getItem("pf_code")||""}catch(e){}gate(f,s);if(s)enter(f,s,function(){})}
+function openChat(){var f=el("div"),s="";modal("Chat da comunidade",f);try{s=localStorage.getItem("pf_chat_code")||""}catch(e){}gate(f,s)}
 ["chn","mfch"].forEach(function(id){var e=$(id);if(e)e.addEventListener("click",function(ev){ev.preventDefault();openChat()})});
 /* cada clique num anúncio vira um "+1" no chat (o servidor limita o ritmo) */
 $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd&&curAd.l!=="#")rpc("chat2_evento_clique",JSON.stringify({p_id:curAd.id}))});
