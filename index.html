@@ -334,7 +334,7 @@ tets.forEach(function(fs){
   var orb=document.createElement("div"),tet=document.createElement("div");orb.className="orb";tet.className="tet";
   fs.forEach(function(f){tet.appendChild(mkFace(f))});orb.appendChild(tet);plane.appendChild(orb);orbs.push(orb);tetEls.push(tet)});
 FACES.forEach(paint);
-var u=100,touring=false;
+var u=100,touring=false,sh={dx:0,ds:1};
 function updUI(){$("dw").classList.toggle("off",!!anim)}
 
 function sub(a,b){return[a[0]-b[0],a[1]-b[1],a[2]-b[2]]}
@@ -375,10 +375,15 @@ function update(t){
   for(var i=0;i<4;i++){
     orbs[i].style.transform="rotateY("+(i*90-t*26)+"deg) translateZ("+R+"px)";
     tetEls[i].style.transform="translateY("+(Math.sin(t*1.1+i*1.7)*.2*u)+"px) rotateY("+(-t*48)+"deg) rotateZ("+(Math.sin(t*.7+i)*14)+"deg)"}
-  if(!anim)scene.style.transform="scale("+zoom+") rotateX("+pitch+"deg) rotateY("+yaw+"deg)";
+  if(!anim)scene.style.transform="scale("+(zoom*sh.ds)+") rotateX("+pitch+"deg) rotateY("+yaw+"deg)";
   updUI()}
+// aba aberta: os blocos deslizam para a esquerda e encolhem um pouco para ficarem inteiros na área livre
+function stepShift(dt){var open=dw.classList.contains("open")&&innerWidth>=700,w=open?dw.offsetWidth:0,tdx=open?w/2:0,
+    tds=open?Math.max(.45,Math.min(1,((innerWidth-w)/2-16)/(u*zoom*4.9))):1,k=1-Math.exp(-dt*8);
+  sh.dx+=(tdx-sh.dx)*k;sh.ds+=(tds-sh.ds)*k;if(Math.abs(tdx-sh.dx)<.3)sh.dx=tdx;if(Math.abs(tds-sh.ds)<.002)sh.ds=tds;
+  scene.style.left="calc(50% - "+sh.dx.toFixed(1)+"px)";stage.style.perspectiveOrigin=(stage.clientWidth/2-sh.dx).toFixed(1)+"px 50%"}
 function frame(now){
-  var dt=Math.min(.05,(now-last)/1000);last=now;
+  var dt=Math.min(.05,(now-last)/1000);last=now;stepShift(dt);
   if(anim){stepAnim(now)}
   else{spd+=(target-spd)*Math.min(1,dt*9);if(Math.abs(target-spd)<.001)spd=target;tt+=dt*spd;update(tt)}
   requestAnimationFrame(frame)}
@@ -514,7 +519,7 @@ function stepAnim(now){updUI();
     if(p>=1){if(!fly){if(!a.done){a.done=true;$("fade").classList.add("on");setTimeout(function(){location.href=a.link},300)}}else{a.ph=1;a.t1=now}}}
   else if(a.ph===1){e=1;a.e=1;if(now-a.t1>=a.hold){a.ph=2;a.t2=now;a.e2=1;beginRet()}}
   else{p=Math.min(1,(now-a.t2)/900);e=a.e2*(1-ease3(p));if(p>=1){endFly();return}}
-  var R=mFromQ(slerp(a.q0,a.q1,e)),z=a.z0+(a.z1-a.z0)*e;
+  var R=mFromQ(slerp(a.q0,a.q1,e)),z=a.z0*sh.ds*(1-e)+a.z1*e;
   scene.style.transform="scale3d("+z+","+z+","+z+") matrix3d("+[R[0][0],R[1][0],R[2][0],0,R[0][1],R[1][1],R[2][1],0,R[0][2],R[1][2],R[2][2],0,0,0,0,1].join(",")+") translate3d("+(-a.c[0]*e)+"px,"+(-a.c[1]*e)+"px,"+(-a.c[2]*e)+"px)"}
 function resetAfterBack(){
   anim=null;$("big").className="";$("big").innerHTML="";document.body.classList.remove("opening");$("fade").classList.remove("on");
