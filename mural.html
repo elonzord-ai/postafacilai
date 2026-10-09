@@ -1360,6 +1360,8 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
 /* ===== Ajustes do mural por face (cubo/triângulo) ===== */
 (function(){
   var tg=$("ftag");if(tg)tg.textContent=FACE.name;
+  if(tg){tg.title="Copiar o link desta face";tg.style.cursor="pointer";tg.onclick=function(){var u=location.href.split("#")[0].split("?")[0]+"?f="+FACE.id,ok=function(){tg.textContent="Link copiado ✓";setTimeout(function(){tg.textContent=FACE.name},1600)};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,function(){tg.textContent=u});else ok()}}
   if(FACE.id!==0)document.title=FACE.name+" · Posta Fácil AI";
   /* nichos: só o botão "Todos"; o campo de busca acha o nicho e destaca os blocos dele */
   nichos=function(){var b=$("nichos");b.innerHTML="";var k=el("button",FILTER===null?"chip on":"chip","Todos");
