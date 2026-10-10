@@ -1474,6 +1474,9 @@ main.lj #c{visibility:hidden}
 #loja .ljgear:hover{border-color:#6a8dff;transform:rotate(40deg);transition:transform .25s}
 #loja .ljpost{border:0;border-radius:999px;padding:10px 16px;font:700 13.5px inherit;color:#fff;background:linear-gradient(135deg,#2f6bf0,#6a3df0);cursor:pointer;white-space:nowrap}
 #loja .ljbody{flex:1;min-height:0;overflow:auto;padding:14px 14px 90px}
+#loja .ljown{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 12px;border:1px solid rgba(214,179,106,.45);border-radius:12px;background:rgba(214,179,106,.07)}
+#loja .ljown b{font-size:15px}#loja .ljown span{color:var(--muted);font-size:12.5px;flex:1;min-width:120px}
+.ljhint{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:60;max-width:calc(100vw - 32px);background:#16244a;color:#fff;border:1px solid rgba(214,179,106,.6);border-radius:999px;padding:9px 16px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
 #loja .ljnote{margin:0 0 12px;color:var(--muted);font-size:12.5px;line-height:1.45}
 #loja .ljg{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:12px}
 #loja .ljc{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px;transition:transform .15s,box-shadow .15s}
@@ -1523,7 +1526,7 @@ main.lj #c{visibility:hidden}
 <script>
 /* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
 (function(){
-var LJ={open:false,all:[],order:[],shown:60,q:"",cat:"",loaded:false,err:"",busy:false,hist:[]},
+var LJ={open:false,all:[],order:[],shown:60,q:"",cat:"",loaded:false,err:"",busy:false,hist:[],owner:null,key:""},
     HOT=FACE.id===1,DOMH=["hotmart.com","hotm.art"],
     CAT=(typeof NDATA!=="undefined"?NDATA.map(function(d){return d[1]}):[]);
 var main=document.querySelector("main"),sec=document.createElement("section");sec.id="loja";sec.setAttribute("aria-label","Loja de produtos");
@@ -1549,7 +1552,7 @@ var gear=el("button","ljgear","⚙");gear.type="button";gear.title="Meus produto
 var pb=el("button","ljpost","＋ Postar produto");pb.type="button";
 tb.appendChild(qi);tb.appendChild(cs);tb.appendChild(sh);tb.appendChild(el("span","ljsp"));tb.appendChild(gear);tb.appendChild(pb);
 var bd=el("div","ljbody"),note=el("p","ljnote","Produtos dos donos de bloco"+(HOT?" da Hotmart":"")+", em ordem aleatória. Os links são de afiliado e levam para o site do vendedor: o Posta Fácil AI não vende nem entrega nada."),gd=el("div","ljg"),mr=el("button","ljchip ljmore","Mostrar mais");mr.type="button";
-var em=el("div","ljempty");bd.appendChild(note);bd.appendChild(gd);bd.appendChild(em);bd.appendChild(mr);
+var em=el("div","ljempty");var ow=el("div","ljown");ow.style.display="none";bd.appendChild(ow);bd.appendChild(note);bd.appendChild(gd);bd.appendChild(em);bd.appendChild(mr);
 var ai=document.createElement("button");ai.id="ljai";ai.type="button";ai.setAttribute("aria-label","Perguntar à IA da loja");ai.title="Pergunte à IA";
 ai.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 1.7L12 18l-2.2-6.3L3.5 10l6.3-1.7zM19 15l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>';
 var ap=document.createElement("div");ap.id="ljap";ap.setAttribute("role","dialog");ap.setAttribute("aria-label","IA da loja");
@@ -1565,17 +1568,18 @@ function card(p){var c=el("div","ljc"),a=el("a","ljim"),h=el("h3","",p.nome),g=e
 function render(){var v=vis();gd.textContent="";v.slice(0,LJ.shown).forEach(function(p){gd.appendChild(card(p))});
   mr.style.display=v.length>LJ.shown?"block":"none";em.style.display=v.length?"none":"block";note.style.display=v.length?"":"none";
   if(!v.length){em.textContent="";var b=el("b","",!LJ.loaded?"Carregando produtos…":LJ.all.length?"Nenhum produto com esse filtro":"Ainda não há produtos aqui");em.appendChild(b);
-    if(LJ.loaded&&!LJ.all.length)em.appendChild(document.createTextNode(LJ.err||"Quem tem bloco pode postar quantos links de afiliado quiser. Toque em “Postar produto”."))}}
+    if(LJ.loaded&&!LJ.all.length)em.appendChild(document.createTextNode(LJ.err||(LJ.owner?"Este espaço ainda não postou produtos. Se o espaço é seu, toque em “Postar produto”.":"Quem tem bloco pode postar quantos links de afiliado quiser. Toque em “Postar produto”.")))}}
 function cats(){var seen={};LJ.all.forEach(function(p){if(p.categoria)seen[p.categoria]=1});var cur=LJ.cat;cs.textContent="";
   var o=el("option","","Categorias");o.value="";cs.appendChild(o);Object.keys(seen).sort().forEach(function(k){var x=el("option","",k);x.value=k;cs.appendChild(x)});cs.value=seen[cur]?cur:"";LJ.cat=cs.value}
-function load(){LJ.loaded=false;LJ.err="";render();
-  fetch(SUPABASE_URL+"/rest/v1/produtos_loja?select=id,dono,nome,imagem,link,categoria&ativo=eq.true&face=eq."+FACE.id+"&order=id.desc&limit=600",{headers:hdr()})
+function banner(){var o=LJ.owner;ow.textContent="";ow.style.display=o?"flex":"none";if(!o)return;ow.appendChild(el("b","","🛍️ Loja de "+o.nome));ow.appendChild(el("span","",o.label));var b=el("button","ljchip","← Todas as lojas");b.type="button";b.onclick=function(){toggle(true,null)};ow.appendChild(b)}
+function load(){LJ.loaded=false;LJ.err="";LJ.key=LJ.owner?LJ.owner.key:"";banner();render();
+  fetch(SUPABASE_URL+"/rest/v1/produtos_loja?select=id,dono,nome,imagem,link,categoria&ativo=eq.true&face=eq."+FACE.id+(LJ.owner?"&dono=eq."+encodeURIComponent(LJ.owner.key):"")+"&order=id.desc&limit=600",{headers:hdr()})
    .then(function(r){if(!r.ok){LJ.err=r.status===404?"A loja ainda não foi ativada no banco de dados.":"Não foi possível carregar agora.";return[]}return r.json()})
    .catch(function(){LJ.err="Sem conexão agora.";return[]})
-   .then(function(rows){LJ.all=(rows||[]).filter(function(p){return p&&p.nome&&httpsOk(p.link)});LJ.order=mix(LJ.all);LJ.loaded=true;LJ.shown=60;cats();render()})}
+   .then(function(rows){LJ.all=(rows||[]).filter(function(p){return p&&p.nome&&httpsOk(p.link)});LJ.order=LJ.owner?LJ.all.slice():mix(LJ.all);LJ.loaded=true;LJ.shown=60;cats();render()})}
 qi.oninput=function(){LJ.q=this.value;LJ.shown=60;render()};
 cs.onchange=function(){LJ.cat=this.value;LJ.shown=60;render()};
-sh.onclick=function(){LJ.order=mix(LJ.all);LJ.shown=60;render();bd.scrollTop=0};
+sh.onclick=function(){LJ.order=LJ.owner?LJ.all.slice().reverse():mix(LJ.all);LJ.shown=60;render();bd.scrollTop=0};
 mr.onclick=function(){LJ.shown+=60;render()};
 
 /* ---------- abrir / fechar ---------- */
@@ -1583,9 +1587,10 @@ var nav=$("nav"),ln=document.createElement("a");ln.className="ni";ln.href="#";ln
 var mural=nav.querySelector("a.ni.on");nav.insertBefore(ln,mural&&mural.nextSibling||nav.firstChild);
 var hb=el("button","ljb","🛍️ Loja");hb.type="button";hb.id="ljb";var ft=$("ftag");if(ft&&ft.parentNode)ft.parentNode.insertBefore(hb,ft.nextSibling);
 var mf=$("mfch");if(mf){var mb=el("button","","🛍️ Loja");mb.type="button";mb.id="mflj";mf.parentNode.insertBefore(mb,mf);mb.onclick=function(){toggle(true)}}
-function toggle(on){LJ.open=on;main.classList.toggle("lj",on);ln.classList.toggle("on",on);hb.classList.toggle("on",on);if(mural)mural.classList.toggle("on",!on);
-  if(on){if(!LJ.loaded)load();else render();if(window.__pfChat)window.__pfChat.auto()}else ap.classList.remove("on")}
-ln.onclick=function(e){e.preventDefault();toggle(!LJ.open)};hb.onclick=function(){toggle(!LJ.open)};
+function toggle(on,owner){if(on&&owner!==undefined)LJ.owner=owner;else if(on&&!LJ.open)LJ.owner=null;LJ.open=on;note.textContent=(LJ.owner?"Produtos deste espaço":"Produtos dos donos de bloco"+(HOT?" da Hotmart":"")+", em ordem aleatória")+". Os links são de afiliado e levam para o site do vendedor: o Posta Fácil AI não vende nem entrega nada.";main.classList.toggle("lj",on);ln.classList.toggle("on",on);hb.classList.toggle("on",on);if(mural)mural.classList.toggle("on",!on);
+  if(on){if(!LJ.loaded||LJ.key!==(LJ.owner?LJ.owner.key:""))load();else render();if(window.__pfChat)window.__pfChat.auto()}else ap.classList.remove("on")}
+function gen(){if(LJ.open&&!LJ.owner)toggle(false);else toggle(true,null)}
+ln.onclick=function(e){e.preventDefault();gen()};hb.onclick=gen;
 if(mural)mural.addEventListener("click",function(e){if(LJ.open){e.preventDefault();toggle(false)}});
 addEventListener("keydown",function(e){if(e.key==="Escape"&&LJ.open&&!$("md").className){if(ap.classList.contains("on"))ap.classList.remove("on");else toggle(false)}});
 if(/[?&]loja\b/.test(location.search))toggle(true);
@@ -1644,13 +1649,25 @@ function local(q){if(/categoria/i.test(q)&&LJ.all.length){var k={};LJ.all.forEac
 function ask(q){q=q.trim();if(!q||LJ.busy)return;LJ.busy=true;abt.disabled=true;ain.value="";var sg=am.querySelector(".sg");if(sg)sg.remove();
   bubble("user",q);LJ.hist.push({role:"user",content:q});var w=bubble("a","…");
   var cat=LJ.all.slice(0,80).map(function(p){return{id:p.id,nome:p.nome,categoria:p.categoria||""}});
-  fetch("/api/chat-loja",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({face:FACE.id,nomeFace:FACE.name,total:LJ.all.length,produtos:cat,mensagens:LJ.hist.slice(-6)})})
+  fetch("/api/chat-loja",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({face:FACE.id,nomeFace:FACE.name,loja:LJ.owner?LJ.owner.nome+" ("+LJ.owner.label+")":"",total:LJ.all.length,produtos:cat,mensagens:LJ.hist.slice(-6)})})
    .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(!j||!j.resposta)throw 0;return j.resposta}).catch(function(){return local(q)})
    .then(function(txt){w.remove();bubble("a",txt);LJ.hist.push({role:"assistant",content:txt})}).then(function(){LJ.busy=false;abt.disabled=false;ain.focus()})}
 af.onsubmit=function(e){e.preventDefault();ask(ain.value)};
 ai.onclick=function(){ap.classList.toggle("on");if(ap.classList.contains("on")){if(!am.children.length){bubble("a","Oi! Sou a IA da loja. Posso ajudar a achar produtos, categorias e explicar como a loja funciona.");
   var sg=el("div","sg");["Quais categorias existem aqui?","Me indique algo para presente","Como posto meus produtos?"].forEach(function(t){var b=el("button","",t);b.type="button";b.onclick=function(){ask(t)};sg.appendChild(b)});am.appendChild(sg)}ain.focus()}};
 ap.querySelector("header button").onclick=function(){ap.classList.remove("on")};
+/* dois cliques/toques num bloco ou placa com dono abrem a loja dele; um clique só seleciona (folha de compra) */
+var hint=null,ht=0;
+function say(t){if(hint)hint.remove();hint=el("div","ljhint",t);hint.setAttribute("role","status");document.body.appendChild(hint);clearTimeout(ht);ht=setTimeout(function(){hint&&hint.remove();hint=null},2600)}
+function ownerOf(c){if(!c)return null;if(c.sl){var q=c.sl,a=q.ad;return a?{key:"p"+a.id,nome:a.n,label:"Placa "+q.id}:{free:"Placa "+q.id}}
+  var a=adAt(c.x,c.y);return a?{key:"a"+a.id,nome:a.n,label:"Bloco "+num(a)}:{free:"Bloco "+num(c)}}
+var lt=null,dn=null;
+cv.addEventListener("pointerdown",function(e){dn=pos(e)});
+cv.addEventListener("pointerup",function(e){var p=pos(e),c=(dn&&Math.hypot(p.x-dn.x,p.y-dn.y)>10)?null:cellAt(p.x,p.y);if(!c){lt=null;return}
+  var o=ownerOf(c),k=o&&(o.key||o.free),now=Date.now();
+  if(lt&&now-lt.t<420&&lt.k===k&&Math.hypot(p.x-lt.x,p.y-lt.y)<24){lt=null;
+    if(o.key){var x=$("x");if(x)x.click();toggle(true,o)}else say(o.free+" está livre: só espaços com dono têm loja. Um clique seleciona para comprar.")}
+  else lt={t:now,k:k,x:p.x,y:p.y}});
 window.__loja={open:function(){toggle(true)},state:LJ};
 })();
 </script>

@@ -32,7 +32,7 @@ export default async function handler(req, res) {
   if (!msgs.length || msgs[msgs.length - 1].role !== "user") return res.status(400).json({ erro: "pergunta" });
 
   const system = `Você é a IA da loja do Posta Fácil AI, um mural onde donos de bloco postam links de afiliado.
-Esta loja é a de: ${face}. Total de produtos: ${Number(b.total) || 0}.
+Esta loja é a de: ${face}.${b.loja ? ` Você está na loja de um espaço específico: ${String(b.loja).slice(0, 80)}.` : ''} Total de produtos: ${Number(b.total) || 0}.
 Regras:
 - Responda em português do Brasil, curto (até 5 frases), simpático e direto.
 - Fale só sobre esta loja, os produtos listados, categorias e como a loja funciona. Se perguntarem outra coisa, diga que só ajuda com a loja.
