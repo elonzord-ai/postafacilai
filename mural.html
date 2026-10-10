@@ -10,7 +10,7 @@
 <meta property="og:title" content="Posta Fácil AI">
 <meta property="og:description" content="Promoções e achadinhos de lojas e afiliados, num só lugar.">
 <link rel="manifest" href="/manifest.webmanifest">
-<script>try{var _t=localStorage.getItem("pf_tema"),_r=document.documentElement;if(_t==="claro")_r.setAttribute("data-theme","light");else{_r.setAttribute("data-theme","dark");if(_t==="cinza")_r.setAttribute("data-tone","gray")}}catch(e){}window.__HM=false;try{window.__HM=parseInt(new URLSearchParams(location.search).get("f"),10)===1;if(window.__HM){_r.setAttribute("data-theme","dark");_r.setAttribute("data-tone","hotmart")}}catch(e){}window.HMC=function(l){return window.__HM?"#eb5128":(l?"#0b8a5f":"#2ee59d")};</script>
+<script>try{var _t=localStorage.getItem("pf_tema"),_r=document.documentElement;if(_t==="claro")_r.setAttribute("data-theme","light");else{_r.setAttribute("data-theme","dark");if(_t==="cinza")_r.setAttribute("data-tone","gray")}}catch(e){}window.__HM=false;try{window.__HM=parseInt(new URLSearchParams(location.search).get("f"),10)===1;if(window.__HM){_r.setAttribute("data-theme","dark");_r.setAttribute("data-tone","hotmart")}}catch(e){}window.HMC=function(l){return window.__HM?"#eb5128":(document.documentElement.getAttribute("data-tone")==="gray"?"#e8c36a":(l?"#0b8a5f":"#2ee59d"))};</script>
 <meta name="theme-color" content="#0a1128" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f3f5fb" media="(prefers-color-scheme: light)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -520,7 +520,7 @@ function nowS(){return Date.now()+OFF}
 function dst(){var n=nowS();return n<DISP.inicio?"aguardando":n<DISP.fim?"ao_vivo":"encerrada"}
 function fmt(ms){ms=Math.max(0,Math.floor(ms/1000));var d=Math.floor(ms/86400),h=Math.floor(ms%86400/3600),m=Math.floor(ms%3600/60),s=ms%60,p=function(x){return String(x).padStart(2,"0")};return(d?d+"d ":"")+p(h)+":"+p(m)+":"+p(s)}
 function money(v){return"R$ "+Number(v).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}
-function timerDraw(M){var st=dst(),rem=st==="aguardando"?DISP.inicio-nowS():st==="ao_vivo"?DISP.fim-nowS():0,col=window.__HM?(st==="ao_vivo"?(rem<=15000?"#ffffff":"#eb5128"):"#a3a3a3"):(st==="ao_vivo"?(rem<=15000?"#ffb020":"#2ee59d"):"#7b869c");
+function timerDraw(M){var st=dst(),rem=st==="aguardando"?DISP.inicio-nowS():st==="ao_vivo"?DISP.fim-nowS():0,col=window.__HM?(st==="ao_vivo"?(rem<=15000?"#ffffff":"#eb5128"):"#a3a3a3"):(document.documentElement.getAttribute("data-tone")==="gray"?(st==="ao_vivo"?(rem<=15000?"#ffffff":"#e8c36a"):"#7b869c"):(st==="ao_vivo"?(rem<=15000?"#ffb020":"#2ee59d"):"#7b869c"));
   ctx.font="700 "+Math.min(M*.3,24)+"px 'Courier New',monospace";ctx.fillStyle=col;if(st==="ao_vivo"){ctx.shadowColor=col;ctx.shadowBlur=10}
   ctx.fillText(st==="encerrada"?"ENCERRADA":fmt(rem),0,M*.22);ctx.shadowBlur=0}
 function renderBid(){if(!DISP||!bidOpen)return;var st=dst(),t=$("bs"),
@@ -719,7 +719,7 @@ var _d3=draw;draw=function(){_d3();ctaB=null;
   var light=css("--board")==="#ffffff",col=HMC(light),X=x0*C,Y=y0*C,W=w0*C,H=h0*C,r=24;
   ctx.save();
   ctx.beginPath();ctx.moveTo(X+r,Y);ctx.arcTo(X+W,Y,X+W,Y+H,r);ctx.arcTo(X+W,Y+H,X,Y+H,r);ctx.arcTo(X,Y+H,X,Y,r);ctx.arcTo(X,Y,X+W,Y,r);ctx.closePath();
-  ctx.fillStyle=__HM?"rgba(235,81,40,.10)":(light?"rgba(11,138,95,.08)":"rgba(46,229,157,.10)");ctx.fill();
+  ctx.fillStyle=__HM?"rgba(235,81,40,.10)":(document.documentElement.getAttribute("data-tone")==="gray"?"rgba(232,195,106,.10)":(light?"rgba(11,138,95,.08)":"rgba(46,229,157,.10)"));ctx.fill();
   ctx.setLineDash([14,10]);ctx.lineWidth=3;ctx.strokeStyle=col;ctx.stroke();ctx.setLineDash([]);
   ctx.fillStyle=col;ctx.textAlign="center";ctx.textBaseline="middle";
   ctx.font="800 52px Trebuchet MS,sans-serif";ctx.fillText("Seu achadinho aqui",X+W/2,Y+H*.4);
@@ -1780,10 +1780,31 @@ draw();
 :root[data-tone="hotmart"] #ljam .sg button{color:#fff}
 :root[data-tone="hotmart"] a:not([class]){color:#eb5128}
 :root[data-tone="hotmart"] .hme{color:transparent;text-shadow:0 0 0 #eb5128;font-style:normal}
+:root[data-tone="gray"]{--ok:#e8c36a}
+:root[data-tone="gray"] .ai{background-image:linear-gradient(135deg,#e8c36a,#d6b36a)}
+:root[data-tone="gray"] ::-webkit-scrollbar-thumb,:root[data-tone="gray"] ::-webkit-scrollbar-thumb:hover,:root[data-tone="gray"] ::-webkit-scrollbar-thumb:horizontal{background:#6b7386;background-clip:padding-box}
+:root[data-tone="gray"] *{scrollbar-color:#6b7386 transparent}
+:root[data-tone="gray"] .lvv,:root[data-tone="gray"] #lvh .v{color:#e8c36a}
+:root[data-tone="gray"] .ic.wa{fill:#d3dae9}
+:root[data-tone="gray"] .ni small.g{background:#e8c36a;border-color:#e8c36a;color:#1a1405}
+:root[data-tone="gray"] #bid button:not(:disabled),:root[data-tone="gray"] #buy,:root[data-tone="gray"] .cup>button:not(:disabled){background:linear-gradient(135deg,#c9a24d,#e8c36a);color:#1a1405;border-color:transparent}
+:root[data-tone="gray"] #prog .bar i{background:linear-gradient(90deg,#c9a24d,#e8c36a)}
+:root[data-tone="gray"] #sp a,:root[data-tone="gray"] a:not([class]){color:#e8c36a}
+:root[data-tone="gray"] .ljb:hover,:root[data-tone="gray"] .ljb.on{border-color:#d6b36a}
+:root[data-tone="gray"] #loja .ljchip:hover,:root[data-tone="gray"] #loja .ljgear:hover{border-color:#d6b36a}
+:root[data-tone="gray"] #loja .ljc.fl{outline-color:#d6b36a;box-shadow:0 0 0 6px rgba(214,179,106,.25)}
+:root[data-tone="gray"] #loja .ljgo{background:rgba(214,179,106,.16);color:#e8c36a}
+:root[data-tone="gray"] #loja .ljgo:hover{background:rgba(214,179,106,.3)}
+:root[data-tone="gray"] #ljap header small{color:#a3a9b6}
+:root[data-tone="gray"] #ljam .u,:root[data-tone="gray"] #ljaf button{background:#6b7386;color:#fff}
+:root[data-tone="gray"] #ljam .a{color:#eceff4}
+:root[data-tone="gray"] #ljam .a button{border-color:#d6b36a;background:rgba(214,179,106,.14);color:#e8c36a}
+:root[data-tone="gray"] #ljam .sg button{color:#eceff4}
+:root[data-tone="gray"] .ljf .ljmsg.ok{color:#e8c36a}
+:root[data-tone="gray"] .hme{color:transparent;text-shadow:0 0 0 #d3dae9;font-style:normal}
 </style>
 <script id="hotmart-fix">
 (function(){
-if(!window.__HM)return;
 var RE=/\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
 var SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,OPTION:1,SELECT:1,CANVAS:1,TITLE:1};
 function skipEl(e){while(e){if(e.nodeType===1&&(SKIP[e.tagName]||(e.classList&&e.classList.contains("hme"))))return true;e=e.parentNode}return false}
