@@ -651,8 +651,8 @@ function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu cód
     .catch(function(){r.textContent="Não foi possível carregar. Confira o código e tente de novo."})}}
 function how(){var f=el("div");f.innerHTML='<p class="mut">Mural de lojas, afiliados e achadinhos em promoção. Toque em um bloco para ver a oferta. Para anunciar o seu:</p><ol class="how"><li><b>Escolha um bloco livre</b> no mural (zoom e arraste) ou filtre por nicho.</li><li><b>Defina tamanho, nome, link, cor e nicho</b>. Se quiser, envie uma imagem.</li><li><b>Pague via Pix</b>. Seu anúncio entra no mural após a confirmação (imagens passam por análise automática).</li><li>Acompanhe <b>cliques e CTR</b> em Meu Espaço.</li><li><b>Placas de patrocinador</b> ao redor do mural são alugadas por semana, e algumas são disputadas em leilão ao vivo.</li></ol>';modal("Como funciona",f)}
 function bind(i,fn){var e=$(i);if(e)e.onclick=function(ev){ev.preventDefault();fn()}}
-bind("me",meuEspaco);bind("me2",meuEspaco);bind("hp",how);bind("mn",function(){$("nichos").scrollIntoView({block:"nearest"})});
-try{if(!localStorage.getItem("pf_how")){localStorage.setItem("pf_how","1");setTimeout(how,800)}}catch(e){}
+bind("me",meuEspaco);bind("me2",meuEspaco);bind("hp",function(){how()});bind("mn",function(){$("nichos").scrollIntoView({block:"nearest"})});
+try{if(!localStorage.getItem("pf_how")){localStorage.setItem("pf_how","1");setTimeout(function(){how()},800)}}catch(e){}
 var _tr=track;track=function(id){_tr(id);if(once("pf_cs_"+id))rpc("somar_clique",JSON.stringify({p_id:id}))};
 function nm(s){return String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 function nmatch(n,q){q=nm(q.trim());return !q||nm(n[1]+" "+n[2]).indexOf(q)>=0}
@@ -1345,6 +1345,8 @@ function enter(f,c,fail,save){call("chat2_entrar",{p_codigo:c}).then(function(r)
     else fail("Não encontrei um bloco ativo com esse código. O chat é exclusivo para quem compra blocos.")}).catch(function(e){fail("Não foi possível verificar agora"+(e&&e.status?" (erro "+e.status+(e.detail?": "+e.detail:"")+")":" (sem conexão com o servidor)")+". Tente de novo.")})}
 function openChat(){var f=el("div"),s="";modal("Chat da comunidade",f);try{s=localStorage.getItem("pf_chat_code")||""}catch(e){}gate(f,s)}
 ["chn","mfch"].forEach(function(id){var e=$(id);if(e)e.addEventListener("click",function(ev){ev.preventDefault();openChat()})});
+window.__pfChat={auto:function(){if((CH.root&&CH.root.isConnected)||$("chpill")||$("md").className)return;var c="";try{c=localStorage.getItem("pf_chat_code")||""}catch(e){}if(!c)return;
+  call("chat2_entrar",{p_codigo:c}).then(function(r){if(!(r&&r.papel)||$("md").className)return;CH.code=c;CH.role=r.papel;CH.id=r.id;CH.nome=r.nome;var f=el("div");modal("Chat da comunidade",f);room(f);minimize()}).catch(function(){})}};
 /* cada clique num anúncio vira um "+1" no chat (o servidor limita o ritmo) */
 $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd&&curAd.l!=="#")rpc("chat2_evento_clique",JSON.stringify({p_id:curAd.id}))});
 })();
@@ -1352,6 +1354,7 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
 
 <style>
 .ftag{font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 11px;white-space:nowrap;background:var(--panel)}
+.ftag.hot{border-color:#f04e23;color:#ffd9cf}
 .lvx{display:none}
 @media(min-width:1100px){.lvx{display:block}}
 .lvb2{width:100%;background:linear-gradient(135deg,#2f6bf0,#6a3df0);border-color:transparent;color:#fff;font-weight:700}
@@ -1360,8 +1363,8 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
 <script>
 /* ===== Ajustes do mural por face (cubo/triângulo) ===== */
 (function(){
-  var tg=$("ftag");if(tg)tg.textContent=FACE.name;
-  if(tg){tg.title="Copiar o link desta face";tg.style.cursor="pointer";tg.onclick=function(){var u=location.href.split("#")[0].split("?")[0]+"?f="+FACE.id,ok=function(){tg.textContent="Link copiado ✓";setTimeout(function(){tg.textContent=FACE.name},1600)};
+  var TT=FACE.id===1?"Hotmart · Afiliados":FACE.name,tg=$("ftag");if(tg){tg.textContent=TT;if(FACE.id===1)tg.className+=" hot"}
+  if(tg){tg.title="Copiar o link desta face";tg.style.cursor="pointer";tg.onclick=function(){var u=location.href.split("#")[0].split("?")[0]+"?f="+FACE.id,ok=function(){tg.textContent="Link copiado ✓";setTimeout(function(){tg.textContent=TT},1600)};
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(ok,function(){tg.textContent=u});else ok()}}
   if(FACE.id!==0)document.title=FACE.name+" · Posta Fácil AI";
   /* Hotmart: sem a faixa de produtos passando */
@@ -1392,7 +1395,263 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
       SLOTS.forEach(function(q){var b=el("button","","Placa "+q.id+" · sem disputa aberta");b.style.cssText="display:block;width:100%;text-align:left;margin:6px 0";
         b.onclick=function(){$("md").className="";openSheet({sl:q})};f.appendChild(b)});modal("Leilão das placas",f)};
   }
+
+  /* ===== HOTMART (face 1): diretrizes, link de afiliado, nichos e textos próprios ===== */
+  if(FACE.id===1){
+    document.title="Hotmart · Afiliados · Posta Fácil AI";
+    var HOT_DOMINIOS=["hotmart.com","hotm.art"];               // endereços aceitos no link de afiliado (edite aqui se precisar)
+    var HOT_FONTE="https://hotmart.com/pt-br/blog/melhores-praticas";
+    function hotOk(u){try{var x=new URL(u);if(x.protocol!=="https:")return false;var h=x.hostname.toLowerCase();
+      return HOT_DOMINIOS.some(function(d){return h===d||h.slice(-d.length-1)==="."+d})}catch(e){return false}}
+    /* nichos = categorias do mercado de afiliação */
+    NDATA.length=0;[
+      ["💰","Finanças e Investimentos","investimentos,renda fixa,ações,bolsa,cripto,educação financeira,cartão,dívidas"],
+      ["🏋️","Saúde e Esportes","emagrecimento,dieta,treino,musculação,corrida,yoga,bem-estar,saúde"],
+      ["🧠","Desenvolvimento Pessoal","produtividade,autoconhecimento,hábitos,foco,inteligência emocional,liderança,oratória"],
+      ["💼","Negócios e Carreira","empreendedorismo,carreira,vendas,gestão,currículo,concursos"],
+      ["📣","Marketing Digital","tráfego pago,copywriting,redes sociais,seo,e-mail marketing,afiliados,infoproduto,lançamento"],
+      ["🎓","Educação","cursos,vestibular,enem,reforço,pedagogia,método de estudo"],
+      ["🌎","Idiomas","inglês,espanhol,francês,alemão,japonês,fluência,conversação"],
+      ["💻","Tecnologia e Programação","programação,python,excel,dados,inteligência artificial,no code,ti"],
+      ["🍳","Culinária e Gastronomia","receitas,confeitaria,panificação,churrasco,doces,culinária saudável"],
+      ["💄","Moda e Beleza","moda,maquiagem,cabelo,estética,costura,autocuidado,skincare"],
+      ["❤️","Relacionamentos","namoro,casamento,família,comunicação,parentalidade"],
+      ["🙏","Espiritualidade","meditação,espiritualidade,astrologia,tarô,mindfulness"],
+      ["🎨","Artes e Design","desenho,pintura,fotografia,edição de vídeo,design gráfico,ilustração,artesanato"],
+      ["🎵","Música","violão,guitarra,canto,piano,teoria musical,produção musical"],
+      ["🏡","Casa e Construção","decoração,jardinagem,reforma,arquitetura,organização,marcenaria"],
+      ["🐾","Animais","adestramento,cães,gatos,pets,veterinária,aquarismo"],
+      ["📦","Outros",""]].forEach(function(d){NDATA.push(d)});
+    NICHOS=NDATA.map(function(n){return n[1]});
+    /* diretrizes */
+    function diretrizes(){var f=el("div");
+      f.appendChild(el("p","mut","Este mural reúne ofertas de afiliados da Hotmart. O Posta Fácil AI é um mural independente e não tem vínculo, parceria ou aprovação da Hotmart. Para anunciar aqui, siga as boas práticas de afiliados da Hotmart:"));
+      var ok=el("ul","how");["Divulgue o seu link de afiliado de forma pouco invasiva e com conteúdo relevante.","Confira se as informações do anúncio são verdadeiras.","Seja maior de 18 anos (ou emancipado) e aceite os Termos de Uso da Hotmart.","Envie mensagens e e-mails só para quem demonstrou interesse e autorizou."].forEach(function(x){ok.appendChild(el("li","",x))});
+      f.appendChild(el("b","","✅ Pode"));f.appendChild(ok);
+      var no=el("ul","how");["Spam: repetir o link de venda em comentários, blogs ou sites; mensagens diretas ou e-mails sem autorização; publicidade enganosa.","Prometer resultados ou benefícios que o produto ou o produtor não podem entregar, inclusive com imagens que sugiram isso.","Usar nome de marcas ou pessoas sem autorização para reforçar o produto.","Usar a marca Hotmart (logo, imagens ou conteúdos oficiais) ou fazer parecer que o produto pertence à Hotmart.","Sugerir vínculo de trabalho ou parceria com a Hotmart sem autorização."].forEach(function(x){no.appendChild(el("li","",x))});
+      f.appendChild(el("b","","⛔ Não pode"));f.appendChild(no);
+      f.appendChild(el("p","mut","O link do anúncio precisa ser o seu link de afiliado da Hotmart (endereços hotm.art ou hotmart.com). Anúncios que não seguirem estas regras podem ser removidos do mural."));
+      var a=el("a","","Fonte: boas práticas da Hotmart");a.href=HOT_FONTE;a.target="_blank";a.rel="noopener";f.appendChild(a);
+      modal("Diretrizes Hotmart",f)}
+    var nv=$("nav"),hr=nv.querySelector("hr"),dh=document.createElement("a");dh.className="ni";dh.href="#";dh.id="dh";dh.textContent="📋 Diretrizes Hotmart";
+    dh.onclick=function(e){e.preventDefault();diretrizes()};nv.insertBefore(dh,hr);
+    /* "Como funciona" próprio */
+    how=function(){var f=el("div");f.innerHTML='<p class="mut">Mural de ofertas de afiliados Hotmart. Para divulgar a sua:</p><ol class="how"><li><b>Escolha um bloco livre</b> no mural (zoom e arraste).</li><li><b>Defina tamanho, nome da oferta, cor e categoria</b> e cole o seu <b>link de afiliado Hotmart</b>.</li><li><b>Leia as diretrizes</b> e confirme que o anúncio as respeita.</li><li><b>Pague via Pix</b>. Seu anúncio entra no mural após a confirmação.</li><li>Acompanhe <b>cliques e CTR</b> em Meu Espaço.</li></ol>';
+      var b=el("button","","Ver diretrizes Hotmart");b.style.cssText="margin-top:6px";b.onclick=function(){diretrizes()};f.appendChild(b);modal("Como funciona · Hotmart",f)};
+    /* formulário de compra: link de afiliado + aceite das diretrizes */
+    var _buy=$("buy").onclick;
+    $("buy").onclick=function(){_buy.apply(this,arguments);
+      var n=$("fn"),l=$("fl");if(!n||!l)return;
+      var fq2=$("fsq");if(fq2)fq2.placeholder="Digite a categoria: marketing, saúde, idiomas...";n.parentNode.firstChild.nodeValue="Nome da oferta";n.placeholder="Ex.: Curso de Marketing Digital";
+      l.parentNode.firstChild.nodeValue="Link de afiliado Hotmart (https://)";l.placeholder="https://hotm.art/seu-link";
+      var g=$("fg"),ck=document.createElement("label");ck.style.cssText="display:flex;gap:8px;align-items:flex-start;margin:8px 0;font-size:13px;line-height:1.35";
+      ck.innerHTML='<input type="checkbox" id="fok" style="margin-top:3px;width:auto"><span>Li as <a href="#" id="fdl">diretrizes Hotmart</a> e confirmo que o anúncio segue as regras de afiliados.</span>';
+      g.parentNode.insertBefore(ck,g);$("fdl").onclick=function(e){e.preventDefault();diretrizes()};
+      var og=g.onclick;g.onclick=function(e){var m=$("fm");
+        if(!hotOk($("fl").value.trim())){m.textContent="Cole o seu link de afiliado da Hotmart (hotm.art ou hotmart.com), começando com https://";return}
+        if(!$("fok").checked){m.textContent="Confirme que leu as diretrizes para continuar.";return}
+        return og.call(this,e)}};
+    /* ficha do anúncio */
+    var _osH=openSheet;openSheet=function(c){var r=_osH(c),sa=$("sa");
+      if(curAd){sa.textContent="Ver oferta na Hotmart";sa.rel="noopener noreferrer sponsored";$("sp").textContent=$("sp").textContent+" Link de afiliado Hotmart."}return r};
+    $("nq").placeholder="Buscar categoria: marketing, saúde, idiomas...";nichos()}
   draw();
+})();
+</script>
+<style>
+#loja{position:absolute;inset:0;z-index:6;display:none;flex-direction:column;background:var(--board);border-radius:inherit;min-height:0}
+main.lj #loja{display:flex}
+main.lj #c{visibility:hidden}
+.ljb{font:600 12.5px/1 inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+.ljb:hover,.ljb.on{border-color:#6a8dff;color:#fff;background:linear-gradient(135deg,#2f6bf0,#6a3df0)}
+#loja .ljt{display:flex;gap:8px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#loja .ljs{flex:1 1 150px;min-width:120px;max-width:300px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px}
+#loja select.ljs{flex:0 1 auto;max-width:150px;border-radius:12px;padding:8px 10px}
+#loja .ljchip{border:1px solid var(--line);background:none;color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap}
+#loja .ljchip:hover{border-color:#6a8dff}
+#loja .ljsp{flex:1}
+#loja .ljgear{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font-size:18px;cursor:pointer;line-height:1}
+#loja .ljgear:hover{border-color:#6a8dff;transform:rotate(40deg);transition:transform .25s}
+#loja .ljpost{border:0;border-radius:999px;padding:10px 16px;font:700 13.5px inherit;color:#fff;background:linear-gradient(135deg,#2f6bf0,#6a3df0);cursor:pointer;white-space:nowrap}
+#loja .ljbody{flex:1;min-height:0;overflow:auto;padding:14px 14px 90px}
+#loja .ljnote{margin:0 0 12px;color:var(--muted);font-size:12.5px;line-height:1.45}
+#loja .ljg{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:12px}
+#loja .ljc{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px;transition:transform .15s,box-shadow .15s}
+#loja .ljc:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.35)}
+#loja .ljc.fl{outline:2px solid #6a8dff;box-shadow:0 0 0 6px rgba(106,141,255,.25)}
+#loja .ljim{display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;background:#fff;border-radius:8px;overflow:hidden;text-decoration:none;font-size:34px;color:#9aa}
+#loja .ljim img{width:100%;height:100%;object-fit:contain;display:block}
+#loja .ljc h3{margin:8px 4px 4px;font-size:13.5px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em;color:var(--ink)}
+#loja .ljcat{margin:0 4px 6px;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#loja .ljgo{margin:auto 0 0;text-align:center;text-decoration:none;font-weight:600;font-size:13.5px;padding:9px 6px;border-radius:8px;background:rgba(47,107,240,.2);color:#a9c2ff}
+#loja .ljgo:hover{background:rgba(47,107,240,.34)}
+#loja .ljmore{display:block;margin:16px auto 0}
+#loja .ljempty{padding:46px 16px;text-align:center;color:var(--muted);line-height:1.5}
+#loja .ljempty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+#ljai{position:absolute;right:18px;bottom:18px;z-index:3;width:58px;height:58px;border-radius:50%;border:0;background:#4f46e5;color:#fff;box-shadow:0 8px 24px rgba(79,70,229,.55);cursor:pointer;display:flex;align-items:center;justify-content:center}
+#ljai:hover{transform:scale(1.06)}
+#ljai svg{width:28px;height:28px}
+#ljap{position:absolute;right:14px;bottom:14px;z-index:4;width:min(380px,calc(100% - 28px));height:min(520px,calc(100% - 28px));display:none;flex-direction:column;background:#0f1a3a;border:1px solid rgba(214,179,106,.5);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden}
+#ljap.on{display:flex}
+#ljap header{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:700;font-size:14px;color:#fff}
+#ljap header small{font-weight:400;color:#9fb0d8;flex:1}
+#ljap header button{background:none;border:0;color:#fff;font-size:20px;cursor:pointer;line-height:1}
+#ljam{flex:1;min-height:0;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+#ljam .m{max-width:88%;padding:8px 11px;border-radius:12px;font-size:13.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+#ljam .u{align-self:flex-end;background:#4f46e5;color:#fff}
+#ljam .a{align-self:flex-start;background:rgba(255,255,255,.08);color:#e8eeff}
+#ljam .a button{display:inline-block;margin:2px 3px 2px 0;padding:2px 9px;border-radius:999px;border:1px solid #6a8dff;background:rgba(106,141,255,.15);color:#cfdcff;font:inherit;font-size:12px;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
+#ljam .sg{display:flex;flex-wrap:wrap;gap:6px}
+#ljam .sg button{border:1px solid rgba(255,255,255,.2);background:none;color:#cfdcff;border-radius:999px;padding:6px 11px;font:inherit;font-size:12.5px;cursor:pointer}
+#ljaf{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.1)}
+#ljaf input{flex:1;min-width:0;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;padding:9px 13px;font:inherit;font-size:14px}
+#ljaf button{border:0;border-radius:999px;background:#4f46e5;color:#fff;font-weight:700;padding:0 15px;cursor:pointer}
+#ljaf button:disabled{opacity:.5}
+.ljf label{display:block;margin:10px 0 4px;font-size:12.5px;color:var(--muted)}
+.ljf input,.ljf select{width:100%;box-sizing:border-box}
+.ljf .ljpv{display:flex;gap:10px;align-items:center;margin-top:8px}
+.ljf .ljpv i{width:64px;height:64px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;font-style:normal;color:#999;flex:none}
+.ljf .ljpv i img{width:100%;height:100%;object-fit:contain}
+.ljf .ljmsg{min-height:1.3em;margin:10px 0 0;font-size:13px}
+.ljf .ljmsg.err{color:#ff8d8d}.ljf .ljmsg.ok{color:#7be0a0}
+.ljrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.ljrow i{width:46px;height:46px;border-radius:6px;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;overflow:hidden;font-style:normal}
+.ljrow i img{width:100%;height:100%;object-fit:contain}
+.ljrow span{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:700px){#loja .ljg{grid-template-columns:repeat(2,1fr);gap:8px}#loja .ljt{padding:10px}#ljap{right:6px;bottom:6px;width:calc(100% - 12px);height:calc(100% - 12px)}}
+</style>
+<script>
+/* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
+(function(){
+var LJ={open:false,all:[],order:[],shown:60,q:"",cat:"",loaded:false,err:"",busy:false,hist:[]},
+    HOT=FACE.id===1,DOMH=["hotmart.com","hotm.art"],
+    CAT=(typeof NDATA!=="undefined"?NDATA.map(function(d){return d[1]}):[]);
+var main=document.querySelector("main"),sec=document.createElement("section");sec.id="loja";sec.setAttribute("aria-label","Loja de produtos");
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
+function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+/* dono por dono, um de cada vez: ninguém domina a vitrine */
+function mix(list){var g={};list.forEach(function(p){var d=p.dono||"?";(g[d]=g[d]||[]).push(p)});
+  var ks=shuf(Object.keys(g)),out=[],more=true;ks.forEach(function(d){shuf(g[d])});
+  for(var i=0;more;i++){more=false;ks.forEach(function(d){if(g[d][i]){out.push(g[d][i]);more=true}})}return out}
+function httpsOk(u){try{return new URL(u).protocol==="https:"}catch(e){return false}}
+function linkOk(u){try{var x=new URL(u);if(x.protocol!=="https:")return false;if(!HOT)return true;var h=x.hostname.toLowerCase();
+  return DOMH.some(function(d){return h===d||h.slice(-d.length-1)==="."+d})}catch(e){return false}}
+function imgSrc(s){var m=/src\s*=\s*["']([^"']+)["']/i.exec(s||"");return(m?m[1]:String(s||"")).trim().replace(/&amp;/g,"&")}
+function thumb(box,src){box.textContent="";if(!httpsOk(src)){box.textContent="🖼️";return}
+  var im=new Image();im.alt="";im.loading="lazy";im.referrerPolicy="no-referrer";im.onerror=function(){box.textContent="🖼️"};im.src=src;box.appendChild(im)}
+
+/* ---------- estrutura ---------- */
+var tb=document.createElement("div");tb.className="ljt";
+var qi=el("input","ljs");qi.type="search";qi.placeholder="Busque produtos";qi.setAttribute("aria-label","Buscar produtos");
+var cs=el("select","ljs");cs.setAttribute("aria-label","Categoria");
+var sh=el("button","ljchip","🔀 Embaralhar");sh.type="button";sh.title="Mostrar outra ordem";
+var gear=el("button","ljgear","⚙");gear.type="button";gear.title="Meus produtos";gear.setAttribute("aria-label","Meus produtos");
+var pb=el("button","ljpost","＋ Postar produto");pb.type="button";
+tb.appendChild(qi);tb.appendChild(cs);tb.appendChild(sh);tb.appendChild(el("span","ljsp"));tb.appendChild(gear);tb.appendChild(pb);
+var bd=el("div","ljbody"),note=el("p","ljnote","Produtos dos donos de bloco"+(HOT?" da Hotmart":"")+", em ordem aleatória. Os links são de afiliado e levam para o site do vendedor: o Posta Fácil AI não vende nem entrega nada."),gd=el("div","ljg"),mr=el("button","ljchip ljmore","Mostrar mais");mr.type="button";
+var em=el("div","ljempty");bd.appendChild(note);bd.appendChild(gd);bd.appendChild(em);bd.appendChild(mr);
+var ai=document.createElement("button");ai.id="ljai";ai.type="button";ai.setAttribute("aria-label","Perguntar à IA da loja");ai.title="Pergunte à IA";
+ai.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 1.7L12 18l-2.2-6.3L3.5 10l6.3-1.7zM19 15l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>';
+var ap=document.createElement("div");ap.id="ljap";ap.setAttribute("role","dialog");ap.setAttribute("aria-label","IA da loja");
+ap.innerHTML='<header><span>✨ IA da loja</span><small>pergunte sobre os produtos</small><button type="button" aria-label="Fechar">×</button></header><div id="ljam"></div><form id="ljaf"><input maxlength="300" placeholder="Pergunte sobre a loja e os produtos…" aria-label="Sua pergunta" autocomplete="off"><button type="submit">Enviar</button></form>';
+sec.appendChild(tb);sec.appendChild(bd);sec.appendChild(ai);sec.appendChild(ap);main.appendChild(sec);
+
+/* ---------- lista ---------- */
+function vis(){var q=norm(LJ.q);return LJ.order.filter(function(p){return(!LJ.cat||p.categoria===LJ.cat)&&(!q||norm(p.nome+" "+(p.categoria||"")).indexOf(q)>=0)})}
+function card(p){var c=el("div","ljc"),a=el("a","ljim"),h=el("h3","",p.nome),g=el("a","ljgo",HOT?"Ver oferta na Hotmart":"Ver produto");c.dataset.id=p.id;
+  [a,g].forEach(function(x){x.href=httpsOk(p.link)?p.link:"#";x.target="_blank";x.rel="sponsored noopener noreferrer";
+    x.addEventListener("click",function(){rpc("loja_clique",JSON.stringify({p_id:p.id}))})});
+  thumb(a,p.imagem);a.setAttribute("aria-label",p.nome);c.appendChild(a);c.appendChild(h);c.appendChild(el("div","ljcat",p.categoria||"Link de afiliado"));c.appendChild(g);return c}
+function render(){var v=vis();gd.textContent="";v.slice(0,LJ.shown).forEach(function(p){gd.appendChild(card(p))});
+  mr.style.display=v.length>LJ.shown?"block":"none";em.style.display=v.length?"none":"block";note.style.display=v.length?"":"none";
+  if(!v.length){em.textContent="";var b=el("b","",!LJ.loaded?"Carregando produtos…":LJ.all.length?"Nenhum produto com esse filtro":"Ainda não há produtos aqui");em.appendChild(b);
+    if(LJ.loaded&&!LJ.all.length)em.appendChild(document.createTextNode(LJ.err||"Quem tem bloco pode postar quantos links de afiliado quiser. Toque em “Postar produto”."))}}
+function cats(){var seen={};LJ.all.forEach(function(p){if(p.categoria)seen[p.categoria]=1});var cur=LJ.cat;cs.textContent="";
+  var o=el("option","","Categorias");o.value="";cs.appendChild(o);Object.keys(seen).sort().forEach(function(k){var x=el("option","",k);x.value=k;cs.appendChild(x)});cs.value=seen[cur]?cur:"";LJ.cat=cs.value}
+function load(){LJ.loaded=false;LJ.err="";render();
+  fetch(SUPABASE_URL+"/rest/v1/produtos_loja?select=id,dono,nome,imagem,link,categoria&ativo=eq.true&face=eq."+FACE.id+"&order=id.desc&limit=600",{headers:hdr()})
+   .then(function(r){if(!r.ok){LJ.err=r.status===404?"A loja ainda não foi ativada no banco de dados.":"Não foi possível carregar agora.";return[]}return r.json()})
+   .catch(function(){LJ.err="Sem conexão agora.";return[]})
+   .then(function(rows){LJ.all=(rows||[]).filter(function(p){return p&&p.nome&&httpsOk(p.link)});LJ.order=mix(LJ.all);LJ.loaded=true;LJ.shown=60;cats();render()})}
+qi.oninput=function(){LJ.q=this.value;LJ.shown=60;render()};
+cs.onchange=function(){LJ.cat=this.value;LJ.shown=60;render()};
+sh.onclick=function(){LJ.order=mix(LJ.all);LJ.shown=60;render();bd.scrollTop=0};
+mr.onclick=function(){LJ.shown+=60;render()};
+
+/* ---------- abrir / fechar ---------- */
+var nav=$("nav"),ln=document.createElement("a");ln.className="ni";ln.href="#";ln.id="ljn";ln.textContent="🛍️ Loja de produtos";
+var mural=nav.querySelector("a.ni.on");nav.insertBefore(ln,mural&&mural.nextSibling||nav.firstChild);
+var hb=el("button","ljb","🛍️ Loja");hb.type="button";hb.id="ljb";var ft=$("ftag");if(ft&&ft.parentNode)ft.parentNode.insertBefore(hb,ft.nextSibling);
+var mf=$("mfch");if(mf){var mb=el("button","","🛍️ Loja");mb.type="button";mb.id="mflj";mf.parentNode.insertBefore(mb,mf);mb.onclick=function(){toggle(true)}}
+function toggle(on){LJ.open=on;main.classList.toggle("lj",on);ln.classList.toggle("on",on);hb.classList.toggle("on",on);if(mural)mural.classList.toggle("on",!on);
+  if(on){if(!LJ.loaded)load();else render();if(window.__pfChat)window.__pfChat.auto()}else ap.classList.remove("on")}
+ln.onclick=function(e){e.preventDefault();toggle(!LJ.open)};hb.onclick=function(){toggle(!LJ.open)};
+if(mural)mural.addEventListener("click",function(e){if(LJ.open){e.preventDefault();toggle(false)}});
+addEventListener("keydown",function(e){if(e.key==="Escape"&&LJ.open&&!$("md").className){if(ap.classList.contains("on"))ap.classList.remove("on");else toggle(false)}});
+if(/[?&]loja\b/.test(location.search))toggle(true);
+
+/* ---------- postar produto / meus produtos ---------- */
+var ERR={codigo_invalido:"Não achei um bloco ativo com esse código.",bloqueado:"Seu acesso está bloqueado.",nome_invalido:"Nome do produto: de 3 a 120 caracteres.",imagem_invalida:"A imagem precisa ser um endereço https.",link_invalido:HOT?"O link precisa ser de afiliado Hotmart (hotm.art ou hotmart.com), com https.":"O link precisa começar com https://",limite:"Você chegou ao limite de produtos. Apague algum para postar outro.",repetido:"Esse link já está na sua loja."};
+function code0(){try{return localStorage.getItem("pf_chat_code")||localStorage.getItem("pf_code")||""}catch(e){return""}}
+function saveCode(c){try{localStorage.setItem("pf_code",c)}catch(e){}}
+function api(fn,body){return fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:hdr(),body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return null}).then(function(j){return{ok:r.ok,st:r.status,j:j}})})}
+function fail(r){if(r.st===404)return"A loja ainda não foi ativada no banco (falta rodar o SQL).";var c=typeof r.j==="string"?r.j:(r.j&&(r.j.message||r.j.hint))||"";c=String(c).replace(/^.*?(codigo_invalido|bloqueado|nome_invalido|imagem_invalida|link_invalido|limite|repetido).*$/,"$1");return ERR[c]||"Não foi possível salvar agora."}
+function field(f,lab,node){f.appendChild(el("label","",lab));f.appendChild(node);return node}
+function postForm(){
+  var f=el("div","ljf"),ci=el("input"),ni=el("input"),ii=el("input"),li=el("input"),se=el("select"),pv=el("div","ljpv"),pi=el("i","","🖼️"),pt=el("span","mut","Prévia da imagem"),m=el("p","ljmsg"),b=el("button","go","Postar produto");
+  ci.placeholder="Código do seu bloco";ci.value=code0();ci.autocomplete="off";ni.placeholder="Nome do produto";ni.maxLength=120;
+  ii.placeholder="Endereço da imagem (https://…) ou cole o <img …>";li.placeholder=HOT?"Link de afiliado Hotmart (hotm.art/…)":"Seu link de afiliado (https://…)";
+  var o0=el("option","","Categoria (opcional)");o0.value="";se.appendChild(o0);CAT.forEach(function(c){var o=el("option","",c);o.value=c;se.appendChild(o)});
+  field(f,"Código do bloco",ci);field(f,"Nome do produto",ni);field(f,"Imagem do produto",ii);pv.appendChild(pi);pv.appendChild(pt);f.appendChild(pv);field(f,"Link de afiliado",li);field(f,"Categoria",se);
+  f.appendChild(el("p","mut","Poste só produtos reais, sem promessa de ganho garantido"+(HOT?" e seguindo as Diretrizes Hotmart":"")+". Anúncio fora das regras pode ser removido."));f.appendChild(m);f.appendChild(b);
+  ii.oninput=function(){thumb(pi,imgSrc(ii.value))};
+  b.onclick=function(){m.className="ljmsg";var c=ci.value.trim(),n=ni.value.trim(),im=imgSrc(ii.value),l=li.value.trim();
+    if(!c){m.className="ljmsg err";m.textContent="Digite o código do seu bloco.";return}
+    if(n.length<3){m.className="ljmsg err";m.textContent=ERR.nome_invalido;return}
+    if(!httpsOk(im)){m.className="ljmsg err";m.textContent=ERR.imagem_invalida;return}
+    if(!linkOk(l)){m.className="ljmsg err";m.textContent=ERR.link_invalido;return}
+    b.disabled=true;m.textContent="Salvando…";
+    api("loja_postar",{p_codigo:c,p_nome:n,p_imagem:im,p_link:l,p_categoria:se.value||null}).then(function(r){b.disabled=false;
+      if(r.ok&&r.j==="ok"){saveCode(c);m.className="ljmsg ok";m.textContent="Produto postado! Você pode postar outro.";ni.value="";ii.value="";li.value="";thumb(pi,"");load()}
+      else{m.className="ljmsg err";m.textContent=fail(r)}}).catch(function(){b.disabled=false;m.className="ljmsg err";m.textContent="Sem conexão agora."})};
+  modal("Postar produto",f);ni.focus()}
+function manage(){
+  var f=el("div","ljf"),ci=el("input"),go=el("button","go","Ver meus produtos"),m=el("p","ljmsg"),L=el("div"),np=el("button","","＋ Postar produto");
+  ci.placeholder="Código do seu bloco";ci.value=code0();ci.autocomplete="off";
+  field(f,"Código do bloco",ci);f.appendChild(go);f.appendChild(m);f.appendChild(L);np.type="button";np.style.marginTop="12px";np.onclick=postForm;f.appendChild(np);
+  function show(){var c=ci.value.trim();if(!c)return;m.className="ljmsg";m.textContent="Carregando…";L.textContent="";
+    api("loja_meus",{p_codigo:c}).then(function(r){if(!r.ok||!Array.isArray(r.j)){m.className="ljmsg err";m.textContent=fail(r);return}saveCode(c);
+      m.className="ljmsg";m.textContent=r.j.length?r.j.length+" produto(s) na sua loja":"Você ainda não postou produtos.";
+      r.j.forEach(function(p){var row=el("div","ljrow"),i=el("i"),s=el("span","",p.nome),x=el("button","","Apagar");x.type="button";thumb(i,p.imagem);
+        x.onclick=function(){if(!confirm("Apagar este produto?"))return;x.disabled=true;api("loja_apagar",{p_codigo:c,p_id:p.id}).then(function(d){if(d.ok&&d.j==="ok"){row.remove();load()}else{x.disabled=false;m.className="ljmsg err";m.textContent=fail(d)}})};
+        row.appendChild(i);row.appendChild(s);row.appendChild(x);L.appendChild(row)})}).catch(function(){m.className="ljmsg err";m.textContent="Sem conexão agora."})}
+  go.onclick=show;ci.onkeydown=function(e){if(e.key==="Enter")show()};modal("Meus produtos",f);if(ci.value)show()}
+pb.onclick=postForm;gear.onclick=manage;
+
+/* ---------- IA da loja ---------- */
+var am=ap.querySelector("#ljam"),af=ap.querySelector("#ljaf"),ain=af.querySelector("input"),abt=af.querySelector("button");
+function focusProd(id){LJ.q="";qi.value="";LJ.cat="";cs.value="";var v=vis(),i=v.findIndex(function(p){return String(p.id)===String(id)});if(i<0)return;if(i>=LJ.shown)LJ.shown=i+1;render();
+  var n=gd.querySelector('[data-id="'+id+'"]');if(n){n.scrollIntoView({block:"center",behavior:"smooth"});n.classList.add("fl");setTimeout(function(){n.classList.remove("fl")},2600)}if(innerWidth<=700)ap.classList.remove("on")}
+function bubble(role,txt){var d=el("div","m "+(role==="user"?"u":"a"));
+  if(role==="user"){d.textContent=txt}else{var last=0,re=/\[#(\d+)\]/g,mm;
+    while((mm=re.exec(txt))){d.appendChild(document.createTextNode(txt.slice(last,mm.index)));var p=LJ.all.find(function(x){return String(x.id)===mm[1]});
+      if(p){var b=el("button","","🛍 "+p.nome);b.type="button";b.onclick=(function(id){return function(){focusProd(id)}})(p.id);d.appendChild(b)}last=mm.index+mm[0].length}
+    d.appendChild(document.createTextNode(txt.slice(last)))}
+  am.appendChild(d);am.scrollTop=am.scrollHeight;return d}
+function local(q){if(/categoria/i.test(q)&&LJ.all.length){var k={};LJ.all.forEach(function(p){if(p.categoria)k[p.categoria]=1});var l=Object.keys(k);if(l.length)return"Categorias com produtos agora: "+l.join(", ")+"."}var t=norm(q).split(/\W+/).filter(function(w){return w.length>2}),sc=LJ.all.map(function(p){var s=norm(p.nome+" "+(p.categoria||""));return{p:p,n:t.reduce(function(a,w){return a+(s.indexOf(w)>=0?1:0)},0)}}).filter(function(x){return x.n>0}).sort(function(a,b){return b.n-a.n}).slice(0,5);
+  if(!LJ.all.length)return"Ainda não há produtos nesta loja. Quem tem bloco pode postar os seus links de afiliado.";
+  return sc.length?"A IA está fora do ar agora, mas achei isto para você: "+sc.map(function(x){return"[#"+x.p.id+"]"}).join(" "):"A IA está fora do ar agora e não achei nada com essas palavras. Tente buscar pelo nome ou pela categoria."}
+function ask(q){q=q.trim();if(!q||LJ.busy)return;LJ.busy=true;abt.disabled=true;ain.value="";var sg=am.querySelector(".sg");if(sg)sg.remove();
+  bubble("user",q);LJ.hist.push({role:"user",content:q});var w=bubble("a","…");
+  var cat=LJ.all.slice(0,80).map(function(p){return{id:p.id,nome:p.nome,categoria:p.categoria||""}});
+  fetch("/api/chat-loja",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({face:FACE.id,nomeFace:FACE.name,total:LJ.all.length,produtos:cat,mensagens:LJ.hist.slice(-6)})})
+   .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(!j||!j.resposta)throw 0;return j.resposta}).catch(function(){return local(q)})
+   .then(function(txt){w.remove();bubble("a",txt);LJ.hist.push({role:"assistant",content:txt})}).then(function(){LJ.busy=false;abt.disabled=false;ain.focus()})}
+af.onsubmit=function(e){e.preventDefault();ask(ain.value)};
+ai.onclick=function(){ap.classList.toggle("on");if(ap.classList.contains("on")){if(!am.children.length){bubble("a","Oi! Sou a IA da loja. Posso ajudar a achar produtos, categorias e explicar como a loja funciona.");
+  var sg=el("div","sg");["Quais categorias existem aqui?","Me indique algo para presente","Como posto meus produtos?"].forEach(function(t){var b=el("button","",t);b.type="button";b.onclick=function(){ask(t)};sg.appendChild(b)});am.appendChild(sg)}ain.focus()}};
+ap.querySelector("header button").onclick=function(){ap.classList.remove("on")};
+window.__loja={open:function(){toggle(true)},state:LJ};
 })();
 </script>
 </body>
