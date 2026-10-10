@@ -1747,7 +1747,6 @@ draw();
 :root[data-tone="hotmart"]{color-scheme:dark;--bg:#0d0d0d;--ink:#ffffff;--muted:#a3a3a3;--board:#141414;--gridline:#262626;--frame:#0d0d0d;--slot:#1c1c1c;--line:#333333;--hl:#eb5128;--accent:#eb5128;--panel:#161616;--gold:#eb5128;--ok:#eb5128;--p1:#eb5128;--p2:#eb5128;--gb:linear-gradient(135deg,rgba(235,81,40,.9),rgba(235,81,40,.35) 55%,rgba(255,255,255,.2))}
 :root[data-tone="hotmart"] *{scrollbar-color:#eb5128 transparent}
 :root[data-tone="hotmart"] #temab,:root[data-tone="hotmart"] #temap{display:none!important}
-:root[data-tone="hotmart"] .logo{filter:brightness(0) invert(1)}
 :root[data-tone="hotmart"] .ai{background-image:linear-gradient(#eb5128,#eb5128)}
 :root[data-tone="hotmart"] ::-webkit-scrollbar-thumb{background:#eb5128;background-clip:padding-box}
 :root[data-tone="hotmart"] ::-webkit-scrollbar-thumb:hover{background:#eb5128;background-clip:padding-box}
@@ -1779,6 +1778,45 @@ draw();
 :root[data-tone="hotmart"] #ljam .a{color:#fff}
 :root[data-tone="hotmart"] #ljam .a button{border-color:#eb5128;background:rgba(235,81,40,.15);color:#fff}
 :root[data-tone="hotmart"] #ljam .sg button{color:#fff}
+:root[data-tone="hotmart"] a:not([class]){color:#eb5128}
+:root[data-tone="hotmart"] .hme{color:transparent;text-shadow:0 0 0 #eb5128;font-style:normal}
 </style>
+<script id="hotmart-fix">
+(function(){
+if(!window.__HM)return;
+var RE=/\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic}|[\u{1F3FB}-\u{1F3FF}])*/gu;
+var SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,OPTION:1,SELECT:1,CANVAS:1,TITLE:1};
+function skipEl(e){while(e){if(e.nodeType===1&&(SKIP[e.tagName]||(e.classList&&e.classList.contains("hme"))))return true;e=e.parentNode}return false}
+function proc(n){
+  var t=n.nodeValue;if(!t||t.length>4000||skipEl(n.parentNode))return;
+  RE.lastIndex=0;if(!RE.test(t))return;
+  var f=document.createDocumentFragment(),last=0,m,any=false;RE.lastIndex=0;
+  while((m=RE.exec(t))){
+    if(m[0].codePointAt(0)<0x231A)continue;
+    any=true;
+    if(m.index>last)f.appendChild(document.createTextNode(t.slice(last,m.index)));
+    var sp=document.createElement("span");sp.className="hme";sp.textContent=m[0];f.appendChild(sp);
+    last=m.index+m[0].length}
+  if(!any)return;
+  if(last<t.length)f.appendChild(document.createTextNode(t.slice(last)));
+  if(n.parentNode)n.parentNode.replaceChild(f,n)}
+function walk(r){
+  if(!r)return;
+  if(r.nodeType===3){proc(r);return}
+  if(r.nodeType!==1||skipEl(r))return;
+  var w=document.createTreeWalker(r,NodeFilter.SHOW_TEXT,null),a=[],x;
+  while((x=w.nextNode()))a.push(x);
+  a.forEach(proc)}
+var q=[],pend=false;
+function flush(){pend=false;var l=q;q=[];l.forEach(walk)}
+function push(n){q.push(n);if(!pend){pend=true;requestAnimationFrame(flush)}}
+walk(document.body);
+if(window.MutationObserver)new MutationObserver(function(ms){
+  ms.forEach(function(m){
+    if(m.type==="characterData")push(m.target);
+    else m.addedNodes.forEach(function(n){push(n)})})
+}).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+</script>
 </body>
 </html>
