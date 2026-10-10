@@ -317,7 +317,7 @@ var FACE=(function(){
   var q=0;try{q=parseInt(new URLSearchParams(location.search).get("f"),10)}catch(e){}
   if(!(q>=0&&q<22))q=0;
   var nm0=q===0?"Shopee · Mercado Livre":q===1?"Hotmart":q<6?"Cubo · face "+(q+1):"Triângulo "+"ABCD".charAt(Math.floor((q-6)/4))+" · "+(((q-6)%4)<3?"lado "+(((q-6)%4)+1):"base");
-  var F={id:q,tri:q>=6,name:nm0,W:T*C,H:T*C,gw:N*C,gh:N*C,blocks:N*N,cx0:18,cy0:43,OX:B*C,OY:B*C};
+  var F={id:q,live:q<=1,dbOff:false,qs:q===0?"&or=(face.is.null,face.eq.0)":q===1?"&face=eq.1":"",tri:q>=6,name:nm0,W:T*C,H:T*C,gw:N*C,gh:N*C,blocks:N*N,cx0:18,cy0:43,OX:B*C,OY:B*C};
   if(!F.tri)return F;
   var SQ3=Math.sqrt(3),w=B*C;
   function geom(sbBlocks){
@@ -461,9 +461,9 @@ function toast(a){var t=$("toast"),n=a.w*a.h,s=document.createElement("small"),b
   t.innerHTML="";t.appendChild(s);t.appendChild(b);t.style.borderLeftColor=a.c;t.classList.add("on");
   setTimeout(function(){t.classList.remove("on")},5000)}
 function tick(){var i=tick.i||0,a=fresh.shift()||recent[i%Math.max(recent.length,1)];if(a){toast(a);tick.i=i+1}setTimeout(tick,9000)}
-function load(first){if(FACE.id!==0){if(first)stat();return}
-  fetch(SUPABASE_URL+"/rest/v1/anunciantes?select=*&order=criado_em.desc",{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}})
-  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})
+function load(first){if(!FACE.live){if(first)stat();return}
+  fq("/rest/v1/anunciantes?select=*&order=criado_em.desc")
+  .then(function(r){if(!r.ok){if(FACE.id===1){FACE.dbOff=true;return[]}throw new Error(r.status)}return r.json()})
   .then(function(rows){ADS=map(rows);ADS.forEach(function(a){if(!seen[a.id]){seen[a.id]=1;if(!first)fresh.push(a)}});recent=ADS.slice(0,5);stat();draw();loadRank();loadSp();
     if(first&&!started){started=true;setTimeout(tick,2500)}})
   .catch(function(){if(first)$("stat").textContent="Não foi possível carregar os anunciantes. Tente recarregar a página."});
@@ -481,7 +481,8 @@ function track(id){var k="pf_c_"+id+"_"+new Date().toLocaleDateString("sv");
   try{if(localStorage.getItem(k))return;localStorage.setItem(k,"1")}catch(e){}
   fetch(SUPABASE_URL+"/rest/v1/rpc/registrar_clique",{method:"POST",keepalive:true,headers:hdr(),body:JSON.stringify({p_id:id})}).catch(function(){});
   setTimeout(loadRank,1500)}
-function loadSp(){fetch(SUPABASE_URL+"/rest/v1/patrocinadores?select=*",{headers:hdr()})
+function fq(path){return fetch(SUPABASE_URL+path+FACE.qs,{headers:hdr()}).then(function(r){return r.ok||FACE.id!==0?r:fetch(SUPABASE_URL+path,{headers:hdr()})})}
+function loadSp(){if(!FACE.live)return;fq("/rest/v1/patrocinadores?select=*")
   .then(function(r){return r.ok?r.json():[]}).then(function(rows){SLOTS.forEach(function(q){q.ad=null});
     rows.forEach(function(a){var q=SLOTS[a.slot-1];if(q)q.ad={id:a.id,n:a.nome,d:a.descricao||"",l:safe(a.link),c:a.cor||"#0b6bff",v:br(a.vencimento)}});draw()}).catch(function(){})}
 function focusAd(a){var r=cv.getBoundingClientRect(),k=Math.min(r.width*.5/(a.w*C),r.height*.5/(a.h*C));
@@ -636,7 +637,7 @@ $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
     if(!n||!/^https?:\/\//i.test(l)){m.textContent="Informe o nome e um link começando com https://";return}
     if(!$("fs").value){m.textContent="Escolha um nicho na lista.";return}
     m.textContent="Gerando Pix...";
-    fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value,imagem:IMG})})
+    fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value,imagem:IMG},FACE.id===1?{p_face:1}:{}))})
     .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j&&j.erro);return j})}).then(function(j){if(!j||!j.pix)throw 0;pixShow(j,m)})
     .catch(function(e){var c=e&&e.message,t={imagem_reprovada:"Imagem não aprovada pela moderação. Envie outra que respeite as diretrizes. ",imagem_invalida:"Imagem inválida ou grande demais. ",moderacao_indisponivel:"A análise de imagem está indisponível agora. Tente sem imagem ou mais tarde. "};m.textContent=t[c]||"Não foi possível gerar o Pix agora (o bloco pode ter sido ocupado). ";var a=el("a","","Finalizar pelo WhatsApp");a.target="_blank";a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero comprar "+wh[0]*wh[1]+" bloco(s) a partir do "+num(p)+" para "+n+" ("+l+")");m.appendChild(a)})}};
 function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu código de anunciante.</p><input id="mc" placeholder="Seu código"><button class="go" id="mg">Ver métricas</button><div id="mr"></div>';modal("Meu Espaço",f);
@@ -1377,8 +1378,8 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
     if(t)NDATA.some(function(d){if(nm(d[1]+" "+d[2]).indexOf(t)>=0){hit=d[1];return true}return false});
     FILTER=hit;nichos();draw()};
   nichos();
-  /* fora da face 1 ainda não há compra automática: só reserva pelo WhatsApp */
-  var _osF=openSheet;openSheet=function(c){var r=_osF(c);if(FACE.id!==0){var b=$("buy");b.style.display="none";curBuy=null}return r};
+  /* compra por Pix só nas faces com banco próprio (Shopee/ML e Hotmart); Hotmart sem a coluna "face" no banco cai na reserva pelo WhatsApp */
+  var _osF=openSheet;openSheet=function(c){var r=_osF(c);if(!FACE.live||FACE.dbOff){var b=$("buy");b.style.display="none";curBuy=null}return r};
   /* triângulos: um cartão de leilão para cada uma das 6 placas */
   if(FACE.tri){
     var lv=$("lv"),rk=$("rank");lv.style.display="none";
