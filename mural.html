@@ -1551,7 +1551,7 @@ var cs=el("select","ljs");cs.setAttribute("aria-label","Categoria");
 var sh=el("button","ljchip","🔀 Embaralhar");sh.type="button";sh.title="Mostrar outra ordem";
 var gear=el("button","ljgear","⚙");gear.type="button";gear.title="Meus produtos";gear.setAttribute("aria-label","Meus produtos");
 var pb=el("button","ljpost","＋ Postar produto");pb.type="button";
-var so=el("select","ljs ljso");so.setAttribute("aria-label","Ordenar por");[["hot","Em alta"],["love","Mais curtidos"],["new","Mais recentes"],["rand","Aleatório"]].forEach(function(o){var x=el("option","",o[1]);x.value=o[0];so.appendChild(x)});so.onchange=function(){LJ.sort=this.value;if(LJ.sort==="rand")LJ.order=LJ.owner?LJ.all.slice():mix(LJ.all);LJ.page=1;render();bd.scrollTop=0};var ar=el("button","ljchip","⚔️ Arena");ar.type="button";ar.title="Arena de Duelos: vote entre dois produtos";ar.onclick=function(){duel()};var pgn=el("div","ljpg");tb.appendChild(qi);tb.appendChild(cs);tb.appendChild(so);tb.appendChild(ar);tb.appendChild(sh);tb.appendChild(el("span","ljsp"));tb.appendChild(gear);tb.appendChild(pb);
+var so=el("select","ljs ljso");so.autocomplete="off";so.value=LJ.sort;so.setAttribute("aria-label","Ordenar por");[["hot","Em alta"],["love","Mais curtidos"],["new","Mais recentes"],["rand","Aleatório"]].forEach(function(o){var x=el("option","",o[1]);x.value=o[0];so.appendChild(x)});so.onchange=function(){LJ.sort=this.value;if(LJ.sort==="rand")LJ.order=LJ.owner?LJ.all.slice():mix(LJ.all);LJ.page=1;render();bd.scrollTop=0};var ar=el("button","ljchip","⚔️ Arena");ar.type="button";ar.title="Arena de Duelos: vote entre dois produtos";ar.onclick=function(){duel()};var pgn=el("div","ljpg");tb.appendChild(qi);tb.appendChild(cs);tb.appendChild(so);tb.appendChild(ar);tb.appendChild(sh);tb.appendChild(el("span","ljsp"));tb.appendChild(gear);tb.appendChild(pb);
 var bd=el("div","ljbody"),note=el("p","ljnote","Produtos dos donos de bloco"+(HOT?" da Hotmart":"")+", ordenados pela comunidade. Os links são de afiliado e levam para o site do vendedor: o Posta Fácil AI não vende nem entrega nada."),gd=el("div","ljg"),mr=el("button","ljchip ljmore","Mostrar mais");mr.type="button";
 var em=el("div","ljempty");var ow=el("div","ljown");ow.style.display="none";bd.appendChild(ow);bd.appendChild(note);bd.appendChild(gd);bd.appendChild(em);bd.appendChild(mr);bd.appendChild(pgn);
 var ai=document.createElement("button");ai.id="ljai";ai.type="button";ai.setAttribute("aria-label","Perguntar à IA da loja");ai.title="Pergunte à IA";
@@ -1907,5 +1907,29 @@ if(window.MutationObserver)new MutationObserver(function(ms){
 .arbar{display:none;position:relative;z-index:0;height:24px;line-height:24px;border-radius:6px;background:rgba(128,128,128,.2);overflow:hidden;text-align:center;font-size:12px;font-weight:700}.arbar.on{display:block}
 .arbar::before{content:"";position:absolute;inset:0 auto 0 0;width:var(--w,0%);background:var(--accent);opacity:.5;z-index:-1}.arbar.me::before{opacity:1}
 </style>
+<style id="mapa-nichos-css">
+.nmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px;max-height:52vh;overflow:auto}
+.nmap button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer}
+.nmap button small{color:var(--muted);font-size:11.5px}.nmap button.on{border-color:var(--accent);background:rgba(128,128,128,.16)}.nmap button:hover{border-color:var(--accent)}
+.nmq{width:100%;box-sizing:border-box}
+</style>
+<script id="mapa-nichos">
+(function(){
+var mn=document.getElementById("mn");if(!mn||typeof NDATA==="undefined")return;
+function goMural(){var l=document.querySelector('#nav a.ni[href="/"]');if(l&&document.querySelector("main.lj"))l.click()}
+function open(){
+  var f=el("div"),q=el("input","nmq"),g=el("div","nmap"),cnt={};
+  q.type="search";q.placeholder="Buscar nicho…";q.autocomplete="off";q.setAttribute("aria-label","Buscar nicho no mapa");
+  ADS.forEach(function(a){cnt[a.nicho]=(cnt[a.nicho]||0)+a.w*a.h});
+  function pick(v){FILTER=v;NQ=v||"";var i=document.getElementById("nq");if(i)i.value=v||"";nichos();draw();document.getElementById("md").className="";goMural()}
+  function list(){g.textContent="";var t=nm(q.value.trim());
+    var all=el("button",FILTER===null?"on":"","Todos os nichos");all.type="button";all.onclick=function(){pick(null)};g.appendChild(all);
+    NDATA.filter(function(d){return!t||nm(d[1]+" "+d[2]).indexOf(t)>=0}).sort(function(a,b){return(cnt[b[1]]||0)-(cnt[a[1]]||0)||a[1].localeCompare(b[1],"pt")}).forEach(function(d){
+      var b=el("button",FILTER===d[1]?"on":"",d[0]+" "+d[1]),n=cnt[d[1]]||0;b.type="button";b.appendChild(el("small","",n?n+(n===1?" bloco":" blocos"):"nenhum anúncio ainda"));b.onclick=function(){pick(d[1])};g.appendChild(b)});
+    if(g.children.length===1)g.appendChild(el("p","mut","Nenhum nicho encontrado. Tente outra palavra."))}
+  q.oninput=list;f.appendChild(el("p","mut","Escolha um nicho para destacar os blocos dele no mural."));f.appendChild(q);f.appendChild(g);list();modal("Mapa de Nichos",f);q.focus()}
+mn.onclick=function(e){e.preventDefault();open()};
+})();
+</script>
 </body>
 </html>
