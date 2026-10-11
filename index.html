@@ -130,7 +130,7 @@ body.opening #stage{cursor:progress}
 .seg button.on{background:rgba(214,179,106,.18);color:var(--gold);font-weight:700}
 .tnav{display:inline-flex;align-items:center;gap:6px;pointer-events:auto}.tnav[hidden]{display:none}.tnav i{font-style:normal;color:var(--muted);min-width:34px;text-align:center;font-size:14px}.tnav button,#bb{pointer-events:auto}
 #pad{position:fixed;right:16px;bottom:16px;z-index:6;display:grid;grid-template-columns:repeat(3,42px);gap:6px}#pad button{padding:0;min-height:42px;font-size:17px;touch-action:none;user-select:none;opacity:.9}body.opening #pad{display:none}
-.lockb{position:absolute;left:-50px;top:-60px;width:100px;height:120px;pointer-events:none;color:var(--gold);transition:opacity .4s}
+.lkf{position:absolute;pointer-events:none;color:var(--gold);transform:translate(-50%,-50%)}.lkf svg{display:block;width:100%;height:auto}
 .orb,#cubeG,.ring{transition:opacity .5s}.sh{opacity:0!important;pointer-events:none!important}.sh .face{pointer-events:none!important}
 </style>
 </head>
@@ -691,16 +691,15 @@ update=function(t){_upd1(t);if(!introOn)return;if(solo!=="all"){introEnd();retur
   cubeG.style.transform="translate3d(0,0,"+(-u*42*(1-ec))+"px) "+cubeG.style.transform+" rotateY("+((1-ec)*360)+"deg)";cubeG.style.opacity=Math.min(1,ec*2.2)};
 if(introOn){requestAnimationFrame(function(){requestAnimationFrame(function(){iT0=performance.now()})});
   (function lp(){if(!introOn)return;if(spd===0&&!anim)update(tt);requestAnimationFrame(lp)})()}
-/* ---- cadeados: sempre em pé, voltados para a câmera, em qualquer giro ---- */
+/* ---- cadeados: ficam DENTRO da face (como antes), girando só no plano dela para ficarem sempre em pé ---- */
 var LB=[],LSVG='<svg viewBox="0 0 100 120" width="100" height="120"><path d="M30 52V36a20 20 0 0 1 40 0v16" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><rect x="16" y="50" width="68" height="52" rx="9" fill="currentColor"/><circle cx="50" cy="72" r="6" fill="#1b1405"/><rect x="47" y="72" width="6" height="15" fill="#1b1405"/><text x="50" y="117" text-anchor="middle" font-size="13" font-weight="800" fill="currentColor" opacity=".9" font-family="Trebuchet MS,sans-serif">EM BREVE</text></svg>';
-FACES.forEach(function(f){if(!isLocked(f.idx))return;var d=document.createElement("div");d.className="lockb";d.setAttribute("aria-hidden","true");d.innerHTML=LSVG;scene.appendChild(d);LB.push({f:f,el:d})});
+FACES.forEach(function(f){if(!isLocked(f.idx))return;var d=document.createElement("div");d.className="lkf";d.setAttribute("aria-hidden","true");
+  if(f.idx<6){d.style.width="31%";d.style.left="50%";d.style.top=((.5-20/(N*C))*100)+"%"}else{d.style.width="40%";d.style.left="50%";d.style.top="66.3%"}
+  d.innerHTML=LSVG;f.el.appendChild(d);LB.push({f:f,el:d})});
 var _upd2=update;
-update=function(t){_upd2(t);var R=mFromQ(curQ()),bm="matrix3d("+[R[0][0],R[0][1],R[0][2],0,R[1][0],R[1][1],R[1][2],0,R[2][0],R[2][1],R[2][2],0,0,0,0,1].join(",")+")";
-  LB.forEach(function(o){var f=o.f,el=o.el,tri=f.idx>=6,gone=anim||(tri?orbs[Math.floor((f.idx-6)/4)].classList.contains("sh"):cubeG.classList.contains("sh"));
-    if(gone){el.style.opacity=0;return}
-    var fi=faceInfo(f),k=fi.w*(tri?.0042:.0034),n=fi.L[2],ofs=100*k*.3,nz=R[2][0]*n[0]+R[2][1]*n[1]+R[2][2]*n[2],vis=Math.max(0,Math.min(1,(nz-.05)/.2)),base=tri||cubeG.style.opacity===""?1:+cubeG.style.opacity;
-    el.style.opacity=vis*base;if(!vis)return;
-    el.style.transform="translate3d("+(fi.c[0]+n[0]*ofs)+"px,"+(fi.c[1]+n[1]*ofs)+"px,"+(fi.c[2]+n[2]*ofs)+"px) "+bm+" scale("+k+")"})};
+update=function(t){_upd2(t);if(anim)return;var R=mFromQ(curQ());
+  LB.forEach(function(o){var L=faceInfo(o.f).L,ex=L[0],ey=L[1],exy=R[1][0]*ex[0]+R[1][1]*ex[1]+R[1][2]*ex[2],eyy=R[1][0]*ey[0]+R[1][1]*ey[1]+R[1][2]*ey[2],a=Math.atan2(-exy,eyy)*180/Math.PI;
+    o.el.style.transform="translate(-50%,-50%) rotate("+a.toFixed(1)+"deg)"})};
 applySolo();
 
 window.addEventListener("keydown",function(e){if(e.key===" "&&document.activeElement===document.body&&!anim){e.preventDefault();toggleRun()}});
