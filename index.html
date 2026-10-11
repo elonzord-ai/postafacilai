@@ -129,6 +129,7 @@ body.opening #stage{cursor:progress}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;pointer-events:auto}.seg button{border:0;border-radius:0;border-right:1px solid var(--line)}.seg button:last-child{border-right:0}
 .seg button.on{background:rgba(214,179,106,.18);color:var(--gold);font-weight:700}
 .tnav{display:inline-flex;align-items:center;gap:6px;pointer-events:auto}.tnav[hidden]{display:none}.tnav i{font-style:normal;color:var(--muted);min-width:34px;text-align:center;font-size:14px}.tnav button,#bb{pointer-events:auto}
+#pad{position:fixed;right:16px;bottom:16px;z-index:6;display:grid;grid-template-columns:repeat(3,42px);gap:6px}#pad button{padding:0;min-height:42px;font-size:17px;touch-action:none;user-select:none;opacity:.9}body.opening #pad{display:none}
 .orb,#cubeG,.ring{transition:opacity .5s}.sh{opacity:0!important;pointer-events:none!important}.sh .face{pointer-events:none!important}
 </style>
 </head>
@@ -170,7 +171,7 @@ body.opening #stage{cursor:progress}
   </div>
 </aside>
 <div id="tip"></div>
-<div id="hint"><b>Toque numa face</b> para abrir o mural · <b>toque no fundo</b> para pausar ou girar</div>
+<div id="hint"><b>Toque numa face</b> para abrir o mural · <b>toque no fundo</b> para pausar ou girar · arraste para girar em 360° · Shift ou botão direito: inclinar de lado</div>
 <div id="big"></div>
 <div id="fade"></div>
 
@@ -428,7 +429,17 @@ function layout(){
 // ---- animação ----
 var reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 var run=!reduce,mul=1,target=run?1:0,spd=target,tt=0,last=performance.now(),anim=null;
-var yaw=0,pitch=-18,zoom=1;
+var yaw=0,pitch=-18,zoom=1,qf=null,free=false,gTok=0,inTok=0,SENS=.6;
+function mm(a,b){var r=[[0,0,0],[0,0,0],[0,0,0]],i,j,k;for(i=0;i<3;i++)for(j=0;j<3;j++)for(k=0;k<3;k++)r[i][j]+=a[i][k]*b[k][j];return r}
+function qOf(p,y){return qFromM(rot(new DOMMatrix("rotateX("+p+"deg) rotateY("+y+"deg)")))}
+function curQ(){return free?qf:qOf(pitch,yaw)}
+function nq(q){var n=Math.hypot(q[0],q[1],q[2],q[3])||1;return q.map(function(v){return v/n})}
+function rotFree(a,b,c){gTok++;var R=mFromQ(curQ()),D=Math.PI/180,ca=Math.cos(a*D),sa=Math.sin(a*D),cb=Math.cos(b*D),sb=Math.sin(b*D),cc=Math.cos((c||0)*D),sc=Math.sin((c||0)*D);
+  qf=nq(qFromM(mm([[cc,-sc,0],[sc,cc,0],[0,0,1]],mm([[1,0,0],[0,cb,-sb],[0,sb,cb]],mm([[ca,0,sa],[0,1,0],[-sa,0,ca]],R)))));free=true;if(spd===0&&!anim)update(tt)}
+function goQ(qT,ms,done){inTok++;var q0=curQ().slice(),tk=++gTok,t0=performance.now();free=true;qf=q0;
+  (function f(n){if(tk!==gTok)return;var k=Math.min(1,(n-t0)/ms);k=1-Math.pow(1-k,3);qf=nq(slerp(q0,qT,k));if(spd===0&&!anim)update(tt);
+    if(k<1)requestAnimationFrame(f);else if(done){free=false;yaw=0;pitch=-18;if(spd===0&&!anim)update(tt)}})(t0)}
+function belowNow(){return-mFromQ(curQ())[2][1]<0}
 function update(t){
   var R=stage._R||3.85*u;
   cubeG.style.transform="translateY("+(Math.sin(t*.9)*.12*u)+"px) rotateZ(5deg) rotateY("+(-t*20)+"deg)";
@@ -436,7 +447,7 @@ function update(t){
   for(var i=0;i<4;i++){
     orbs[i].style.transform="rotateY("+(i*90-t*26)+"deg) translateZ("+R+"px)";
     tetEls[i].style.transform="translateY("+(Math.sin(t*1.1+i*1.7)*.2*u)+"px) rotateY("+(-t*48)+"deg) rotateZ("+(Math.sin(t*.7+i)*14)+"deg)"}
-  if(!anim)scene.style.transform="scale("+(zoom*sh.ds)+") rotateX("+pitch+"deg) rotateY("+yaw+"deg)";
+  if(!anim)scene.style.transform=free?(function(){var R=mFromQ(qf);return"scale("+(zoom*sh.ds)+") matrix3d("+[R[0][0],R[1][0],R[2][0],0,R[0][1],R[1][1],R[2][1],0,R[0][2],R[1][2],R[2][2],0,0,0,0,1].join(",")+")"})():"scale("+(zoom*sh.ds)+") rotateX("+pitch+"deg) rotateY("+yaw+"deg)";
   updUI()}
 // aba aberta: os blocos deslizam para a esquerda e encolhem um pouco para ficarem inteiros na área livre
 function stepShift(dt){var open=dw.classList.contains("open")&&innerWidth>=700,w=open?dw.offsetWidth:0,tdx=open?w/2:0,
@@ -557,7 +568,7 @@ function openFace(f,o){
   target=0;spd=0;update(tt);
   var fi=faceInfo(f),Lt=fi.L,
       q1=qFromM(Lt),
-      L0=rot(new DOMMatrix("rotateX("+pitch+"deg) rotateY("+yaw+"deg)")),q0=qFromM(L0),
+      L0=rot(new DOMMatrix("rotateX("+pitch+"deg) rotateY("+yaw+"deg)")),q0=free?qf.slice():qFromM(L0),
       kf=Math.min(stage.clientWidth*.92/fi.w,stage.clientHeight*.88/fi.h);
   anim={t0:performance.now(),dur:1150,q0:q0,q1:q1,c:fi.c,z0:zoom,z1:kf,link:o.fly?null:linkOf(f.idx),done:false,mode:o.fly?"fly":"nav",hold:o.hold||2500,onend:o.onend,ph:0};
   var w=fi.w*kf,h=fi.h*kf,dpr=Math.min(2,window.devicePixelRatio||1),big=$("big"),bc=document.createElement("canvas"),cw=Math.max(64,Math.round(w*dpr));
@@ -593,19 +604,22 @@ window.addEventListener("pageshow",function(e){if(e.persisted||anim)resetAfterBa
 var ptr={},down=null,pinchD=0,pinchZ=1;
 function faceOf(t){var e=t&&t.closest?t.closest(".face"):null;return e?FACES[+e.dataset.i]:null}
 stage.addEventListener("pointerdown",function(e){
-  if(anim)return;
+  inTok++;gTok++;if(anim)return;
   ptr[e.pointerId]={x:e.clientX,y:e.clientY};var ids=Object.keys(ptr);
-  if(ids.length===1)down={x:e.clientX,y:e.clientY,yaw:yaw,pitch:pitch,moved:false,face:faceOf(e.target)};
+  if(ids.length===1)down={x:e.clientX,y:e.clientY,yaw:yaw,pitch:pitch,moved:false,btn:e.button,face:faceOf(e.target)};
   else if(ids.length===2){var a=ptr[ids[0]],b=ptr[ids[1]];pinchD=Math.hypot(a.x-b.x,a.y-b.y);pinchZ=zoom;if(down)down.moved=true}});
 window.addEventListener("pointermove",function(e){
   if(!ptr[e.pointerId])return;ptr[e.pointerId]={x:e.clientX,y:e.clientY};var ids=Object.keys(ptr);
   if(ids.length===2){var a=ptr[ids[0]],b=ptr[ids[1]];setZoom(pinchZ*Math.hypot(a.x-b.x,a.y-b.y)/pinchD);return}
   if(down&&ids.length===1){var dx=e.clientX-down.x,dy=e.clientY-down.y;
     if(!down.moved&&Math.abs(dx)+Math.abs(dy)>8){down.moved=true;stage.classList.add("drag");$("tip").style.display="none"}
-    if(down.moved){yaw=down.yaw+dx*.35;pitch=Math.max(-90,Math.min(90,down.pitch-dy*.3));if(spd===0)update(tt)}}});
+    if(down.moved){var ddx=e.clientX-(down.lx==null?down.x:down.lx),ddy=e.clientY-(down.ly==null?down.y:down.ly);var nw=performance.now(),dtm=Math.max(1,nw-(down.lt||nw)),ax=ddx*SENS,ay=-ddy*SENS,roll=e.shiftKey||down.btn===2;down.lx=e.clientX;down.ly=e.clientY;down.lt=nw;
+      function cl(v){return Math.max(-1.2,Math.min(1.2,v))}down.vx=.5*(down.vx||0)+.5*(roll?0:cl(ax/dtm));down.vy=.5*(down.vy||0)+.5*(roll?0:cl(ay/dtm));
+      if(roll)rotFree(0,0,ax);else rotFree(ax,ay)}}});
 function endPtr(e,cancel){
   if(!ptr[e.pointerId])return;delete ptr[e.pointerId];stage.classList.remove("drag");
   if(Object.keys(ptr).length||!down)return;var d=down;down=null;
+  if(d.moved&&!cancel&&!anim)inertia(d);
   if(cancel||d.moved||anim)return;
   if(d.face)openFace(d.face);else toggleRun()}
 $("lko").addEventListener("click",function(){$("lockd").hidden=true});
@@ -628,7 +642,18 @@ function setZoom(z){zoom=Math.max(.3,Math.min(7,z));if(spd===0&&!anim)update(tt)
 stage.addEventListener("wheel",function(e){e.preventDefault();setZoom(zoom*Math.exp(-e.deltaY*.0015))},{passive:false});
 $("bp").onclick=toggleRun;
 $("bi").onclick=function(){setZoom(zoom*1.25)};$("bo").onclick=function(){setZoom(zoom/1.25)};
-$("br").onclick=function(){yaw=0;pitch=-18;zoom=1;if(!anim)update(tt)};
+$("br").onclick=function(){zoom=1;goQ(qOf(-18,0),700,true)};
+addEventListener("keydown",function(e){if(anim||document.activeElement!==document.body)return;var k={ArrowLeft:[-8,0],ArrowRight:[8,0],ArrowUp:[0,8],ArrowDown:[0,-8]}[e.key];if(k){e.preventDefault();rotFree(k[0],k[1])}});
+function inertia(d){var vx=d.vx||0,vy=d.vy||0;if(Math.hypot(vx,vy)<.03||performance.now()-(d.lt||0)>90)return;var tk=++inTok,last=performance.now();
+  (function f(n){if(tk!==inTok||anim)return;var dt=Math.min(40,n-last);last=n;rotFree(vx*dt,vy*dt);var fr=Math.pow(.94,dt/16);vx*=fr;vy*=fr;if(Math.hypot(vx,vy)>.008)requestAnimationFrame(f)})(last)}
+stage.addEventListener("contextmenu",function(e){e.preventDefault()});
+var pad=document.createElement("div");pad.id="pad";pad.setAttribute("role","group");pad.setAttribute("aria-label","Girar a estrutura");
+[["↺","Inclinar para a esquerda",0,0,-1],["▲","Girar para cima",0,1,0],["↻","Inclinar para a direita",0,0,1],["◀","Girar para a esquerda",-1,0,0],["▼","Girar para baixo",0,-1,0],["▶","Girar para a direita",1,0,0]].forEach(function(o){
+  var b=document.createElement("button"),iv=0;b.type="button";b.textContent=o[0];b.setAttribute("aria-label",o[1]);b.title=o[1];
+  function stop(){if(iv){clearInterval(iv);iv=0}}
+  b.addEventListener("pointerdown",function(e){e.preventDefault();inTok++;if(anim)return;rotFree(o[2]*6,o[3]*6,o[4]*6);stop();iv=setInterval(function(){rotFree(o[2]*1.6,o[3]*1.6,o[4]*1.6)},16)});
+  ["pointerup","pointerleave","pointercancel","blur"].forEach(function(t){b.addEventListener(t,stop)});pad.appendChild(b)});
+document.body.appendChild(pad);
 /* ---- modos de visão: tudo / só cubo / só triângulo, e "ver base" ---- */
 var solo="all",soloN=0,_upd0=update,zTok=0,pTok=0,segB={},tnav=document.createElement("span"),bb=document.createElement("button");
 function ease(get,set,to,ms,tokGet,tokInc){var from=get(),t0=performance.now(),tk=tokInc();(function f(n){if(tk!==tokGet())return;var k=Math.min(1,(n-t0)/ms);k=1-Math.pow(1-k,3);set(from+(to-from)*k);if(spd===0&&!anim)update(tt);if(k<1)requestAnimationFrame(f)})(t0)}
@@ -636,7 +661,7 @@ function applySolo(){
   var cubeOn=solo==="all"||solo==="cube";cubeG.classList.toggle("sh",!cubeOn);
   [ring1,ring2].forEach(function(r){r.classList.toggle("sh",solo!=="all")});
   orbs.forEach(function(o,i){var on=solo==="all"||(solo==="tet"&&i===soloN);o.classList.toggle("sh",!on);if(solo==="tet"&&i===soloN)o.style.transform="none"});
-  bb.textContent=pitch>20?"Ver de cima":"Ver base"}
+  bb.textContent=belowNow()?"Ver de cima":"Ver base"}
 update=function(t){_upd0(t);applySolo()};
 function setSolo(m,n){solo=m;if(n!=null)soloN=(n+orbs.length)%orbs.length;
   Object.keys(segB).forEach(function(k){var on=k===m;segB[k].classList.toggle("on",on);segB[k].setAttribute("aria-pressed",on)});
@@ -649,7 +674,7 @@ tnav.className="tnav";tnav.hidden=true;
 var pv=document.createElement("button"),nx=document.createElement("button"),ct=document.createElement("i");pv.type=nx.type="button";pv.textContent="‹";nx.textContent="›";pv.setAttribute("aria-label","Triângulo anterior");nx.setAttribute("aria-label","Próximo triângulo");ct.textContent="1/4";
 pv.onclick=function(){setSolo("tet",soloN-1)};nx.onclick=function(){setSolo("tet",soloN+1)};tnav.appendChild(pv);tnav.appendChild(ct);tnav.appendChild(nx);
 bb.type="button";bb.id="bb";bb.title="Inclina a câmera para ver a base de baixo (cubo e triângulos)";bb.textContent="Ver base";
-bb.onclick=function(){ease(function(){return pitch},function(v){pitch=v},pitch>20?-18:68,800,function(){return pTok},function(){return++pTok})};
+bb.onclick=function(){goQ(belowNow()?qOf(-18,0):qOf(68,0),800,belowNow())};
 btns.insertBefore(grp,$("bo"));btns.insertBefore(tnav,$("bo"));btns.insertBefore(bb,$("bo"));
 var _br=$("br").onclick;$("br").onclick=function(){_br();solo="all";Object.keys(segB).forEach(function(k){segB[k].classList.toggle("on",k==="all");segB[k].setAttribute("aria-pressed",k==="all")});tnav.hidden=true;update(tt)};
 applySolo();
