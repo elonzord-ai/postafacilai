@@ -1307,13 +1307,12 @@ function slideCard(p){var adm=CH.role==="admin",c=el("div","rdc"+(p.pin?" pin":"
   bd.appendChild(R);c.appendChild(bd);
   tx.appendChild(el("b","",cut(p.titulo,46)));if(p.legenda)tx.appendChild(el("small","",cut(p.legenda,70)));c.appendChild(tx);
   var ac=el("span","rdca");
-  if(p.url&&httpsOk(p.url)){var a=el("a","","↗ Abrir");a.href=p.url;a.target="_blank";a.rel="noopener noreferrer nofollow";a.onclick=stop;ac.appendChild(a)}
-  if(p.tipo!=="aviso"){var fz=el("button",p.eu_fiz?"on":"",p.eu_fiz?"✅ Feito":"☐ Feito");fz.type="button";
+  if(p.tipo!=="aviso"){var fz=el("button","rdfk"+(p.eu_fiz?" on":""));fz.type="button";fz.title=p.eu_fiz?"Feito":"Marcar como feito";fz.setAttribute("aria-label",fz.title);fz.appendChild(el("i","bx",p.eu_fiz?"✅":""));if(!p.eu_fiz)fz.appendChild(el("span","","← Feito"));
     fz.onclick=function(e){stop(e);fz.disabled=true;rcall("raid_feito",{p_id:p.id,p_fiz:!p.eu_fiz}).then(function(){rsync()}).catch(function(er){fz.disabled=false;rflash(rerr(er))})};ac.appendChild(fz)}
   if(ac.children.length)c.appendChild(ac);
   c.onclick=function(){var n=Date.now(),dbl=RD.lastC&&RD.lastC.id===p.id&&n-RD.lastC.t<400&&p.id===RD.sel;RD.lastC={id:p.id,t:n};RD.hold=n;if(dbl){RD.lastC=null;if(p.url&&httpsOk(p.url)){var an=document.createElement("a");an.href=p.url;an.target="_blank";an.rel="noopener noreferrer nofollow";document.body.appendChild(an);an.click();an.remove()}else flash2()}else selectSlide(p.id,true)};
   c.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();selectSlide(p.id,true)}};
-  c.title=p.url?"Toque duas vezes para abrir o link":"";return c}
+  return c}
 function flash2(){rflash("Este slide não tem link.")}
 function selectSlide(id,scroll){RD.sel=id;var E=RD.el;if(!E)return;
   [].forEach.call(E.sl.children,function(n){var on=+n.dataset.pid===id;n.classList.toggle("sel",on);if(on&&scroll)n.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"})});fillDet()}
@@ -2066,6 +2065,14 @@ window.__loja={open:function(){toggle(true)},state:LJ};
 .rdca a,.rdca button{flex:1;display:block;text-align:center;font:700 10.5px/1 inherit;padding:7px 4px;min-height:0;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(5,9,22,.8);color:#fff;cursor:pointer;text-decoration:none;white-space:nowrap}
 .rdca a{background:linear-gradient(135deg,#2f6bf0,#6a3df0);border:0}
 .rdca button.on{background:#2ee59d;color:#052;border-color:#2ee59d}
+</style>
+<style id="spx4">
+.rdc.sel .rdct{padding-bottom:34px}
+.rdca{right:auto;bottom:7px;left:7px}
+.rdca .rdfk{flex:none;display:inline-flex;align-items:center;gap:6px;background:rgba(5,9,22,.5);border:0;color:rgba(255,255,255,.85);font:600 11px/1 inherit;padding:3px 8px 3px 3px;border-radius:8px;cursor:pointer;min-height:0}
+.rdfk .bx{width:20px;height:20px;border:1.5px solid rgba(255,255,255,.85);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-style:normal;line-height:1}
+.rdca .rdfk.on{padding:2px;background:none}
+.rdfk.on .bx{width:22px;height:22px;background:rgba(46,229,157,.28);border-color:#2ee59d}
 </style>
 </body>
 </html>
