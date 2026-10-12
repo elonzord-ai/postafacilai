@@ -1444,7 +1444,7 @@ function raidBtn(tb){var b=el("button","chtab"),bd=el("span","chbd");bd.style.di
 /* ---------- SPACE: sala de voz ao vivo (WebRTC entre os aparelhos; o banco só troca os sinais) ---------- */
 var SP={myFal:null,chg:false,on:false,d:null,last:0,t:0,pcs:{},aud:{},an:{},talk:{},mic:null,micP:null,ctx:null,box:null,sig:"",tk:0,hand:false,loop:0};
 var SEMO=["😂","👏","🥁","🍽️","🎺","📣","🤡","🐮","💥","🚀","🔥","💎","❤️","👀"];
-var SERR={sem_space:"Não há Space no ar agora.",lotado:"O Space está lotado (30 pessoas).",palco_cheio:"O palco já tem 12 pessoas falando.",fora_do_space:"Entre no Space primeiro."};
+var SERR={cohost_cheio:"Já existem 2 co-hosts.",sem_space:"Não há Space no ar agora.",lotado:"O Space está lotado (30 pessoas).",palco_cheio:"O palco já tem 12 pessoas falando.",fora_do_space:"Entre no Space primeiro."};
 function spErr(e){var d=e&&e.detail;return SERR[d]||RERR[d]||ERR[d]||"Não foi possível agora."}
 function spIce(){var s=[{urls:["stun:stun.l.google.com:19302","stun:stun1.l.google.com:19302"]}];if(window.SPACE_TURN&&window.SPACE_TURN.urls)s.push(window.SPACE_TURN);return{iceServers:s}}
 function spMe(){var d=SP.d;if(!d)return null;var m=null;(d.partes||[]).forEach(function(p){if(p.id===d.eu)m=p});return m}
@@ -1532,15 +1532,18 @@ function spSfx(e){if(SP.snd===false)return;var c=spAudioCtx();if(!c)return;
 ["pointerdown","touchend","keydown"].forEach(function(n){addEventListener(n,function(){var c=spAudioCtx();if(!c)return;if(c.state!=="running")c.resume();try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(x){}},{once:true,passive:true})});
 function spStage(p,big,adm,me){var b=el("button","spp"+(big?" big":"")+(p.id===me?" me":"")),w=el("span","rdav");b.type="button";b.dataset.id=p.id;b.setAttribute("aria-label",p.nome);
   w.appendChild(rpav({id:p.id,v:p.v,nome:p.nome},big?60:42));
-  if(p.papel!=="ouvinte"&&p.mudo)w.appendChild(el("i","spmu","🔇"));if(p.mao)w.appendChild(el("i","spmo","✋"));if(p.papel==="host")w.appendChild(el("i","spcr","👑"));
+  if(p.papel!=="ouvinte"&&p.mudo)w.appendChild(el("i","spmu","🔇"));if(p.mao)w.appendChild(el("i","spmo","✋"));if(p.papel==="host")w.appendChild(el("i","spcr","👑"));if(p.papel==="cohost")w.appendChild(el("i","spcr","⭐"));
   if(p.r){var nw=RD.rt["s"+p.id]!==p.rt,e=el("span","rdr"+(nw?"":" st"),p.r);w.appendChild(e);RD.rt["s"+p.id]=p.rt;if(nw&&p.id!==me&&SP.on)spSfx(p.r)}
   b.appendChild(w);b.appendChild(el("small","",p.id===me?"Você":p.nome));
-  if(adm&&p.papel!=="host")b.onclick=function(){var f=el("div","chfm"),c;f.appendChild(el("p","mut",p.nome+(p.mao?" pediu para falar.":"")));
+  if(adm&&p.papel!=="host"&&(SP.isHost||p.papel!=="cohost"))b.onclick=function(){var f=el("div","chfm"),c;f.appendChild(el("p","mut",p.nome+(p.mao?" pediu para falar.":"")));
     if(p.papel==="ouvinte")f.appendChild(btn("🎙 Chamar para falar","go",function(x){x.disabled=true;rcall("space_papel",{p_alvo:p.id,p_papel:"falante"}).then(function(){c();spTick()}).catch(function(er){x.disabled=false;rflash(spErr(er))})}));
     else f.appendChild(btn("Tirar do palco","dg",function(x){x.disabled=true;rcall("space_papel",{p_alvo:p.id,p_papel:"ouvinte"}).then(function(){c();spTick()}).catch(function(er){x.disabled=false;rflash(spErr(er))})}));
+    if(SP.isHost){var nco=((SP.d&&SP.d.partes)||[]).filter(function(u){return u.papel==="cohost"}).length;
+      if(p.papel==="cohost")f.appendChild(btn("Remover co-host","dg",function(x){x.disabled=true;rcall("space_papel",{p_alvo:p.id,p_papel:"falante"}).then(function(){c();spTick()}).catch(function(er){x.disabled=false;rflash(spErr(er))})}));
+      else if(nco<2)f.appendChild(btn("⭐ Tornar co-host","go",function(x){x.disabled=true;rcall("space_papel",{p_alvo:p.id,p_papel:"cohost"}).then(function(){c();spTick()}).catch(function(er){x.disabled=false;rflash(spErr(er))})}))}
     c=rsheet(p.nome,f)};
   return b}
-function spRender(){var E=RD.el;if(!E||!E.sp||!E.sp.isConnected)return;var d=SP.d,adm=CH.role==="admin",sa=d&&d.sala,me=spMe();
+function spRender(){var E=RD.el;if(!E||!E.sp||!E.sp.isConnected)return;var d=SP.d,adm=CH.role==="admin",sa=d&&d.sala,me=spMe(),mgr=adm||!!(me&&me.papel==="cohost");SP.isHost=adm;
   var sig=JSON.stringify([SP.on,sa&&sa.ativa,sa&&sa.titulo,d&&(d.partes||[]).map(function(p){return[p.id,p.papel,p.mao,p.mudo,p.v,p.rt,RD.pf[p.id+":"+p.v]?1:0]}),SP.hand,SP.snd]);
   if(sig===SP.sig)return;SP.sig=sig;var box=E.sp;box.innerHTML="";
   var h=el("div","sph");h.appendChild(el("b","","🎙 Space"));box.appendChild(h);
@@ -1551,8 +1554,9 @@ function spRender(){var E=RD.el;if(!E||!E.sp||!E.sp.isConnected)return;var d=SP.
     else box.appendChild(el("p","mut","Nenhum Space no ar agora. Quando o admin abrir, você entra por aqui para ouvir e pedir para falar."));return}
   h.appendChild(el("span","splv","● AO VIVO"));if(sa.titulo)box.appendChild(el("p","spti",sa.titulo));
   var ps=d.partes||[],fal=ps.filter(function(p){return p.papel!=="ouvinte"}),ou=ps.filter(function(p){return p.papel==="ouvinte"}),st=el("div","spst");
-  fal.forEach(function(p){st.appendChild(spStage(p,true,adm&&SP.on,d.eu))});box.appendChild(st);
-  if(ou.length){box.appendChild(el("small","splb","Ouvintes · "+ou.length));var ro=el("div","spou");ou.forEach(function(p){ro.appendChild(spStage(p,false,adm&&SP.on,d.eu))});box.appendChild(ro)}
+  var sc=el("div","spscroll");fal.forEach(function(p){st.appendChild(spStage(p,true,mgr&&SP.on,d.eu))});sc.appendChild(st);
+  if(ou.length){sc.appendChild(el("small","splb","Ouvintes · "+ou.length));var ro=el("div","spou");ou.forEach(function(p){ro.appendChild(spStage(p,false,mgr&&SP.on,d.eu))});sc.appendChild(ro)}
+  box.appendChild(sc);var dk=el("div","spdock");
   var ct=el("div","spct");
   if(!SP.on)ct.appendChild(btn("🎧 Entrar para ouvir","go",function(b){b.disabled=true;spEnter().then(function(){b.disabled=false})}));
   else{
@@ -1560,10 +1564,10 @@ function spRender(){var E=RD.el;if(!E||!E.sp||!E.sp.isConnected)return;var d=SP.
     else if(me)ct.appendChild(btn(me.mao?"✋ Baixar a mão":"✋ Pedir para falar","rdsm",function(b){b.disabled=true;rcall("space_mao",{p_on:!me.mao}).then(function(){me.mao=!me.mao;SP.sig="";spRender();spTick()}).catch(function(){b.disabled=false})}));
     ct.appendChild(btn(SP.snd===false?"🔇 Sons":"🔊 Sons","rdsm",function(){SP.snd=(SP.snd===false);SP.sig="";if(SP.snd!==false)spSfx("💎");spRender()}));ct.appendChild(btn("Sair","rdsm",function(){spLeave(false)}));
     if(adm)ct.appendChild(btn("Encerrar Space","dg rdsm",function(b){if(!confirm("Encerrar o Space para todos?"))return;b.disabled=true;rcall("space_encerrar").then(function(){spLeave(true);SP.d=null;spTick()}).catch(function(e){b.disabled=false;rflash(spErr(e))})}))}
-  box.appendChild(ct);
-  if(SP.on){var em=el("div","spem");SEMO.forEach(function(e){em.appendChild(btn(e,"rdeb",function(){var n=Date.now();if(n-(SP.lr||0)<1000)return;SP.lr=n;spSfx(e);rcall("space_reagir",{p_emoji:e}).then(spTick).catch(function(er){rflash(spErr(er))})}))});box.appendChild(em);
-    box.appendChild(el("small","splb","Fones de ouvido evitam eco. Quem fala acende o círculo. Toque nos sons para animar a sala."))}
-  SP.box=box}
+  dk.appendChild(ct);
+  if(SP.on){var em=el("div","spem");SEMO.forEach(function(e){em.appendChild(btn(e,"rdeb",function(){var n=Date.now();if(n-(SP.lr||0)<1000)return;SP.lr=n;spSfx(e);rcall("space_reagir",{p_emoji:e}).then(spTick).catch(function(er){rflash(spErr(er))})}))});dk.appendChild(em);
+    dk.appendChild(el("small","splb","Fones de ouvido evitam eco. Quem fala acende o círculo. Toque nos sons para animar a sala."))}
+  box.appendChild(dk);SP.box=box}
 
 function setTab(k){CH.tab=k;Object.keys(CH.tabs).forEach(function(t){CH.tabs[t].className="chtab"+(t===k?" on":"");CH.tabs[t].setAttribute("aria-selected",t===k?"true":"false")});
   var c=k==="chat";CH.cpane.style.display=c?"flex":"none";CH.apane.style.display=c?"none":"block";
@@ -2027,6 +2031,12 @@ window.__loja={open:function(){toggle(true)},state:LJ};
 @supports (height:1dvh){#md.on.chat .mb{height:calc(100dvh - 16px)!important}}
 .spst{min-height:200px;align-content:flex-start;padding:10px;border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
 .spem{grid-template-columns:repeat(7,1fr)!important}
+</style>
+<style id="spx2">
+.spscroll{height:clamp(300px,46vh,560px);overflow-y:auto;overflow-x:hidden;border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.03);padding:10px;margin:8px 0;scrollbar-width:thin;scrollbar-color:rgba(214,179,106,.6) transparent}
+.spscroll::-webkit-scrollbar{width:8px}.spscroll::-webkit-scrollbar-thumb{background:rgba(214,179,106,.6);border-radius:8px}.spscroll::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:8px}
+.spscroll .spst{min-height:0;padding:0;border:0;background:none;margin:0 0 8px}
+.spdock{position:sticky;bottom:0;z-index:3;background:var(--panel);padding:8px 0 6px;border-top:1px solid var(--line)}
 </style>
 </body>
 </html>
