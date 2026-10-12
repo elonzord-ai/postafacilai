@@ -93,7 +93,7 @@ h1{display:flex;align-items:center;gap:8px;margin:0;font-size:19px;font-weight:8
 .dwc .m{font-size:11px;color:var(--muted);line-height:1.25}
 .dwc .bar{height:3px;border-radius:3px;background:var(--line);overflow:hidden}.dwc .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--hl))}
 .dwgrp{margin-bottom:12px}.dwgrp>h3{margin:0 0 6px;font-size:13px;color:var(--gold)}
-@media(max-width:700px){#dw{width:94vw;top:100px}#dwh{width:36px;left:-36px}}
+@media(max-width:700px){#dw{width:100vw;min-width:0;top:0;bottom:0}#dwp{border-radius:0;border-left:0}#dwh{width:36px;left:-36px}}
 .face.pulse{animation:fp 1.1s ease-in-out 3}
 @keyframes fp{0%,100%{filter:brightness(1)}40%{filter:brightness(2) saturate(1.4)}}
 #toast{position:fixed;left:50%;bottom:64px;transform:translate(-50%,12px);z-index:30;padding:8px 16px;border-radius:999px;background:rgba(var(--panelrgb),.95);border:1px solid var(--gold);color:var(--ink);font-size:13px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}
@@ -206,6 +206,8 @@ function lerTema(){try{var t=localStorage.getItem("pf_tema");if(TEMAS[t])return 
 function setTema(t){if(!TEMAS[t])t="azul";var T=TEMAS[t],r=document.documentElement;temaAtual=t;
   for(var k in T.css)r.style.setProperty(k,T.css[k]);for(var c in T.col)COL[c]=T.col[c];r.style.colorScheme=T.scheme;
   var m=document.querySelector('meta[name="theme-color"]');if(m)m.content=T.meta}
+/* celular: cada visita nova começa no tema azul (padrão); a pessoa pode trocar depois no botão Cor */
+try{if(matchMedia("(max-width:700px)").matches&&!sessionStorage.getItem("pf_s")){sessionStorage.setItem("pf_s","1");localStorage.setItem("pf_tema","azul")}}catch(e){}
 setTema(lerTema());
 /* gradientes de ouro e brilho (visual premium das faces) */
 function goldG(ctx,x0,y0,x1,y1){var g=ctx.createLinearGradient(x0,y0,x1,y1);g.addColorStop(0,"#f7e4ab");g.addColorStop(.35,"#c9a24d");g.addColorStop(.7,"#8a6a2a");g.addColorStop(1,"#ecd08a");return g}
@@ -656,13 +658,13 @@ $("br").onclick=function(){zoom=1;goQ(qOf(-18,0),700,true)};
 function inertia(d){var vx=d.vx||0,vy=d.vy||0;if(Math.hypot(vx,vy)<.03||performance.now()-(d.lt||0)>90)return;var tk=++inTok,last=performance.now();
   (function f(n){if(tk!==inTok||anim)return;var dt=Math.min(40,n-last);last=n;rotFree(vx*dt,vy*dt);var fr=Math.pow(.94,dt/16);vx*=fr;vy*=fr;if(Math.hypot(vx,vy)>.008)requestAnimationFrame(f)})(last)}
 stage.addEventListener("contextmenu",function(e){e.preventDefault()});
-var pad=document.createElement("div");pad.id="pad";pad.setAttribute("role","group");pad.setAttribute("aria-label","Girar a estrutura");
+var padEl=document.createElement("div");padEl.id="pad";padEl.setAttribute("role","group");padEl.setAttribute("aria-label","Girar a estrutura");
 [["↺","Inclinar para a esquerda",0,0,-1],["▲","Girar para cima",0,1,0],["↻","Inclinar para a direita",0,0,1],["◀","Girar para a esquerda",-1,0,0],["▼","Girar para baixo",0,-1,0],["▶","Girar para a direita",1,0,0]].forEach(function(o){
   var b=document.createElement("button"),iv=0;b.type="button";b.textContent=o[0];b.setAttribute("aria-label",o[1]);b.title=o[1];
   function stop(){if(iv){clearInterval(iv);iv=0}}
   b.addEventListener("pointerdown",function(e){e.preventDefault();inTok++;if(anim)return;rotFree(o[2]*6,o[3]*6,o[4]*6);stop();iv=setInterval(function(){rotFree(o[2]*1.6,o[3]*1.6,o[4]*1.6)},16)});
-  ["pointerup","pointerleave","pointercancel","blur"].forEach(function(t){b.addEventListener(t,stop)});pad.appendChild(b)});
-document.body.appendChild(pad);
+  ["pointerup","pointerleave","pointercancel","blur"].forEach(function(t){b.addEventListener(t,stop)});padEl.appendChild(b)});
+document.body.appendChild(padEl);
 /* ---- modos de visão: tudo / só cubo / só triângulo, e "ver base" ---- */
 var solo="all",soloN=0,_upd0=update,zTok=0,pTok=0,segB={},tnav=document.createElement("span"),bb=document.createElement("button");
 function ease(get,set,to,ms,tokGet,tokInc){var from=get(),t0=performance.now(),tk=tokInc();(function f(n){if(tk!==tokGet())return;var k=Math.min(1,(n-t0)/ms);k=1-Math.pow(1-k,3);set(from+(to-from)*k);if(spd===0&&!anim)update(tt);if(k<1)requestAnimationFrame(f)})(t0)}
@@ -744,6 +746,8 @@ function relayout(){drawSky();layout()}
 if(window.ResizeObserver)new ResizeObserver(function(){relayout()}).observe(stage);else addEventListener("resize",relayout);
 setInterval(function(){if(!document.hidden&&DATA.disp)paint(cube[0])},1000);
 relayout();requestAnimationFrame(frame);
+/* celular: a primeira tela é a lista "Todos os blocos" */
+if(matchMedia("(max-width:700px)").matches)setDw(true);
 loadData();setInterval(function(){if(!document.hidden)loadData()},30000);
 function retema(t){if(t===temaAtual)return;setTema(t);drawSky();FACES.forEach(paint);if(typeof paintDw==="function")paintDw()}
 addEventListener("storage",function(e){if(e.key==="pf_tema")retema(lerTema())});
