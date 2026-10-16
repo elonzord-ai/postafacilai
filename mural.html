@@ -2170,6 +2170,10 @@ html.ml #tk .ti .n{max-width:150px;white-space:normal;display:-webkit-box;-webki
 html.ml #tkimg{position:relative}
 html.ml #tkimg .tki{width:var(--tz,64px);height:var(--tz,64px)}
 html.ml #tkimg .tkr,html.ml #tkimg .tkr{animation-duration:calc(var(--b,40s)*var(--spd,1))}
+html.ml #tkimg .tkr,html.ml #loja .mvr,html.ml #tk #tkt{animation:none!important;will-change:transform}
+html.ml #tkimg .tkv,html.ml #loja .mvv,html.ml #tk .tkv{touch-action:pan-y;cursor:grab;-webkit-user-select:none;user-select:none}
+html.ml .gr{cursor:grabbing!important}
+html.ml #tkimg img,html.ml #tk img{-webkit-user-drag:none;pointer-events:none}
 .tkctl{display:none}
 html.ml .tkctl{display:flex;gap:8px;position:absolute;right:8px;bottom:8px;z-index:5}
 html.ml .tkctl button{display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);padding:0;color:#2d3277;cursor:pointer}
@@ -2321,6 +2325,32 @@ function mlImgs(){var L=((typeof TKL!=="undefined"&&TKL)||[]).filter(function(p)
         im.alt="";im.referrerPolicy="no-referrer";im.loading="lazy";im.decoding="async";im.onerror=function(){a.remove()};im.src=p.i;a.appendChild(im);gr.appendChild(a)});
       if(g){gr.setAttribute("aria-hidden","true");[].forEach.call(gr.querySelectorAll("a"),function(a){a.tabIndex=-1})}tr.appendChild(gr)}
     tr.style.setProperty("--b",(38+r*10)+"s");if(r%2)tr.style.animationDirection="reverse";row.appendChild(tr);ph.appendChild(row)}ph.appendChild(ctl)}
+/* ---- arrastar e "jogar" as faixas ---- */
+var RAF=0,LT=0,DR=null,FR=0,LN=[];
+function laneEl(vp){return vp.querySelector(".tkr,.mvr,#tkt")}
+function isML(){return document.documentElement.classList.contains("ml")}
+function lstep(t){RAF=requestAnimationFrame(lstep);var dt=Math.min(.05,(t-LT)/1000||.016);LT=t;
+  if(!isML()){if(LN.length){LN.forEach(function(l){l.style.transform=""});LN=[]}return}
+  if(FR++%30===0)LN=[].slice.call(document.querySelectorAll("#tkimg .tkr,#loja .mvr,#tk #tkt"));
+  LN.forEach(function(l){if(!l.offsetParent)return;var st=l._s||(l._s={x:0,v:0,h:0,k:0});
+    if(!st.h||FR%60===0){var g=l.firstElementChild;st.h=g?g.offsetWidth:0}
+    if(!st.h)return;st.dir=l.style.animationDirection==="reverse"?1:-1;
+    if(DR&&DR.l===l)return;
+    var base=st.dir*50/(SPD[si]||1);st.v+=(base-st.v)*Math.min(1,dt*1.6);st.x+=st.v*dt;
+    st.x=((st.x%st.h)-st.h)%st.h;l.style.transform="translate3d("+st.x+"px,0,0)"})}
+function lstart(){if(!RAF){LT=performance.now();RAF=requestAnimationFrame(lstep)}}
+document.addEventListener("pointerdown",function(e){if(!isML()||e.button>0)return;var vp=e.target.closest&&e.target.closest("#tkimg .tkv,#loja .mvv,#tk .tkv");if(!vp)return;
+  var l=laneEl(vp);if(!l||!l._s)return;DR={l:l,vp:vp,id:e.pointerId,x0:e.clientX,lx:e.clientX,lt:e.timeStamp,v:0,mv:false}});
+document.addEventListener("pointermove",function(e){if(!DR||e.pointerId!==DR.id)return;var st=DR.l._s,dx=e.clientX-DR.lx,dtm=Math.max(1,e.timeStamp-DR.lt);
+  if(!DR.mv){if(Math.abs(e.clientX-DR.x0)<8)return;DR.mv=true;try{DR.vp.setPointerCapture(e.pointerId)}catch(x){}DR.vp.classList.add("gr");dx=e.clientX-DR.x0}
+  st.x+=dx;st.x=((st.x%st.h)-st.h)%st.h;DR.l.style.transform="translate3d("+st.x+"px,0,0)";
+  DR.v=DR.v*.6+(dx/dtm*1000)*.4;DR.lx=e.clientX;DR.lt=e.timeStamp});
+function lend(e){if(!DR||e.pointerId!==DR.id)return;var d=DR;DR=null;d.vp.classList.remove("gr");
+  if(d.mv){d.l._s.v=Math.max(-3500,Math.min(3500,d.v));d.vp._nc=1;setTimeout(function(){d.vp._nc=0},60)}}
+document.addEventListener("pointerup",lend);document.addEventListener("pointercancel",lend);
+document.addEventListener("click",function(e){var vp=e.target.closest&&e.target.closest("#tkimg .tkv,#loja .mvv,#tk .tkv");if(vp&&vp._nc){e.preventDefault();e.stopPropagation()}},true);
+document.addEventListener("dragstart",function(e){if(e.target.closest&&e.target.closest("#tkimg,#loja .mvv,#tk"))e.preventDefault()});
+lstart();
 ph.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a.tki"),id=a&&a.getAttribute("data-id");if(id&&typeof once==="function"&&once("pf_pr_"+id)&&typeof rpc==="function")rpc("registrar_clique_produto",JSON.stringify({p_id:Number(id)}))});
 setInterval(function(){if(!LJ.open||innerWidth>700)return;if(typeof tkSig!=="undefined"&&tkSig!==phSig)mlImgs();
   var im=ph.querySelectorAll(".tkr:first-child .tki,.tki");if(!im.length||document.hidden)return;
