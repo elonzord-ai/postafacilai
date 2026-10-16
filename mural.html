@@ -640,9 +640,9 @@ $("buy").onclick=function(){if(!curBuy)return;var p=curBuy,f=el("div");
     fetch("/api/criar-pedido",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({p_x:p.x,p_y:p.y,p_w:wh[0],p_h:wh[1],p_nome:n,p_link:l,p_cor:$("fc").value,p_nicho:$("fs").value,imagem:IMG},FACE.id===1?{p_face:1}:{}))})
     .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j&&j.erro);return j})}).then(function(j){if(!j||!j.pix)throw 0;pixShow(j,m)})
     .catch(function(e){var c=e&&e.message,t={imagem_reprovada:"Imagem não aprovada pela moderação. Envie outra que respeite as diretrizes. ",imagem_invalida:"Imagem inválida ou grande demais. ",moderacao_indisponivel:"A análise de imagem está indisponível agora. Tente sem imagem ou mais tarde. "};m.textContent=t[c]||"Não foi possível gerar o Pix agora (o bloco pode ter sido ocupado). ";var a=el("a","","Finalizar pelo WhatsApp");a.target="_blank";a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent("Quero comprar "+wh[0]*wh[1]+" bloco(s) a partir do "+num(p)+" para "+n+" ("+l+")");m.appendChild(a)})}};
-function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu código de anunciante.</p><input id="mc" placeholder="Seu código"><button class="go" id="mg">Ver métricas</button><div id="mr"></div>';modal("Meu Espaço",f);
-  try{$("mc").value=localStorage.getItem("pf_code")||""}catch(e){}
-  $("mg").onclick=function(){var c=$("mc").value.trim(),r=$("mr");if(!c)return;try{localStorage.setItem("pf_code",c)}catch(e){}r.textContent="Carregando...";
+try{if(!localStorage.getItem("pf_purge1")){localStorage.removeItem("pf_code");localStorage.removeItem("pf_chat_code");localStorage.setItem("pf_purge1","1")}}catch(e){}
+function meuEspaco(){var f=el("div");f.innerHTML='<p class="mut">Digite seu código de anunciante.</p><input id="mc" type="password" placeholder="Seu código" autocomplete="new-password" autocapitalize="off" spellcheck="false"><button class="go" id="mg">Ver métricas</button><div id="mr"></div>';modal("Meu Espaço",f);
+  $("mg").onclick=function(){var c=$("mc").value.trim(),r=$("mr");if(!c)return;r.textContent="Carregando...";
     fetch(SUPABASE_URL+"/rest/v1/rpc/mestre_espaco",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:c})}).then(function(x){return x.ok?x.json():null}).catch(function(){return null}).then(function(m){
     if(m&&m.ok){r.textContent="";painelMestre(r,m.rows||[]);return}
     fetch(SUPABASE_URL+"/rest/v1/rpc/meu_espaco",{method:"POST",headers:hdr(),body:JSON.stringify({p_codigo:c})}).then(function(x){return x.ok?x.json():Promise.reject()}).then(function(rows){r.textContent="";
@@ -2159,6 +2159,9 @@ main.lj #c{visibility:hidden}
 .mlh,.mlcs{display:none}
 html.ml:root:root{--bg:#ebebeb;--ink:#333;--muted:#666;--board:#ebebeb;--gridline:#ddd;--frame:#333;--slot:#ddd;--line:#e3e3e3;--hl:#3483fa;--accent:#3483fa;--panel:#fff;color-scheme:light}
 html.ml body{background:#ebebeb;color:#333}
+html.ml #tk{position:fixed;left:0;right:0;bottom:0;margin:0;z-index:31;border-radius:0;border-width:1px 0 0;background:#fff;padding-bottom:env(safe-area-inset-bottom,0px)}
+html.ml #tk .tkl{background:#ffe600;color:#2d3277}
+html.ml #loja{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
 html.ml #loja{position:fixed;inset:0;z-index:30;border-radius:0;background:#ebebeb;font-family:"Proxima Nova",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 html.ml #loja .ljt{display:none}
 html.ml .mlh{display:block;flex:none;background:#ffe600;padding:10px 12px 0;box-shadow:0 1px 0 rgba(0,0,0,.1)}
