@@ -2159,9 +2159,11 @@ main.lj #c{visibility:hidden}
 .mlh,.mlcs{display:none}
 html.ml:root:root{--bg:#ebebeb;--ink:#333;--muted:#666;--board:#ebebeb;--gridline:#ddd;--frame:#333;--slot:#ddd;--line:#e3e3e3;--hl:#3483fa;--accent:#3483fa;--panel:#fff;color-scheme:light}
 html.ml body{background:#ebebeb;color:#333}
-html.ml #tk{position:fixed;left:0;right:0;bottom:0;margin:0;z-index:31;border-radius:0;border-width:1px 0 0;background:#fff;padding-bottom:env(safe-area-inset-bottom,0px)}
-html.ml #tk .tkl{background:#ffe600;color:#2d3277}
-html.ml #loja{padding-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+html.ml #tk{position:static;margin:0 0 8px;border:0;border-radius:6px;background:#fff;overflow:hidden}
+html.ml #tk .tkl{background:#fff;color:#2d3277;font-size:11px;padding:0 8px}
+html.ml #tk .tkl .lg{display:none}
+html.ml .ti{padding:3px 16px 3px 4px}
+html.ml .ti img{width:26px;height:26px}
 html.ml #loja{position:fixed;inset:0;z-index:30;border-radius:0;background:#ebebeb;font-family:"Proxima Nova",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 html.ml #loja .ljt{display:none}
 html.ml .mlh{display:block;flex:none;background:#ffe600;padding:10px 12px 0;box-shadow:0 1px 0 rgba(0,0,0,.1)}
@@ -2255,7 +2257,10 @@ function mlSync(n){var c={};LJ.all.forEach(function(p){if(p.categoria)c[p.catego
   if(sig!==mlSig){mlSig=sig;strip.textContent="";[""].concat(ks).forEach(function(k){var b=el("button","mlct"+(LJ.cat===k?" on":""));b.type="button";b.appendChild(el("i","",k?(EMO[k]||"🛍️"):"🏷️"));b.appendChild(el("span","",k||"Todos os produtos"));
     b.onclick=function(){LJ.cat=k;cs.value=k;LJ.shown=60;render()};strip.appendChild(b)});var on=strip.querySelector(".on");if(on&&on.scrollIntoView)try{strip.scrollLeft=Math.max(0,on.offsetLeft-60)}catch(e){}}
   cnt.textContent="";cnt.appendChild(el("b","",LJ.cat||"Todos os produtos"));cnt.appendChild(document.createTextNode(n+" produto"+(n===1?"":"s")+(LJ.q?" para “"+LJ.q+"”":"")))}
-function mlMode(on){document.documentElement.classList.toggle("ml",!!on&&innerWidth<=700)}
+var tkHome=null;
+function mlMode(on){var m=!!on&&innerWidth<=700,t=document.getElementById("tk");document.documentElement.classList.toggle("ml",m);
+  if(!t)return;if(m){var nv=mh.querySelector(".mlnv");if(nv&&t.parentNode!==mh){tkHome=tkHome||{p:t.parentNode,n:t.nextSibling};mh.insertBefore(t,nv)}}
+  else if(tkHome&&t.parentNode===mh){tkHome.p.insertBefore(t,tkHome.n&&tkHome.n.parentNode===tkHome.p?tkHome.n:null)}}
 mlLinks();bd.insertBefore(cnt,bd.firstChild);
 sec.appendChild(mh);sec.appendChild(strip);sec.appendChild(tb);sec.appendChild(bd);sec.appendChild(ai);sec.appendChild(ap);main.appendChild(sec);
 
