@@ -2163,7 +2163,7 @@ html.ml #loja{position:fixed;inset:0;z-index:30;border-radius:0;background:#ebeb
 html.ml #loja .ljt{display:none}
 html.ml .mlh{display:block;flex:none;background:#ffe600;padding:10px 12px 0;box-shadow:0 1px 0 rgba(0,0,0,.1)}
 html.ml .mlr1{display:flex;align-items:center;gap:9px;margin-bottom:9px}
-html.ml .mlr1 svg{width:34px;height:34px;flex:none}
+html.ml .mlr1 img{height:40px;width:auto;flex:none;display:block}
 html.ml .mlr1 b{font-size:20px;font-weight:700;color:#2d3277;letter-spacing:-.3px;line-height:1}
 html.ml .mlr1 i{font-style:normal;font-weight:800;font-size:11px;color:#2d3277;border:1.5px solid #2d3277;border-radius:5px;padding:2px 5px;line-height:1}
 html.ml .mlsr{position:relative}
@@ -2243,7 +2243,7 @@ ap.innerHTML='<header><span>✨ IA da loja</span><small>pergunte sobre os produt
 /* cabeçalho amarelo estilo Mercado Livre (só aparece no celular, com a classe html.ml) */
 var EMO={};if(typeof NDATA!=="undefined")NDATA.forEach(function(d){EMO[d[1]]=d[0]});
 var mh=el("div","mlh"),strip=el("div","mlcs"),cnt=el("div","mlcnt"),mlSig="";
-mh.innerHTML='<div class="mlr1"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 2.5 43 13.5v21L24 45.5 5 34.5v-21Z" stroke="#2d3277" stroke-width="2.2" stroke-linejoin="round"/><path d="M5 13.5 24 24.5 43 13.5M24 24.5v21" stroke="#2d3277" stroke-width="1.2" stroke-opacity=".5"/><path d="M24 11.5 33.5 29h-19Z" fill="#3483fa"/></svg><b>Posta Fácil</b><i>AI</i></div><div class="mlsr"><input type="search" placeholder="Buscar produtos, marcas e muito mais…" aria-label="Buscar produtos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div><nav class="mlnv" aria-label="Menu"></nav>';
+mh.innerHTML='<div class="mlr1"><img alt="" src="'+((document.querySelector("h1 img.logo")||{}).src||"")+'"><b>Posta Fácil</b><i>AI</i></div><div class="mlsr"><input type="search" placeholder="Buscar produtos, marcas e muito mais…" aria-label="Buscar produtos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div><nav class="mlnv" aria-label="Menu"></nav>';
 var mq=mh.querySelector("input"),mnv=mh.querySelector("nav");
 mq.oninput=function(){qi.value=this.value;LJ.q=this.value;LJ.shown=60;render()};
 function mlLinks(){[["Mural",function(){toggle(false)}],["Mapa de Nichos",function(){if(typeof mapaNichos==="function")mapaNichos()}],["Meu Espaço",function(){if(typeof meuEspaco==="function")meuEspaco()}],["Postar produto",function(){postForm()}],["Meus produtos",function(){manage()}],["Embaralhar",function(){sh.onclick()}],["Como funciona",function(){if(typeof how==="function")how()}]].forEach(function(l){var b=el("button","",l[0]);b.type="button";b.onclick=l[1];mnv.appendChild(b)})}
