@@ -2076,48 +2076,71 @@ window.__loja={open:function(){toggle(true)},close:function(){toggle(false)},own
 .rdca .rdfk.on{padding:2px;background:none}
 .rdfk.on .bx{width:22px;height:22px;background:rgba(46,229,157,.28);border-color:#2ee59d}
 </style>
+
+
 <style id="pfx">
 .pfbuy{border:0;border-radius:999px;padding:7px 12px;font:800 12.5px/1 inherit;color:#05301e;background:linear-gradient(135deg,#2ee59d,#18c07f);cursor:pointer;white-space:nowrap}
 .pfbuy:hover{filter:brightness(1.08)}
-#pfsw{display:none;position:absolute;right:12px;top:10px;width:34px;height:34px;border-radius:50%;border:1px solid #b5b5b5;background:#e4e4e4;color:#555;align-items:center;justify-content:center;padding:0;cursor:pointer;z-index:2}
+body.pflay .pfbuy{display:none}
+#pfsw{display:none;position:absolute;right:12px;top:12px;width:36px;height:36px;border-radius:50%;border:1px solid #b5b5b5;background:#e4e4e4;color:#555;align-items:center;justify-content:center;padding:0;cursor:pointer;z-index:2}
 body.pfstore #pfsw{display:inline-flex}
-#pfsw svg{width:19px;height:19px}
+#pfsw svg{width:20px;height:20px}
 #pfsw.on{background:#2a2a2a;border-color:#111;color:#fff}
-body.pfstore header{padding-right:56px}
-body.pflock .btns,body.pflock #ftag,body.pflock #stat,body.pflock #prog,body.pflock #nbar,body.pflock #tk,body.pflock nav,body.pflock aside,body.pflock #mf,body.pflock #ljb,body.pflock #chpill{display:none!important}
-body.pflock #app{display:flex!important;flex-direction:column;grid-template-columns:none!important;padding:0 10px 10px}
-body.pfstore{--bg:#fff;--board:#f5f5f5;--panel:#fff;--ink:#333;--muted:#737373;--line:#e4e4e4;--accent:#3483fa}
-body.pfstore header{background:#ffe600!important;border-bottom:1px solid #e6d200!important;color:#333}
-body.pfstore header h1,body.pfstore header .stat,body.pfstore header #stat{color:#333}
-body.pfstore header .btns button,body.pfstore header .btns input,body.pfstore header #ftag,body.pfstore header #ljb{background:#fff!important;color:#333!important;border:1px solid rgba(0,0,0,.12)!important}
-body.pfstore #pfsw.on{background:#2a2a2a!important;color:#fff!important;border-color:#111!important}
-body.pfstore #pfsw:not(.on){background:#e9e9e9!important;color:#555!important}
+body.pfstore .btns,body.pfstore #ftag,body.pfstore #stat,body.pfstore #prog,body.pfstore #nbar,body.pfstore #ljb{display:none!important}
+body.pflay nav,body.pflay aside,body.pflay #mf,body.pflay #chpill{display:none!important}
+body.pflay #app{display:flex!important;flex-direction:column;grid-template-columns:none!important;padding:0}
+body.pfstore{--bg:#fff;--board:#ebebeb;--panel:#fff;--ink:#333;--muted:#737373;--line:#e4e4e4;--accent:#3483fa}
+body.pfstore header{background:#fae64c!important;border-bottom:0!important;color:#333;padding:12px 56px 6px 14px;position:sticky}
+body.pfstore header h1{color:#2b2f8f;font-size:22px;gap:10px}
+body.pfstore header h1 .logo{height:34px}
+body.pfstore header h1 .ai{color:#2b2f8f!important;-webkit-text-fill-color:#2b2f8f;background:none!important;border:2px solid #2b2f8f;border-radius:7px;padding:0 6px;font-size:14px;line-height:1.5}
 body.pfstore .pfbuy{background:#3483fa!important;color:#fff!important}
-body.pfstore main{background:#f5f5f5!important;border:1px solid #e4e4e4!important;box-shadow:none!important}
-body.pfstore #loja{background:#f5f5f5}
-body.pfstore #loja .ljt{background:#ffe600;border-bottom:1px solid #e6d200;padding:10px 12px;gap:8px}
-body.pfstore #loja .ljs{background:#fff;color:#333;border:0;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.25);max-width:620px;flex:1 1 240px;padding:11px 14px}
-body.pfstore #loja select.ljs{display:none}
-body.pfstore #loja .ljchip,body.pfstore #loja .ljgear{background:#fff;color:#333;border:1px solid rgba(0,0,0,.12)}
-body.pfstore #loja .ljpost{background:#3483fa;color:#fff;border-radius:6px}
-.pfcats{display:none}
-body.pfstore .pfcats{display:flex;gap:8px;overflow-x:auto;padding:8px 12px;background:#fff;border-bottom:1px solid #e4e4e4;scrollbar-width:none}
-body.pfstore .pfcats.off{display:none}
-.pfcats::-webkit-scrollbar{display:none}
-.pfchip{flex:none;border:1px solid #e4e4e4;background:#fff;color:#333;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
-.pfchip.on{background:#333;color:#ffe600;border-color:#333}
-body.pfstore #loja .ljbody{background:#f5f5f5}
-body.pfstore #loja .ljc{background:#fff;border:1px solid #e8e8e8;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.06);padding:0 0 8px}
+body.pfstore #pfsw:not(.on){background:#e9e9e9!important;color:#555!important}
+body.pfstore #pfsw.on{background:#2a2a2a!important;color:#fff!important}
+body.pfstore main{margin:0!important;border:0!important;border-radius:0!important;background:#ebebeb!important;box-shadow:none!important}
+body.pfstore #loja{background:#ebebeb;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+body.pfstore #loja>*{flex:none}
+body.pfstore #loja .ljt{background:#fae64c;border:0;padding:6px 10px 8px;gap:0}
+body.pfstore #loja .ljt>*:not(input.ljs){display:none!important}
+body.pfstore #loja input.ljs{display:block;flex:1 1 100%;max-width:none;height:42px;border:0;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.25);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat right 12px center/22px;color:#333;padding:0 46px 0 14px;font-size:15px}
+body.pfstore #loja #tk{display:flex;margin:0 10px 6px;border:0;border-radius:8px;background:#fff}
+body.pfstore #loja #tk:not(.on){display:none}
+.pfmenu{display:flex;gap:4px;overflow-x:auto;background:#fae64c;padding:2px 6px 8px;scrollbar-width:none}
+.pfmenu::-webkit-scrollbar{display:none}
+.pfmi{flex:none;border:0;background:none;color:#333;font:400 15px inherit;padding:8px 9px;cursor:pointer;white-space:nowrap}
+.pfmi:active{opacity:.6}
+.pfwhite{background:#fff;border-bottom:1px solid #e0e0e0}
+.pfcat{display:flex;gap:8px;overflow-x:auto;padding:8px 10px 10px;scrollbar-width:none}
+.pfcat::-webkit-scrollbar{display:none}.pfcat.off{display:none}
+.pftile{flex:none;width:114px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 6px 10px;border:0;border-bottom:3px solid transparent;border-radius:12px;background:#fff;color:#333;font:inherit;cursor:pointer;box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.pftile i{width:62px;height:62px;border-radius:50%;background:#e6eefc;display:flex;align-items:center;justify-content:center;font-size:30px;font-style:normal}
+.pftile span{font-size:14px;font-weight:700;line-height:1.2;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
+.pftile.on{border-bottom-color:#3483fa;box-shadow:0 1px 6px rgba(0,0,0,.12)}
+.pfstrip{padding:4px 0 10px;overflow:hidden}.pfstrip.off{display:none}
+.pfrow{overflow:hidden;margin-top:8px}
+.pfin{display:flex;gap:8px;width:max-content;animation:pfm 80s linear infinite}
+.pfrow:nth-child(2) .pfin{margin-left:-40px}.pfrow:nth-child(3) .pfin{margin-left:-20px}
+@keyframes pfm{to{transform:translateX(-50%)}}
+.pfstrip:hover .pfin,.pfstrip:active .pfin{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.pfin{animation:none}.pfrow{overflow-x:auto}}
+.pfth{flex:none;width:78px;height:78px;border:1px solid #e0e0e0;border-radius:10px;background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.pfth img{width:100%;height:100%;object-fit:contain;display:block}
+body.pfstore #loja .ljbody{overflow:visible;flex:none;background:#ebebeb;padding:6px 12px 96px}
+.pfh{margin:10px 0 12px}.pfh h2{margin:0;font-size:28px;line-height:1.15;font-weight:800;color:#333}.pfh small{display:block;margin-top:2px;font-size:16px;color:#737373}
+body.pfstore #loja .ljc{background:#fff;border:1px solid #e8e8e8;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.06);padding:0 0 8px}
 body.pfstore #loja .ljc:hover{box-shadow:0 6px 18px rgba(0,0,0,.14);transform:none}
-body.pfstore #loja .ljim{border-radius:6px 6px 0 0;border-bottom:1px solid #eee}
+body.pfstore #loja .ljim{border-radius:8px 8px 0 0;border-bottom:1px solid #eee}
 body.pfstore #loja .ljc h3{color:#333;font-weight:400;font-size:14px;margin:10px 12px 4px}
 body.pfstore #loja .ljcat{margin:0 12px 8px;color:#999}
 body.pfstore #loja .ljgo{margin:auto 12px 0;background:#e3edfb;color:#3483fa;border-radius:6px}
-body.pfstore #loja .ljnote{color:#777}
+body.pfstore #loja .ljnote{color:#8a8a8a;font-size:12px}
+body.pfstore #loja .ljchip{background:#fff;color:#333;border:1px solid rgba(0,0,0,.12)}
 body.pfstore #loja .ljown{background:#fff8c6;border-color:#f0d800;color:#333}
-body.pfstore #ljai{background:#3483fa;box-shadow:0 8px 20px rgba(52,131,250,.4)}
-body.pfstore #loja .ljempty b{color:#333}
-@media(max-width:700px){body.pfstore #loja .ljg{grid-template-columns:repeat(2,1fr);gap:8px}body.pfstore #loja .ljbody{padding:8px 8px 90px}body.pfstore .pfbuy{font-size:12px;padding:6px 10px}}
+body.pfstore #loja .ljempty{background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:56px 18px;margin-top:6px}
+body.pfstore #loja .ljempty b{color:#333;font-size:22px}
+body.pfstore #ljai{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));background:#3483fa;box-shadow:0 8px 20px rgba(52,131,250,.4)}
+body.pfstore #ljap{position:fixed}
+@media(max-width:700px){body.pfstore #loja .ljg{grid-template-columns:repeat(2,1fr);gap:8px}}
 .pfbl{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink)}
 .pfbl b{font-size:15px}.pfbl span{flex:1;min-width:140px;color:var(--muted);font-size:13.5px}
 .pfbtn{border:0;border-radius:8px;padding:9px 14px;font:700 13px inherit;background:#3483fa;color:#fff;cursor:pointer}.pfbtn.ghost{background:none;color:#3483fa;border:1px solid #3483fa}
@@ -2125,7 +2148,6 @@ body.pfstore #loja .ljempty b{color:#333}
 .pfmap input{width:100%;margin-bottom:10px}
 .pfmg{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;max-height:52vh;overflow:auto}
 .pfmb{text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:9px 11px;font:inherit;font-size:13.5px;cursor:pointer}
-@media(max-width:700px){body.pfstore #loja .ljt{padding:8px 10px;gap:6px}body.pfstore #loja .ljs{flex:1 1 100%;max-width:none}body.pfstore #loja .ljchip{padding:7px 11px;font-size:12.5px}body.pfstore #loja .ljpost{padding:8px 12px;font-size:13px}body.pfstore #loja .ljgear{width:34px;height:34px;font-size:16px}}
 .pfmb.on,.pfmb:hover{border-color:#6a8dff}.pfmb.z{opacity:.55}
 .pfqb{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 #pfqrc{display:block;margin:12px auto 0;max-width:100%;image-rendering:pixelated;background:#fff;border-radius:8px}
@@ -2198,72 +2220,95 @@ function make(text){
 return make})();
 
 
-/* ===== Trava da loja, tema amarelo, busca por bloco, QR code e Mapa de Nichos ===== */
+/* ===== Plugue (modo avançado), visual amarelo da loja, busca por bloco, QR code e Mapa de Nichos ===== */
 (function(){
 var L=window.__loja;if(!L)return;
-var B=document.body,sp=new URLSearchParams(location.search),PR=(typeof PRECO!=="undefined"?PRECO:5);
+var B=document.body,sp=new URLSearchParams(location.search),PR=(typeof PRECO!=="undefined"?PRECO:5),S=L.state;
 var MOB=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(window.matchMedia&&matchMedia("(max-width:700px)").matches);
-var locked=(function(){try{var v=localStorage.getItem("pf_lock");if(v==="1")return true;if(v==="0")return false}catch(e){}return MOB})();
-window.__pfLk=function(){return locked};
-var hd=document.querySelector("header"),h1=hd&&hd.querySelector("h1"),qi=L.search;
-/* dica rápida */
+/* plugue DESLIGADO = vitrine simples (celular). LIGADO = QR code, comprar bloco, mural, nichos... */
+var adv=(function(){try{var v=localStorage.getItem("pf_plug");if(v==="1")return true;if(v==="0")return false}catch(e){}return !MOB})();
+window.__pfLk=function(){return !adv};
+var hd=document.querySelector("header"),h1=hd&&hd.querySelector("h1"),qi=L.search,tk=document.getElementById("tk"),appEl=document.getElementById("app");
+function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 var tp=null,tt=0;function tip(t){if(tp)tp.remove();tp=el("div","ljhint",t);tp.setAttribute("role","status");B.appendChild(tp);clearTimeout(tt);tt=setTimeout(function(){tp&&tp.remove();tp=null},2200)}
-/* ---------- interruptor (tomadinha) ---------- */
+/* ---------- plugue ---------- */
 var sw=el("button","");sw.id="pfsw";sw.type="button";
 sw.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v5M16 3v5M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v4"/></svg>';
 if(hd)hd.appendChild(sw);
-function paint(){sw.classList.toggle("on",locked);sw.setAttribute("aria-pressed",locked?"true":"false");sw.title=locked?"Trava ligada. Toque para liberar o resto do site":"Trava desligada. Toque para prender nas páginas de produtos";sw.setAttribute("aria-label",sw.title)}
-function sync(){B.classList.toggle("pflock",locked&&!!L.state.open);paint()}
-window.__pfSync=sync;
-sw.onclick=function(){locked=!locked;try{localStorage.setItem("pf_lock",locked?"1":"0")}catch(e){}sync();tip(locked?"Trava ligada":"Trava desligada")};
-if(hd)hd.addEventListener("click",function(e){if(!locked||!L.state.open)return;var a=e.target.closest&&e.target.closest("a");if(a&&a.getAttribute("href")&&!a.target)e.preventDefault()},true);
-/* ---------- comprar bloco R$ 5 ao lado do logo ---------- */
+sw.onclick=function(){adv=!adv;try{localStorage.setItem("pf_plug",adv?"1":"0")}catch(e){}sync();tip(adv?"Plugue ligado":"Plugue desligado")};
+if(hd)hd.addEventListener("click",function(e){if(adv||!S.open)return;var a=e.target.closest&&e.target.closest("a");if(a&&a.getAttribute("href")&&!a.target)e.preventDefault()},true);
+/* ---------- comprar bloco (ao lado do logo) ---------- */
 var buy=el("button","pfbuy","Comprar bloco · R$ "+PR);buy.id="pfbuy";buy.type="button";
 if(h1&&h1.parentNode)h1.parentNode.insertBefore(buy,h1.nextSibling);
-function buyInfo(){var f=el("div");f.appendChild(el("p","","Anuncie a sua loja ou os seus links de afiliado no mural por R$ "+PR+" por bloco, por mês."));
-  var a=el("a","pfbtn","Falar no WhatsApp");a.href="https://wa.me/5562998309271?text="+encodeURIComponent("Olá! Quero comprar um bloco no Posta Fácil AI.");a.target="_blank";a.rel="noopener";a.style.display="inline-block";a.style.textDecoration="none";f.appendChild(a);modal("Comprar um bloco",f)}
-buy.onclick=function(){if(locked&&L.state.open){buyInfo();return}if(L.state.open)L.close();setTimeout(function(){var h=document.getElementById("hp");if(h)h.click()},60)};
-/* ---------- busca pelo número do bloco / QR ---------- */
+buy.onclick=function(){if(S.open)L.close();setTimeout(function(){var h=document.getElementById("hp");if(h)h.click()},60)};
+/* ---------- estrutura da loja amarela ---------- */
+var tb=L.sec.querySelector(".ljt"),bd=L.sec.querySelector(".ljbody"),cs=L.sec.querySelector("select.ljs"),grid=L.sec.querySelector(".ljg");
+var menu=el("div","pfmenu"),white=el("div","pfwhite"),tiles=el("div","pfcat"),strip=el("div","pfstrip");
+menu.setAttribute("aria-label","Menu da loja");white.appendChild(tiles);white.appendChild(strip);
+L.sec.insertBefore(menu,bd);L.sec.insertBefore(white,bd);
+var ph=el("div","pfh"),h2=el("h2","","Todos os produtos"),sm=el("small","","");ph.appendChild(h2);ph.appendChild(sm);bd.insertBefore(ph,bd.firstChild);
+function placeTk(){if(!tk)return;if(S.open){if(tk.parentNode!==L.sec)L.sec.insertBefore(tk,menu)}else if(appEl&&tk.parentNode!==appEl.parentNode)appEl.parentNode.insertBefore(tk,appEl)}
+function buildMenu(){menu.textContent="";function it(t,fn){var a=el("button","pfmi",t);a.type="button";a.onclick=fn;menu.appendChild(a)}
+  if(adv){it("Mural",function(){L.close()});it("Mapa de Nichos",mapaNichos);it("Meu Espaço",function(){var m=document.getElementById("me");if(m)m.click()})}
+  it("Postar produto",function(){var b=L.sec.querySelector(".ljpost");if(b)b.click()});
+  it("Meus produtos",function(){var g=L.sec.querySelector(".ljgear");if(g)g.click()});
+  if(adv)it("QR code",qrModal)}
+function paint(){sw.classList.toggle("on",adv);sw.setAttribute("aria-pressed",adv?"true":"false");sw.title=adv?"Plugue ligado. Toque para voltar à vitrine simples":"Plugue desligado. Toque para liberar QR code, blocos e o resto do site";sw.setAttribute("aria-label",sw.title)}
+function sync(){var o=!!S.open;B.classList.toggle("pflay",o&&!adv);B.classList.toggle("pfadv",o&&adv);paint();placeTk();buildMenu();
+  qi.placeholder=adv?"Busque produtos ou o nº do bloco":"Buscar produtos, marcas e mais...";if(!adv)showBlock(0)}
+window.__pfSync=sync;
+/* ---------- categorias em azulejos + faixa de produtos + título ---------- */
+var EM={};if(typeof NDATA!=="undefined")NDATA.forEach(function(d){EM[d[1]]=d[0]});
+function buildTiles(){tiles.textContent="";if(!cs)return;var cur=cs.value;Array.prototype.forEach.call(cs.options,function(o){
+  var b=el("button","pftile"+(o.value===cur?" on":""));b.type="button";b.appendChild(el("i","",o.value?(EM[o.value]||"🏷️"):"🏷️"));b.appendChild(el("span","",o.value?o.textContent:"Todos os produtos"));
+  b.onclick=function(){cs.value=o.value;cs.dispatchEvent(new Event("change"));buildTiles()};tiles.appendChild(b)});tiles.classList.toggle("off",cs.options.length<2)}
+if(cs){new MutationObserver(buildTiles).observe(cs,{childList:true});cs.addEventListener("change",buildTiles);buildTiles()}
+var stKey="";
+function buildStrip(){var key=(S.all?S.all.length:0)+"|"+(S.owner?S.owner.key:"");if(key===stKey)return;stKey=key;strip.textContent="";
+  var items=(S.order||[]).filter(function(p){return p.imagem&&/^https:/i.test(p.imagem)});strip.classList.toggle("off",items.length<4);if(items.length<4)return;
+  for(var r=0;r<3;r++){var rows=items.filter(function(_,i){return i%3===r});if(!rows.length)rows=items.slice();var seq=[];while(seq.length<14)seq=seq.concat(rows);
+    var row=el("div","pfrow"),inner=el("div","pfin");[seq,seq].forEach(function(arr){arr.forEach(function(p){var a=el("a","pfth"),im=new Image();a.href=p.link;a.target="_blank";a.rel="sponsored noopener noreferrer";a.title=p.nome;a.setAttribute("aria-label",p.nome);
+      a.addEventListener("click",function(){try{rpc("loja_clique",JSON.stringify({p_id:p.id}))}catch(e){}});im.alt="";im.loading="lazy";im.referrerPolicy="no-referrer";im.onerror=function(){a.style.visibility="hidden"};im.src=p.imagem;a.appendChild(im);inner.appendChild(a)})});
+    inner.style.animationDuration=(80+r*14)+"s";if(r===1)inner.style.animationDirection="reverse";row.appendChild(inner);strip.appendChild(row)}}
+function visCount(){var q=norm(S.q),n=0;(S.order||[]).forEach(function(p){if((!S.cat||p.categoria===S.cat)&&(!q||norm(p.nome+" "+(p.categoria||"")).indexOf(q)>=0))n++});return n}
+function heading(){h2.textContent=S.owner?"Loja de "+S.owner.nome:(S.cat||"Todos os produtos");var n=visCount();sm.textContent=S.loaded?n+(n===1?" produto":" produtos"):"Carregando…"}
+function refresh(){if(S.loaded)buildStrip();heading()}
+if(grid)new MutationObserver(function(){refresh()}).observe(grid,{childList:true});refresh();
+if(bd){var lg=el("p","pflegal");[["Termos de Uso","/termos.html"],["Privacidade","/privacidade.html"]].forEach(function(x){var a=el("a","",x[0]);a.href=x[1];a.target="_blank";a.rel="noopener";lg.appendChild(a)});bd.appendChild(lg)}
+/* ---------- busca pelo número do bloco / QR (plugue ligado) ---------- */
 function pad(n){return String(n).padStart(FACE.tri?4:5,"0")}
 function blk(n){var x=-1,y=-1,i,j;
   if(FACE.tri){try{for(j=0;j<N&&x<0;j++)for(i=0;i<N;i++)if(FACE.numAt(i,j)==n){x=i;y=j;break}}catch(e){}}
   else if(n>=1&&n<=N*N){x=(n-1)%N;y=Math.floor((n-1)/N)}
   if(x<0)return null;return{n:n,x:x,y:y,a:adAt(x,y)}}
-var card=el("div","pfbl"),bd=L.sec.querySelector(".ljbody");if(bd)bd.insertBefore(card,bd.firstChild);
+var card=el("div","pfbl");bd.insertBefore(card,ph.nextSibling);
 function ownerOf(a){return{key:"a"+a.id,nome:a.n,label:"Bloco "+num(a)}}
-function btn(t,c,fn){var b=el("button","pfbtn"+(c?" "+c:""),t);b.type="button";b.onclick=fn;return b}
+function pbtn(t,c,fn){var b=el("button","pfbtn"+(c?" "+c:""),t);b.type="button";b.onclick=fn;return b}
 function showBlock(n){card.textContent="";if(!n){card.style.display="none";return}
   var r=blk(n);card.style.display="flex";card.appendChild(el("b","","📍 Bloco #"+pad(n)));
   if(!r){card.appendChild(el("span","","Esse número não existe aqui."));return}
   if(r.a){card.appendChild(el("span","","Loja: "+r.a.n+(r.a.nicho?" · "+r.a.nicho:"")));
-    card.appendChild(btn("Ver produtos desta loja","",function(){qi.value="";L.state.q="";L.owner(ownerOf(r.a))}));
-    if(!locked)card.appendChild(btn("Ver no mural","ghost",function(){L.close();setTimeout(function(){if(typeof focusAd==="function")focusAd(r.a)},80)}))}
+    card.appendChild(pbtn("Ver produtos desta loja","",function(){qi.value="";S.q="";L.owner(ownerOf(r.a))}));
+    card.appendChild(pbtn("Ver no mural","ghost",function(){L.close();setTimeout(function(){if(typeof focusAd==="function")focusAd(r.a)},80)}))}
   else{card.appendChild(el("span","","Bloco livre, ainda sem dono."));
-    card.appendChild(btn("Quero este bloco","",function(){if(locked){buyInfo();return}L.close();setTimeout(function(){var bn=document.getElementById("bn"),bg=document.getElementById("bg");if(bn&&bg){bn.value=String(n);bg.click()}},80)}))}}
+    card.appendChild(pbtn("Quero este bloco","",function(){L.close();setTimeout(function(){var bn=document.getElementById("bn"),bg=document.getElementById("bg");if(bn&&bg){bn.value=String(n);bg.click()}},80)}))}}
 function parseBlock(v){v=String(v||"").trim();var m=/[?&#]bloco=(\d{1,5})/.exec(v)||/^#?(\d{1,5})$/.exec(v);return m?parseInt(m[1],10):0}
-qi.placeholder="Busque produtos ou o nº do bloco";
-qi.addEventListener("input",function(){var n=parseBlock(qi.value);
-  if(n&&!/^#?\d+$/.test(qi.value.trim())){qi.value=String(n)}
-  if(n){L.state.q="";L.render()}showBlock(n)});
-/* ---------- categorias em faixa (em vez de coluna lateral) ---------- */
-var cs=L.sec.querySelector("select.ljs"),tb=L.sec.querySelector(".ljt"),cr=el("div","pfcats");if(tb&&cs)L.sec.insertBefore(cr,tb.nextSibling);
-function chips(){cr.textContent="";if(!cs)return;var cur=cs.value;Array.prototype.forEach.call(cs.options,function(o){var b=el("button","pfchip"+(o.value===cur?" on":""),o.value?o.textContent:"Todos");b.type="button";b.onclick=function(){cs.value=o.value;cs.dispatchEvent(new Event("change"));chips()};cr.appendChild(b)});cr.classList.toggle("off",cs.options.length<2)}
-if(cs){new MutationObserver(chips).observe(cs,{childList:true});cs.addEventListener("change",chips);chips()}
-if(bd){var lg=el("p","pflegal");[["Termos de Uso","/termos.html"],["Privacidade","/privacidade.html"]].forEach(function(x){var a=el("a","",x[0]);a.href=x[1];a.target="_blank";a.rel="noopener";lg.appendChild(a)});bd.appendChild(lg)}
+qi.addEventListener("input",function(){if(!adv)return;var n=parseBlock(qi.value);
+  if(n&&!/^#?\d+$/.test(qi.value.trim()))qi.value=String(n);
+  if(n){S.q="";L.render()}showBlock(n)});
 /* ---------- Mapa de Nichos (janela) ---------- */
 function mapaNichos(){
   var data=(typeof NDATA!=="undefined"&&NDATA.length)?NDATA.map(function(d){return{e:d[0],n:d[1]}}):(typeof NICHOS!=="undefined"?NICHOS.map(function(n){return{e:"",n:n}}):[]);
   var cnt={};ADS.forEach(function(a){cnt[a.nicho]=(cnt[a.nicho]||0)+a.w*a.h});
   data.sort(function(a,b){return(cnt[b.n]||0)-(cnt[a.n]||0)||String(a.n).localeCompare(String(b.n),"pt-BR")});
   var f=el("div","pfmap"),q=el("input"),g=el("div","pfmg");q.type="search";q.placeholder="Buscar nicho";q.setAttribute("aria-label","Buscar nicho");
-  function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
   function fill(){g.textContent="";var t=norm(q.value);
     function add(e,n,c,v){var b=el("button","pfmb"+(FILTER===v?" on":"")+(c?"":" z"),(e?e+" ":"")+n+(c?" · "+c+(c===1?" bloco":" blocos"):""));b.type="button";
-      b.onclick=function(){FILTER=v;try{nichos()}catch(x){}try{draw()}catch(x){}document.getElementById("md").className="";if(L.state.open&&!locked)L.close()};g.appendChild(b)}
+      b.onclick=function(){FILTER=v;try{nichos()}catch(x){}try{draw()}catch(x){}document.getElementById("md").className="";if(S.open)L.close()};g.appendChild(b)}
     if(!t)add("🗺️","Todos os nichos",0,null);
     data.forEach(function(d){if(t&&norm(d.n).indexOf(t)<0)return;add(d.e,d.n,cnt[d.n]||0,d.n)})}
   q.oninput=fill;f.appendChild(q);f.appendChild(g);modal("Mapa de Nichos",f);fill()}
-var mn=document.getElementById("mn");if(mn)mn.onclick=function(e){e.preventDefault();mapaNichos()};
+var mnEl=document.getElementById("mn");if(mnEl)mnEl.onclick=function(e){e.preventDefault();mapaNichos()};
 /* ---------- QR code ---------- */
 function qrUrl(n){return location.origin+"/?"+(FACE.id?"f="+FACE.id+"&":"")+(n?"bloco="+n:"loja")}
 function drawQR(cv,text){var m=PFQR(text);if(!m)return false;var n=m.length,s=Math.max(3,Math.floor(300/(n+8))),q=4,w=(n+2*q)*s,c=cv.getContext("2d"),x,y;cv.width=cv.height=w;c.fillStyle="#fff";c.fillRect(0,0,w,w);c.fillStyle="#000";
@@ -2278,10 +2323,10 @@ function qrModal(){var f=el("div"),ip=el("input"),cv=document.createElement("can
   modal("Criar QR code",f);gen()}
 var bt=hd&&hd.querySelector(".btns");if(bt){var qb=el("button","","QR code");qb.id="pfqr";qb.type="button";qb.onclick=qrModal;bt.insertBefore(qb,bt.firstChild)}
 window.__pfQr=qrModal;window.__pfMapa=mapaNichos;
-/* ---------- começo: produtos primeiro no celular; ?bloco=N abre a busca ---------- */
+/* ---------- começo: vitrine primeiro no celular; ?bloco=N (QR) abre a loja do dono ---------- */
 var pb=parseInt(sp.get("bloco"),10);
-if(pb>0){L.open();qi.value=String(pb);showBlock(pb)}
-else if(MOB&&!sp.has("f")&&!sp.has("mural")&&!L.state.open)L.open();
+if(pb>0){L.open();var tries=0,iv=setInterval(function(){if(ADS.length||++tries>40){clearInterval(iv);var r=blk(pb);if(adv){qi.value=String(pb);showBlock(pb)}else if(r&&r.a){L.owner(ownerOf(r.a))}}},150)}
+else if(MOB&&!sp.has("f")&&!sp.has("mural")&&!S.open)L.open();
 sync();
 })();
 </script>
