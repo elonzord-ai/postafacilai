@@ -2364,11 +2364,19 @@ html.yt .btns{flex:0 0 auto;flex-wrap:nowrap}
 html.yt #bn{flex:0 0 170px;width:170px}
 }
 @media(max-width:700px){html.yt header{padding:8px 12px;gap:7px 10px}html.yt header button,html.yt header a.btn{padding:7px 11px;font-size:14px}html.yt #bn{padding:9px 12px;flex:1 1 150px}html.yt .stat{margin:0;font-size:12px}html.yt #nbar{padding:2px 12px 8px}html.yt #tk{margin:10px 12px 2px}html.yt #app{padding:8px 12px 12px}}
+
+/* paginação da loja */
+#loja .ljpg{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin:20px auto 8px;padding:0 8px}
+#loja .ljpg button{min-width:38px;height:38px;border-radius:19px;border:1px solid #d9d9d9;background:#fff;color:#3483fa;font:700 14px inherit;font-family:inherit;cursor:pointer}
+#loja .ljpg button.on{background:#3483fa;border-color:#3483fa;color:#fff}
+#loja .ljpg button:disabled{opacity:.4;cursor:default}
+#loja .ljpg span{color:#999;padding:0 2px}
+#loja .ljpg small{flex-basis:100%;text-align:center;color:#777;font-size:12px;margin-top:4px}
 </style>
 <script>
 /* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
 (function(){
-var LJ={open:false,all:[],order:[],shown:60,q:"",cat:"",loaded:false,err:"",busy:false,hist:[],owner:null,key:""},
+var LJ={open:false,all:[],order:[],shown:60,page:0,q:"",cat:"",loaded:false,err:"",busy:false,hist:[],owner:null,key:""},
     HOT=FACE.id===1,DOMH=FACE.id===1?["hotmart.com","hotm.art"]:["shopee.com.br","shope.ee","shp.ee","shopee.com","mercadolivre.com.br","mercadolivre.com","mercadolibre.com","meli.la"],
     CAT=(typeof NDATA!=="undefined"?NDATA.map(function(d){return d[1]}):[]);
 var main=document.querySelector("main"),sec=document.createElement("section");sec.id="loja";sec.setAttribute("aria-label","Loja de produtos");
@@ -2408,7 +2416,7 @@ tb.appendChild(qi);tb.appendChild(cs);tb.appendChild(sh);tb.appendChild(el("span
 var bd=el("div","ljbody"),note=el("p","ljnote","Produtos dos donos de bloco"+(HOT?" da Hotmart":"")+", em ordem aleatória. Os links são de afiliado e levam para o site do vendedor: o Posta Fácil AI não vende nem entrega nada."),gd=el("div","ljg"),mr=el("button","ljchip ljmore","Mostrar mais");mr.type="button";
 var em=el("div","ljempty");var ow=el("div","ljown");ow.style.display="none";bd.appendChild(ow);var vt=el("div","mlvt"),vs=el("button","","🔀 Embaralhar"),vm=el("button","","↔ Mover");vs.type=vm.type="button";vt.appendChild(vs);vt.appendChild(vm);
 vs.onclick=function(){sh.onclick()};vm.onclick=function(){LJ.mv=!LJ.mv;render()};
-bd.appendChild(note);bd.appendChild(vt);bd.appendChild(gd);bd.appendChild(em);bd.appendChild(mr);
+bd.appendChild(note);bd.appendChild(vt);bd.appendChild(gd);bd.appendChild(em);bd.appendChild(mr);var pg=el("nav","ljpg");pg.setAttribute("aria-label","Páginas de produtos");bd.appendChild(pg);var PS=24;
 var ai=document.createElement("button");ai.id="ljai";ai.type="button";ai.setAttribute("aria-label","Perguntar à IA da loja");ai.title="Pergunte à IA";
 ai.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.3L20.5 10l-6.3 1.7L12 18l-2.2-6.3L3.5 10l6.3-1.7zM19 15l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>';
 var ap=document.createElement("div");ap.id="ljap";ap.setAttribute("role","dialog");ap.setAttribute("aria-label","IA da loja");
@@ -2418,12 +2426,12 @@ var EMO={};if(typeof NDATA!=="undefined")NDATA.forEach(function(d){EMO[d[1]]=d[0
 var mh=el("div","mlh"),strip=el("div","mlcs"),cnt=el("div","mlcnt"),mlSig="";
 mh.innerHTML='<div class="mlr1"><img alt="" src="'+((document.querySelector("h1 img.logo")||{}).src||"")+'"><b>Posta Fácil</b><i>AI</i></div><div class="mlsr"><input type="search" placeholder="Buscar produtos, marcas e muito mais…" aria-label="Buscar produtos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div><nav class="mlnv" aria-label="Menu"></nav>';
 var mq=mh.querySelector("input"),mnv=mh.querySelector("nav");
-mq.oninput=function(){qi.value=this.value;LJ.q=this.value;LJ.shown=60;render()};
+mq.oninput=function(){qi.value=this.value;LJ.q=this.value;LJ.shown=60;LJ.page=0;render()};
 function mlLinks(){[["Mural",function(){toggle(false)}],["Mapa de Nichos",function(){if(typeof mapaNichos==="function")mapaNichos()}],["Meu Espaço",function(){if(typeof meuEspaco==="function")meuEspaco()}],["Postar produto",function(){postForm()}],["Meus produtos",function(){manage()}],["Embaralhar",function(){sh.onclick()}],["Como funciona",function(){if(typeof how==="function")how()}]].forEach(function(l){var b=el("button","",l[0]);b.type="button";b.onclick=l[1];mnv.appendChild(b)})}
 function mlSync(n){var c={};LJ.all.forEach(function(p){if(p.categoria)c[p.categoria]=(c[p.categoria]||0)+1});
   var ks=Object.keys(c).sort(function(a,b){return c[b]-c[a]}),sig=ks.join("|")+"#"+LJ.cat;
   if(sig!==mlSig){mlSig=sig;strip.textContent="";[""].concat(ks).forEach(function(k){var b=el("button","mlct"+(LJ.cat===k?" on":""));b.type="button";b.appendChild(el("i","",k?(EMO[k]||"🛍️"):"🏷️"));b.appendChild(el("span","",k||"Todos os produtos"));
-    b.onclick=function(){LJ.cat=k;cs.value=k;LJ.shown=60;render()};strip.appendChild(b)});var on=strip.querySelector(".on");if(on&&on.scrollIntoView)try{strip.scrollLeft=Math.max(0,on.offsetLeft-60)}catch(e){}}
+    b.onclick=function(){LJ.cat=k;cs.value=k;LJ.shown=60;LJ.page=0;render()};strip.appendChild(b)});var on=strip.querySelector(".on");if(on&&on.scrollIntoView)try{strip.scrollLeft=Math.max(0,on.offsetLeft-60)}catch(e){}}
   cnt.textContent="";cnt.appendChild(el("b","",LJ.cat||"Todos os produtos"));cnt.appendChild(document.createTextNode(n+" produto"+(n===1?"":"s")+(LJ.q?" para “"+LJ.q+"”":"")))}
 var tkHome=null,ph=el("div"),phSig=null;ph.id="tkimg";
 function mlMode(on){var H=document.documentElement,t=document.getElementById("tk");
@@ -2519,7 +2527,7 @@ function card(p){var c=el("div","ljc"),a=el("a","ljim"),h=el("h3","",p.nome),g=e
   [a,g].forEach(function(x){x.href=httpsOk(p.link)?p.link:"#";x.target="_blank";x.rel="sponsored noopener noreferrer";
     x.addEventListener("click",function(){rpc("loja_clique",JSON.stringify({p_id:p.id}))})});
   thumb(a,p.imagem);a.setAttribute("aria-label",p.nome);c.appendChild(a);c.appendChild(h);c.appendChild(el("div","ljcat",p.categoria||"Link de afiliado"));c.appendChild(g);return c}
-function listFill(v){var it=v.slice(0,LJ.shown),ml=document.documentElement.classList.contains("ml");
+function listFill(v){var np=Math.max(1,Math.ceil(v.length/PS));if(LJ.page>=np)LJ.page=np-1;if(LJ.page<0)LJ.page=0;var it=v.slice(LJ.page*PS,LJ.page*PS+PS),ml=document.documentElement.classList.contains("ml");
   if(LJ.mv&&ml&&it.length){gd.className="ljg mv";
     for(var r=0;r<3;r++){var ln=it.filter(function(_,i){return i%3===r});if(!ln.length)continue;var rp=Math.max(1,Math.ceil(4/ln.length)),row=el("div","mvv"),tr=el("div","mvr");
       for(var g=0;g<2;g++){var gr=el("div","tg");for(var k=0;k<rp;k++)ln.forEach(function(p){gr.appendChild(card(p))});
@@ -2528,20 +2536,28 @@ function listFill(v){var it=v.slice(0,LJ.shown),ml=document.documentElement.clas
   else{gd.className="ljg";it.forEach(function(p){gd.appendChild(card(p))})}
   vm.textContent=LJ.mv?"☰ Lista":"↔ Mover"}
 function render(){var v=vis();mlSync(v.length);gd.textContent="";listFill(v);
-  mr.style.display=v.length>LJ.shown?"block":"none";em.style.display=v.length?"none":"block";note.style.display=v.length?"":"none";
+  mr.style.display="none";pager(v.length);em.style.display=v.length?"none":"block";note.style.display=v.length?"":"none";
   if(!v.length){em.textContent="";var b=el("b","",!LJ.loaded?"Carregando produtos…":LJ.all.length?"Nenhum produto com esse filtro":"Ainda não há produtos aqui");em.appendChild(b);
     if(LJ.loaded&&!LJ.all.length)em.appendChild(document.createTextNode(LJ.err||(LJ.owner?"Este espaço ainda não postou produtos. Se o espaço é seu, toque em “Postar produto”.":"Quem tem bloco pode postar seus links de afiliado da Shopee e do Mercado Livre. Toque em “Postar produto”.")))}}
+function pager(n){pg.textContent="";var np=Math.ceil(n/PS);if(np<2){pg.style.display="none";return}pg.style.display="flex";
+  function go(i){LJ.page=i;render();bd.scrollTop=0;try{window.scrollTo(0,0)}catch(e){}}
+  function btn(t,i,on,dis,lab){var b=el("button",on?"on":"",t);b.type="button";if(lab)b.setAttribute("aria-label",lab);if(on)b.setAttribute("aria-current","page");b.disabled=!!dis;b.onclick=function(){go(i)};pg.appendChild(b)}
+  btn("‹",LJ.page-1,false,LJ.page===0,"Página anterior");
+  var set=[0,np-1,LJ.page-1,LJ.page,LJ.page+1].filter(function(i,k,a){return i>=0&&i<np&&a.indexOf(i)===k}).sort(function(a,b){return a-b}),last=-1;
+  set.forEach(function(i){if(last>=0&&i-last>1)pg.appendChild(el("span","","…"));btn(String(i+1),i,i===LJ.page,false,"Página "+(i+1));last=i});
+  btn("›",LJ.page+1,false,LJ.page>=np-1,"Próxima página");
+  pg.appendChild(el("small","","Página "+(LJ.page+1)+" de "+np+" · "+n+" produtos"))}
 function cats(){var seen={};LJ.all.forEach(function(p){if(p.categoria)seen[p.categoria]=1});var cur=LJ.cat;cs.textContent="";
   var o=el("option","","Categorias");o.value="";cs.appendChild(o);Object.keys(seen).sort().forEach(function(k){var x=el("option","",k);x.value=k;cs.appendChild(x)});cs.value=seen[cur]?cur:"";LJ.cat=cs.value}
 function banner(){var o=LJ.owner;ow.textContent="";ow.style.display=o?"flex":"none";if(!o)return;ow.appendChild(el("b","","🛍️ Loja de "+o.nome));ow.appendChild(el("span","",o.label));var b=el("button","ljchip","← Todas as lojas");b.type="button";b.onclick=function(){toggle(true,null)};ow.appendChild(b)}
 function load(){LJ.loaded=false;LJ.err="";LJ.key=LJ.owner?LJ.owner.key:"";banner();render();
-  fetch(SUPABASE_URL+"/rest/v1/produtos_loja?select=id,dono,nome,imagem,link,categoria&ativo=eq.true&face=eq."+FACE.id+(LJ.owner?"&dono=eq."+encodeURIComponent(LJ.owner.key):"")+"&order=id.desc&limit=600",{headers:hdr()})
+  fetch(SUPABASE_URL+"/rest/v1/produtos_loja?select=id,dono,nome,imagem,link,categoria&ativo=eq.true&face=eq."+FACE.id+(LJ.owner?"&dono=eq."+encodeURIComponent(LJ.owner.key):"")+"&order=id.desc&limit=2000",{headers:hdr()})
    .then(function(r){if(!r.ok){LJ.err=r.status===404?"A loja ainda não foi ativada no banco de dados.":"Não foi possível carregar agora.";return[]}return r.json()})
    .catch(function(){LJ.err="Sem conexão agora.";return[]})
-   .then(function(rows){LJ.all=(rows||[]).filter(function(p){return p&&p.nome&&httpsOk(p.link)});LJ.order=LJ.owner?LJ.all.slice():mix(LJ.all);LJ.loaded=true;LJ.shown=60;cats();render()})}
-qi.oninput=function(){LJ.q=this.value;LJ.shown=60;render()};
-cs.onchange=function(){LJ.cat=this.value;LJ.shown=60;render()};
-sh.onclick=function(){LJ.order=LJ.owner?LJ.all.slice().reverse():mix(LJ.all);LJ.shown=60;render();bd.scrollTop=0};
+   .then(function(rows){LJ.all=(rows||[]).filter(function(p){return p&&p.nome&&httpsOk(p.link)});LJ.order=LJ.owner?LJ.all.slice():mix(LJ.all);LJ.loaded=true;LJ.shown=60;LJ.page=0;cats();render()})}
+qi.oninput=function(){LJ.q=this.value;LJ.shown=60;LJ.page=0;render()};
+cs.onchange=function(){LJ.cat=this.value;LJ.shown=60;LJ.page=0;render()};
+sh.onclick=function(){LJ.order=LJ.owner?LJ.all.slice().reverse():mix(LJ.all);LJ.shown=60;LJ.page=0;render();bd.scrollTop=0};
 mr.onclick=function(){LJ.shown+=60;render()};
 
 /* ---------- abrir / fechar ---------- */
@@ -2564,17 +2580,17 @@ ln.onclick=function(e){e.preventDefault();gen()};hb.onclick=gen;
 if(mural)mural.addEventListener("click",function(e){if(LJ.open){e.preventDefault();toggle(false)}});
 addEventListener("keydown",function(e){if(e.key==="Escape"&&LJ.open&&!$("md").className){if(ap.classList.contains("on"))ap.classList.remove("on");else toggle(false)}});
 if(/[?&]loja\b/.test(location.search))toggle(true);
-window.__pfLoja={isOpen:function(){return LJ.open},getCat:function(){return LJ.cat||null},counts:function(){var c={};LJ.all.forEach(function(p){if(p.categoria)c[p.categoria]=(c[p.categoria]||0)+1});return c},total:function(){return LJ.all.length},setCat:function(k){LJ.cat=k||"";cs.value=LJ.cat;LJ.shown=60;render();bd.scrollTop=0},open:function(){toggle(true,null)},close:function(){toggle(false)}};
+window.__pfLoja={isOpen:function(){return LJ.open},getCat:function(){return LJ.cat||null},counts:function(){var c={};LJ.all.forEach(function(p){if(p.categoria)c[p.categoria]=(c[p.categoria]||0)+1});return c},total:function(){return LJ.all.length},setCat:function(k){LJ.cat=k||"";cs.value=LJ.cat;LJ.shown=60;LJ.page=0;render();bd.scrollTop=0},open:function(){toggle(true,null)},close:function(){toggle(false)}};
 addEventListener("resize",function(){mlMode(LJ.open)});
 /* no celular a pessoa cai direto na loja (versão amarela); ?mural abre o mural */
 if(FACE.live&&!/[?&]mural\b/.test(location.search))toggle(true);
 
 /* ---------- postar produto / meus produtos ---------- */
-var ERR={codigo_invalido:"Não achei um bloco ativo com esse código.",bloqueado:"Seu acesso está bloqueado.",nome_invalido:"Nome do produto: de 3 a 120 caracteres.",imagem_invalida:"A imagem precisa ser um endereço https.",link_invalido:HOT?"O link precisa ser de afiliado Hotmart (hotm.art ou hotmart.com), com https.":"Aceitamos só links da Shopee ou do Mercado Livre (shopee.com.br, shope.ee, mercadolivre.com.br, meli.la…).",limite:"Você chegou ao limite de produtos. Apague algum para postar outro.",repetido:"Esse link já está na sua loja."};
+var ERR={codigo_invalido:"Não achei um bloco ativo com esse código.",bloqueado:"Seu acesso está bloqueado.",nome_invalido:"Nome do produto: de 3 a 120 caracteres.",imagem_invalida:"A imagem precisa ser um endereço https.",link_invalido:HOT?"O link precisa ser de afiliado Hotmart (hotm.art ou hotmart.com), com https.":"Aceitamos só links da Shopee ou do Mercado Livre (shopee.com.br, shope.ee, mercadolivre.com.br, meli.la…).",limite:"Você chegou ao limite de produtos. Apague algum para postar outro.",repetido:"Esse link já está na sua loja.",limite_diario:"Você atingiu o limite de produtos de hoje. Volte amanhã para postar mais.",limite_geral:"O limite diário de novos produtos do site foi atingido. Tente amanhã."};
 function code0(){try{return localStorage.getItem("pf_chat_code")||localStorage.getItem("pf_code")||""}catch(e){return""}}
 function saveCode(c){try{localStorage.setItem("pf_code",c)}catch(e){}}
 function api(fn,body){return fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:hdr(),body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return null}).then(function(j){return{ok:r.ok,st:r.status,j:j}})})}
-function fail(r){if(r.st===404)return"A loja ainda não foi ativada no banco (falta rodar o SQL).";var c=typeof r.j==="string"?r.j:(r.j&&(r.j.message||r.j.hint))||"";c=String(c).replace(/^.*?(codigo_invalido|bloqueado|nome_invalido|imagem_invalida|link_invalido|limite|repetido).*$/,"$1");return ERR[c]||"Não foi possível salvar agora."}
+function fail(r){if(r.st===404)return"A loja ainda não foi ativada no banco (falta rodar o SQL).";var c=typeof r.j==="string"?r.j:(r.j&&(r.j.message||r.j.hint))||"";c=String(c).replace(/^.*?(codigo_invalido|bloqueado|nome_invalido|imagem_invalida|link_invalido|limite_diario|limite_geral|limite|repetido).*$/,"$1");return ERR[c]||"Não foi possível salvar agora."}
 function field(f,lab,node){f.appendChild(el("label","",lab));f.appendChild(node);return node}
 function postForm(){
   var f=el("div","ljf"),ci=el("input"),ni=el("input"),ii=el("input"),li=el("input"),se=el("select"),pv=el("div","ljpv"),pi=el("i","","🖼️"),pt=el("span","mut","Prévia da imagem"),m=el("p","ljmsg"),b=el("button","go","Postar produto");
@@ -2609,7 +2625,7 @@ pb.onclick=postForm;gear.onclick=manage;
 
 /* ---------- IA da loja ---------- */
 var am=ap.querySelector("#ljam"),af=ap.querySelector("#ljaf"),ain=af.querySelector("input"),abt=af.querySelector("button");
-function focusProd(id){LJ.q="";qi.value="";LJ.cat="";cs.value="";var v=vis(),i=v.findIndex(function(p){return String(p.id)===String(id)});if(i<0)return;if(i>=LJ.shown)LJ.shown=i+1;render();
+function focusProd(id){LJ.q="";qi.value="";LJ.cat="";cs.value="";var v=vis(),i=v.findIndex(function(p){return String(p.id)===String(id)});if(i<0)return;LJ.page=Math.floor(i/PS);render();
   var n=gd.querySelector('[data-id="'+id+'"]');if(n){n.scrollIntoView({block:"center",behavior:"smooth"});n.classList.add("fl");setTimeout(function(){n.classList.remove("fl")},2600)}if(innerWidth<=700)ap.classList.remove("on")}
 function bubble(role,txt){var d=el("div","m "+(role==="user"?"u":"a"));
   if(role==="user"){d.textContent=txt}else{var last=0,re=/\[#(\d+)\]/g,mm;
