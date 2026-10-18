@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="yt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -2312,6 +2312,46 @@ html.lojaok:not(.ml) #dkL{display:flex}
 #dkR:hover,#dkL:hover{opacity:1;width:30px;background:#2d3277}
 }
 @media(max-width:700px){#dkR,#dkL{display:none!important}}
+/* ===== mural no mesmo estilo da vitrine (amarelo, cinza claro, branco, azul) ===== */
+html.yt:root:root{--ok:#0b8a5f;--bg:#ebebeb;--ink:#333;--muted:#666;--board:#ffffff;--gridline:#e6e6e6;--frame:#2d3277;--slot:#2d3277;--line:#e3e3e3;--hl:#3483fa;--accent:#3483fa;--panel:#fff;--gold:#c9a400;--gb:transparent;color-scheme:light}
+html.yt body{background:#ebebeb;color:#333;font-family:"Proxima Nova",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+html.yt header{background:#ffe600;box-shadow:0 1px 0 rgba(0,0,0,.1);padding:10px max(16px,calc((100% - 1380px)/2));gap:10px 14px;align-items:center}
+html.yt h1{color:#2d3277;font-weight:700;letter-spacing:-.3px}
+html.yt .ai{background:none;-webkit-text-fill-color:#2d3277;color:#2d3277;border:1.5px solid #2d3277;border-radius:5px;padding:2px 5px;font-size:11px;font-weight:800;line-height:1}
+html.yt .stat{color:#3a3f7a;font-size:13px;order:5;flex:1 1 100%;min-width:0;margin-top:-2px}
+html.yt .ftag{background:#fff;color:#2d3277;border:0;border-radius:999px;box-shadow:0 1px 2px rgba(0,0,0,.15);font-weight:600}
+html.yt .btns{flex:1 1 380px;min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+html.yt #bn{flex:1 1 220px;max-width:520px;border:0;border-radius:3px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);padding:11px 14px;font:inherit;font-size:15px;color:#333}
+html.yt header button,html.yt header a.btn{background:#fff;border:0;border-radius:6px;color:#2d3277;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.15);padding:9px 14px}
+html.yt header button:not(:disabled):hover,html.yt header a.btn:hover{background:#f5f5f5;border:0}
+html.yt #zo,html.yt #zi{padding:9px 13px}
+html.yt .ljb{background:#fff;color:#2d3277;border:0;border-radius:999px;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+html.yt .ljb:hover,html.yt .ljb.on{background:#3483fa;color:#fff;border:0}
+html.yt #nbar{background:#ffe600;border-bottom:0;padding:2px max(16px,calc((100% - 1380px)/2)) 10px}
+html.yt #nbar input{border:0;border-radius:3px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+html.yt .chip{background:#fff;color:#2d3277;border:0;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+html.yt .chip.on{background:#3483fa;color:#fff}
+html.yt #tk{background:#fff;border:0;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.14);margin:12px max(14px,calc((100% - 1380px)/2)) 2px}
+html.yt .tkl{color:#2d3277}
+html.yt #app{padding:10px max(14px,calc((100% - 1380px)/2)) 14px}
+html.yt #nav{background:#fff;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.14);padding:10px;align-self:start;margin-top:0}
+html.yt a.ni:hover{background:#f5f5f5}
+html.yt .ni.on{background:#e8f1ff;color:#3483fa;font-weight:600}
+html.yt .ni .ic{color:#666}html.yt .ni.on .ic{color:#3483fa}
+html.yt main{border:0!important;background:#fff!important;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.14)!important}
+html.yt #lv,html.yt #adv,html.yt #rank,html.yt #sheet,html.yt #md .mb,html.yt .card{border:0!important;background:#fff!important;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.14)!important}
+html.yt #sheet{box-shadow:0 6px 24px rgba(0,0,0,.22)!important}
+html.yt #cupc{border:0;background:#f5f8ff;border-radius:8px}
+html.yt .ic.gd{color:#2d3277}
+html.yt #lvb,html.yt #cupv,html.yt #md .go,html.yt a.primary,html.yt #buy,html.yt #bb{background:#3483fa!important;color:#fff!important;border:0!important;border-radius:6px;font-weight:600}
+html.yt #lvb:hover,html.yt #cupv:hover,html.yt #md .go:hover,html.yt a.primary:hover,html.yt #buy:hover{background:#2968c8!important}
+html.yt button:not(:disabled):hover,html.yt a.btn:hover{border-color:#3483fa}
+html.yt #mf{background:#fff;border-top:1px solid #e3e3e3}
+html.yt ::-webkit-scrollbar-thumb{background:#bbb;background-clip:padding-box}
+html.yt ::-webkit-scrollbar-thumb:hover{background:#999;background-clip:padding-box}
+html.yt #prog .bar i{background:#3483fa}
+html.yt #cur b{color:#2d3277}
+@media(max-width:700px){html.yt header{padding:8px 12px;gap:7px 10px}html.yt header button,html.yt header a.btn{padding:7px 11px;font-size:14px}html.yt #bn{padding:9px 12px;flex:1 1 150px}html.yt .stat{margin:0;font-size:12px}html.yt #nbar{padding:2px 12px 8px}html.yt #tk{margin:10px 12px 2px}html.yt #app{padding:8px 12px 12px}}
 </style>
 <script>
 /* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
