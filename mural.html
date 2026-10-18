@@ -2343,7 +2343,7 @@ html.yt #lv,html.yt #adv,html.yt #rank,html.yt #sheet,html.yt #md .mb,html.yt .c
 html.yt #sheet{box-shadow:0 6px 24px rgba(0,0,0,.22)!important}
 html.yt #cupc{border:0;background:#f5f8ff;border-radius:8px}
 html.yt .ic.gd{color:#2d3277}
-html.yt #lvb,html.yt #cupv,html.yt #md .go,html.yt a.primary,html.yt #buy,html.yt #bb{background:#3483fa!important;color:#fff!important;border:0!important;border-radius:6px;font-weight:600}
+html.yt #lvb,html.yt #cupv,html.yt #md .go,html.yt a.primary,html.yt #bb{background:#3483fa!important;color:#fff!important;border:0!important;border-radius:6px;font-weight:600}
 html.yt #lvb:hover,html.yt #cupv:hover,html.yt #md .go:hover,html.yt a.primary:hover,html.yt #buy:hover{background:#2968c8!important}
 html.yt button:not(:disabled):hover,html.yt a.btn:hover{border-color:#3483fa}
 html.yt #mf{background:#fff;border-top:1px solid #e3e3e3}
@@ -2372,6 +2372,16 @@ html.yt #bn{flex:0 0 170px;width:170px}
 #loja .ljpg button:disabled{opacity:.4;cursor:default}
 #loja .ljpg span{color:#999;padding:0 2px}
 #loja .ljpg small{flex-basis:100%;text-align:center;color:#777;font-size:12px;margin-top:4px}
+
+/* reservar bloco: contadores e botões verdes */
+html.yt #buy,html.yt #md button.rsvg{background:#00a650!important;color:#fff!important;border:0!important;border-radius:6px;font-weight:700}
+html.yt #buy:hover,html.yt #md button.rsvg:hover{background:#008a43!important}
+#md .rsvs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 10px}
+#md .rsvc{background:#f5f5f5;border-radius:8px;padding:12px;text-align:center}
+#md .rsvc b{display:block;font-size:26px;line-height:1.1;color:#333}
+#md .rsvc span{font-size:13px;color:#666}
+#md button.rsvg{display:block;width:100%;margin:8px 0;padding:12px;font-size:15px;cursor:pointer}
+#md button.rsvg:disabled{opacity:.5;cursor:default}
 </style>
 <script>
 /* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
@@ -2454,7 +2464,18 @@ function mlImgs(){var L=((typeof TKL!=="undefined"&&TKL)||[]).filter(function(p)
 var hero=el("section","dkhero"),hs=el("div","hs"),hd=el("div","hdots"),hpv=el("button","harr hl","‹"),hnx=el("button","harr hr","›"),hi=0,hSig=null,hHold=false,cta=el("button","dkcta","Reservar meu bloco");
 hero.setAttribute("aria-label","Destaques");hpv.type=hnx.type=cta.type="button";hpv.setAttribute("aria-label","Anterior");hnx.setAttribute("aria-label","Próximo");
 hero.appendChild(hs);hero.appendChild(hpv);hero.appendChild(hnx);hero.appendChild(hd);
-cta.onclick=function(){toggle(false)};mh.appendChild(cta);
+function rsvModal(){var used=0;ADS.forEach(function(a){used+=a.w*a.h});var free=FACE.blocks-used,f=el("div","rsv"),g=el("div","rsvs");
+  [[used.toLocaleString("pt-BR"),"blocos ativos"],[free.toLocaleString("pt-BR"),"blocos livres"]].forEach(function(x){var b=el("div","rsvc");b.appendChild(el("b","",x[0]));b.appendChild(el("span","",x[1]));g.appendChild(b)});
+  f.appendChild(g);f.appendChild(el("p","mut","R$ "+PRECO+" por bloco por mês. Compre um bloco sorteado agora ou vá ao mural e escolha a posição que preferir."));
+  var r=el("button","rsvg","🎲 Comprar um bloco aleatório"),m=el("button","rsvg","Ir ao mural e escolher a posição");r.type=m.type="button";
+  if(free<1){r.disabled=true;r.textContent="Sem blocos livres"}
+  r.onclick=function(){var tries=0,p=null;while(tries++<500&&!p){var q={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)};if(fits(q,1,1))p=q}
+    if(!p)for(var y=0;y<N&&!p;y++)for(var x=0;x<N;x++)if(fits({x:x,y:y},1,1)){p={x:x,y:y};break}
+    if(!p){r.textContent="Sem blocos livres";r.disabled=true;return}
+    $("md").className="";curBuy={x:p.x,y:p.y};$("buy").onclick()};
+  m.onclick=function(){$("md").className="";toggle(false)};
+  f.appendChild(r);f.appendChild(m);modal("Reservar meu bloco",f)}
+cta.onclick=rsvModal;mh.appendChild(cta);
 function heroGo(i){var n=hs.children.length;if(!n)return;hi=(i%n+n)%n;hs.style.transform="translateX("+(-hi*100)+"%)";[].forEach.call(hd.children,function(d,k){d.classList.toggle("on",k===hi)})}
 function hslide(t,h,p,b,fn,pics){var s=el("div","hsl"),x=el("div","hx");x.appendChild(el("small","",t));x.appendChild(el("h2","",h));x.appendChild(el("p","",p));
   var bt=el("button","",b);bt.type="button";bt.onclick=fn;x.appendChild(bt);s.appendChild(x);
@@ -2463,7 +2484,7 @@ function hslide(t,h,p,b,fn,pics){var s=el("div","hsl"),x=el("div","hx");x.append
 function heroBuild(){hs.innerHTML="";hd.innerHTML="";var L=shuf(((typeof TKL!=="undefined"&&TKL)||[]).filter(function(p){return p.i}));
   hslide("Posta Fácil AI","Seu espaço virtual de afiliado","O espaço virtual dos lojistas de casa: seus produtos passando na frente de quem quer comprar.","Ver o mural",function(){toggle(false)},L.slice(0,4));
   if(L.length>4)hslide("Em destaque agora","Produtos que estão passando por aqui","Toque na imagem e abra direto o link do afiliado.","Ver o mural",function(){toggle(false)},L.slice(4,8).length>=3?L.slice(4,8):L.slice(0,4).reverse());
-  hslide("Seu bloco","Reserve o seu bloco por R$ 5 por mês","Escolha um lugar no mural, pague com Pix e apareça aqui para quem quer comprar.","Escolher meu bloco",function(){toggle(false)},L.slice(0,3));
+  hslide("Seu bloco","Reserve o seu bloco por R$ 5 por mês","Escolha um lugar no mural, pague com Pix e apareça aqui para quem quer comprar.","Reservar meu bloco",rsvModal,L.slice(0,3));
   for(var k=0;k<hs.children.length;k++){(function(k){var d=el("i");d.onclick=function(){heroGo(k)};hd.appendChild(d)})(k)}
   hi=0;heroGo(0)}
 hpv.onclick=function(){heroGo(hi-1)};hnx.onclick=function(){heroGo(hi+1)};
