@@ -2369,7 +2369,7 @@ html.yt #bn{flex:0 0 170px;width:170px}
 /* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
 (function(){
 var LJ={open:false,all:[],order:[],shown:60,q:"",cat:"",loaded:false,err:"",busy:false,hist:[],owner:null,key:""},
-    HOT=FACE.id===1,DOMH=["hotmart.com","hotm.art"],
+    HOT=FACE.id===1,DOMH=FACE.id===1?["hotmart.com","hotm.art"]:["shopee.com.br","shope.ee","shp.ee","shopee.com","mercadolivre.com.br","mercadolivre.com","mercadolibre.com","meli.la"],
     CAT=(typeof NDATA!=="undefined"?NDATA.map(function(d){return d[1]}):[]);
 var main=document.querySelector("main"),sec=document.createElement("section");sec.id="loja";sec.setAttribute("aria-label","Loja de produtos");
 function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
@@ -2391,7 +2391,7 @@ function mix(list){var g={};list.forEach(function(p){var d=p.dono||"?";(g[d]=g[d
   var ks=shuf(Object.keys(g)),out=[],more=true;ks.forEach(function(d){shuf(g[d])});
   for(var i=0;more;i++){more=false;ks.forEach(function(d){if(g[d][i]){out.push(g[d][i]);more=true}})}return out}
 function httpsOk(u){try{return new URL(u).protocol==="https:"}catch(e){return false}}
-function linkOk(u){try{var x=new URL(u);if(x.protocol!=="https:")return false;if(!HOT)return true;var h=x.hostname.toLowerCase();
+function linkOk(u){try{var x=new URL(u);if(x.protocol!=="https:")return false;var h=x.hostname.toLowerCase();
   return DOMH.some(function(d){return h===d||h.slice(-d.length-1)==="."+d})}catch(e){return false}}
 function imgSrc(s){var m=/src\s*=\s*["']([^"']+)["']/i.exec(s||"");return(m?m[1]:String(s||"")).trim().replace(/&amp;/g,"&")}
 function thumb(box,src){box.textContent="";if(!httpsOk(src)){box.textContent="🖼️";return}
@@ -2530,7 +2530,7 @@ function listFill(v){var it=v.slice(0,LJ.shown),ml=document.documentElement.clas
 function render(){var v=vis();mlSync(v.length);gd.textContent="";listFill(v);
   mr.style.display=v.length>LJ.shown?"block":"none";em.style.display=v.length?"none":"block";note.style.display=v.length?"":"none";
   if(!v.length){em.textContent="";var b=el("b","",!LJ.loaded?"Carregando produtos…":LJ.all.length?"Nenhum produto com esse filtro":"Ainda não há produtos aqui");em.appendChild(b);
-    if(LJ.loaded&&!LJ.all.length)em.appendChild(document.createTextNode(LJ.err||(LJ.owner?"Este espaço ainda não postou produtos. Se o espaço é seu, toque em “Postar produto”.":"Quem tem bloco pode postar quantos links de afiliado quiser. Toque em “Postar produto”.")))}}
+    if(LJ.loaded&&!LJ.all.length)em.appendChild(document.createTextNode(LJ.err||(LJ.owner?"Este espaço ainda não postou produtos. Se o espaço é seu, toque em “Postar produto”.":"Quem tem bloco pode postar seus links de afiliado da Shopee e do Mercado Livre. Toque em “Postar produto”.")))}}
 function cats(){var seen={};LJ.all.forEach(function(p){if(p.categoria)seen[p.categoria]=1});var cur=LJ.cat;cs.textContent="";
   var o=el("option","","Categorias");o.value="";cs.appendChild(o);Object.keys(seen).sort().forEach(function(k){var x=el("option","",k);x.value=k;cs.appendChild(x)});cs.value=seen[cur]?cur:"";LJ.cat=cs.value}
 function banner(){var o=LJ.owner;ow.textContent="";ow.style.display=o?"flex":"none";if(!o)return;ow.appendChild(el("b","","🛍️ Loja de "+o.nome));ow.appendChild(el("span","",o.label));var b=el("button","ljchip","← Todas as lojas");b.type="button";b.onclick=function(){toggle(true,null)};ow.appendChild(b)}
@@ -2570,7 +2570,7 @@ addEventListener("resize",function(){mlMode(LJ.open)});
 if(FACE.live&&!/[?&]mural\b/.test(location.search))toggle(true);
 
 /* ---------- postar produto / meus produtos ---------- */
-var ERR={codigo_invalido:"Não achei um bloco ativo com esse código.",bloqueado:"Seu acesso está bloqueado.",nome_invalido:"Nome do produto: de 3 a 120 caracteres.",imagem_invalida:"A imagem precisa ser um endereço https.",link_invalido:HOT?"O link precisa ser de afiliado Hotmart (hotm.art ou hotmart.com), com https.":"O link precisa começar com https://",limite:"Você chegou ao limite de produtos. Apague algum para postar outro.",repetido:"Esse link já está na sua loja."};
+var ERR={codigo_invalido:"Não achei um bloco ativo com esse código.",bloqueado:"Seu acesso está bloqueado.",nome_invalido:"Nome do produto: de 3 a 120 caracteres.",imagem_invalida:"A imagem precisa ser um endereço https.",link_invalido:HOT?"O link precisa ser de afiliado Hotmart (hotm.art ou hotmart.com), com https.":"Aceitamos só links da Shopee ou do Mercado Livre (shopee.com.br, shope.ee, mercadolivre.com.br, meli.la…).",limite:"Você chegou ao limite de produtos. Apague algum para postar outro.",repetido:"Esse link já está na sua loja."};
 function code0(){try{return localStorage.getItem("pf_chat_code")||localStorage.getItem("pf_code")||""}catch(e){return""}}
 function saveCode(c){try{localStorage.setItem("pf_code",c)}catch(e){}}
 function api(fn,body){return fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:hdr(),body:JSON.stringify(body)}).then(function(r){return r.json().catch(function(){return null}).then(function(j){return{ok:r.ok,st:r.status,j:j}})})}
@@ -2579,7 +2579,7 @@ function field(f,lab,node){f.appendChild(el("label","",lab));f.appendChild(node)
 function postForm(){
   var f=el("div","ljf"),ci=el("input"),ni=el("input"),ii=el("input"),li=el("input"),se=el("select"),pv=el("div","ljpv"),pi=el("i","","🖼️"),pt=el("span","mut","Prévia da imagem"),m=el("p","ljmsg"),b=el("button","go","Postar produto");
   ci.type="password";ci.placeholder="Código do seu bloco";ci.value=code0();ci.autocomplete="off";ci.autocapitalize="off";ci.spellcheck=false;ni.placeholder="Nome do produto";ni.maxLength=120;
-  ii.placeholder="Endereço da imagem (https://…) ou cole o <img …>";li.placeholder=HOT?"Link de afiliado Hotmart (hotm.art/…)":"Seu link de afiliado (https://…)";
+  ii.placeholder="Endereço da imagem (https://…) ou cole o <img …>";li.placeholder=HOT?"Link de afiliado Hotmart (hotm.art/…)":"Link de afiliado Shopee ou Mercado Livre";
   var o0=el("option","","Categoria (opcional)");o0.value="";se.appendChild(o0);CAT.forEach(function(c){var o=el("option","",c);o.value=c;se.appendChild(o)});
   field(f,"Código do bloco",ci);field(f,"Nome do produto",ni);field(f,"Imagem do produto",ii);pv.appendChild(pi);pv.appendChild(pt);f.appendChild(pv);field(f,"Link de afiliado",li);field(f,"Categoria",se);
   f.appendChild(el("p","mut","Poste só produtos reais, sem promessa de ganho garantido"+(HOT?" e seguindo as Diretrizes Hotmart":"")+". Anúncio fora das regras pode ser removido."));f.appendChild(m);f.appendChild(b);
