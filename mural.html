@@ -258,7 +258,7 @@ body.sheet-open #zc{display:none}
 <div id="app">
 <nav id="nav" aria-label="Navegação">
   <a class="ni" href="index.html" id="back"><svg class='ic'><use href='#i-grid'/></svg> Voltar ao cubo 3D</a>
-  <a class="ni on" href="/"><svg class='ic'><use href='#i-grid'/></svg> Mural</a>
+  <a class="ni on" href="#" onclick="return false"><svg class='ic'><use href='#i-grid'/></svg> Mural</a>
   <a class="ni" href="#" id="mn"><svg class='ic'><use href='#i-map'/></svg> Mapa de Nichos</a>
   <a class="ni" href="#" id="me"><svg class='ic'><use href='#i-chart'/></svg> Meu Espaço</a>
   <a class="ni" href="#" id="cpn"><svg class='ic'><use href='#i-ticket'/></svg> Cupons <small id="cpb" style="display:none"></small></a>
@@ -2005,7 +2005,7 @@ $("sa").addEventListener("click",function(){if(typeof curAd!=="undefined"&&curAd
   /* faces ainda não liberadas (só Shopee/ML e Hotmart estão abertas): ninguém compra pixel por aqui */
   if(FACE.id>1){var lk=document.createElement("div");lk.setAttribute("role","alertdialog");lk.setAttribute("aria-modal","true");
     lk.style.cssText="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,9,22,.92)";
-    lk.innerHTML='<div style="max-width:380px;text-align:center;padding:26px 24px 22px;border-radius:16px;background:linear-gradient(180deg,#16244a,#0e1733);border:1px solid rgba(214,179,106,.7);color:#e8edf8;font-family:inherit"><div style="font-size:44px;line-height:1">🔒</div><h3 style="margin:10px 0 6px;font-size:19px;color:#d6b36a">Face bloqueada</h3><p style="margin:0 0 18px;color:#9aa8c7;line-height:1.5;font-size:14px">'+FACE.name+' ainda não foi liberada para compra. Em breve você poderá anunciar aqui.</p><a href="index.html" style="display:inline-block;padding:9px 18px;border-radius:9px;background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;font-weight:700;text-decoration:none">Voltar ao cubo 3D</a></div>';
+    lk.innerHTML='<div style="max-width:380px;text-align:center;padding:26px 24px 22px;border-radius:16px;background:linear-gradient(180deg,#16244a,#0e1733);border:1px solid rgba(214,179,106,.7);color:#e8edf8;font-family:inherit"><div style="font-size:44px;line-height:1">🔒</div><h3 style="margin:10px 0 6px;font-size:19px;color:#d6b36a">Face bloqueada</h3><p style="margin:0 0 18px;color:#9aa8c7;line-height:1.5;font-size:14px">'+FACE.name+' ainda não foi liberada para compra. Em breve você poderá anunciar aqui.</p><a href="mural.html" style="display:inline-block;padding:9px 18px;border-radius:9px;background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;font-weight:700;text-decoration:none">Voltar ao cubo 3D</a></div>';
     document.body.appendChild(lk)}
   /* nichos: só o botão "Todos"; o campo de busca acha o nicho e destaca os blocos dele */
   nichos=function(){var b=$("nichos");b.innerHTML="";var k=el("button",FILTER===null?"chip on":"chip","Todos");

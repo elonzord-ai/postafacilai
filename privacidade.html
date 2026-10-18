@@ -2,116 +2,107 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Política de Privacidade · Posta Fácil AI</title>
-<meta name="theme-color" content="#0a1128">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="description" content="Como o Posta Fácil AI trata seus dados: o que coletamos, para quê, com quem compartilhamos e seus direitos (LGPD).">
 <style>
-:root{--bg:#f3f5fb;--ink:#0e1a3d;--muted:#5a6784;--line:#dde3f0;--accent:#5a3fe8;--panel:#fff;--gold:#b8923f;--gold2:#d6b36a;color-scheme:light;
---gb:linear-gradient(135deg,rgba(214,179,106,.75),rgba(106,61,240,.45) 55%,rgba(27,191,216,.45))}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0a1128;--ink:#e8edf8;--muted:#9aa8c7;--line:#26345c;--accent:#8aa4ff;--panel:#131f40;--gold:#e8c26c;--gold2:#d6b36a}}
+:root{--bg:#ebebeb;--ink:#333;--muted:#666;--card:#fff;--line:#e3e3e3;--y:#ffe600;--o:#ffa826;--blue:#3483fa}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;line-height:1.6;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-header{display:flex;align-items:center;gap:12px;padding:10px 14px;flex-wrap:wrap;max-width:860px;margin:0 auto}
-h1.brand{font-size:19px;margin:0;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;flex:1}
-.logo{height:30px;width:auto}
-.ai{background:linear-gradient(135deg,#2f6bf0,#8b5cf6,#1bbfd8);-webkit-background-clip:text;background-clip:text;color:transparent}
-a.btn{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 14px;text-decoration:none;display:inline-block}
-a.btn:hover{border-color:var(--gold2)}
-a.primary{background:linear-gradient(135deg,#2f6bf0,#6a3df0);color:#fff;border-color:transparent;font-weight:700}
-main{max-width:860px;margin:8px auto 40px;padding:0 14px}
-.doc{border:1px solid transparent;background:linear-gradient(var(--panel),var(--panel)) padding-box,var(--gb) border-box;border-radius:16px;padding:26px clamp(16px,4vw,34px);box-shadow:0 8px 28px rgba(0,0,0,.18)}
-h1.t{font-size:clamp(26px,5vw,36px);margin:0 0 4px;color:var(--gold);letter-spacing:-.02em;line-height:1.15}
-.meta{color:var(--muted);font-size:14px;margin:0 0 18px}
-.meta a,.doc p a,.doc li a{color:var(--accent)}
-.resumo{border:1px solid var(--line);border-left:4px solid var(--gold2);border-radius:12px;padding:14px 18px;background:rgba(138,164,255,.07);margin:0 0 8px}
-.resumo h2{margin:0 0 6px;border:0;padding:0;font-size:17px;color:var(--ink)}
-h2{font-size:20px;color:var(--gold);margin:30px 0 6px;padding-top:6px;border-top:1px solid var(--line);letter-spacing:-.01em}
-.resumo+h2{border-top:0;margin-top:22px}
-p{margin:6px 0 10px}
-ul{margin:6px 0 10px;padding-left:22px}
-li{margin:5px 0}
-b{color:var(--ink)}
-.nota{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:30px;padding-top:12px}
-footer{text-align:center;color:var(--muted);font-size:13px;margin:0 0 30px}
-::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#6a3df0,#1bbfd8);border-radius:10px;border:2px solid transparent;background-clip:padding-box}
-@supports not selector(::-webkit-scrollbar){*{scrollbar-width:thin;scrollbar-color:#6a3df0 transparent}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:linear-gradient(180deg,#ffe600,#ffc21f 70%,#ffa826);padding:12px 16px;box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.hw{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:800;font-size:19px;color:#333;text-decoration:none}
+.brand i{font-style:normal;background:#333;color:var(--y);border-radius:6px;padding:1px 6px;font-size:12px;margin-left:6px;vertical-align:middle}
+.back{background:#fff;color:var(--blue);font-weight:700;text-decoration:none;border-radius:20px;padding:9px 16px;font-size:14px;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+main{max-width:980px;margin:18px auto 40px;padding:0 16px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+nav.toc{position:sticky;top:12px;background:var(--card);border-radius:8px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+nav.toc b{display:block;margin-bottom:6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+nav.toc a{display:block;padding:6px 8px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:14px;line-height:1.3}
+nav.toc a:hover{background:#fff8c2}
+article{background:var(--card);border-radius:8px;padding:28px 30px;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+h1{margin:0 0 4px;font-size:30px;line-height:1.2}
+.meta{color:var(--muted);font-size:14px;margin:0 0 20px}
+.meta a{color:var(--blue)}
+.sum{background:#fffbd1;border:1px solid #f1e270;border-left:5px solid var(--y);border-radius:8px;padding:14px 18px;margin:0 0 8px}
+.sum h2{margin:0 0 6px;font-size:17px;border:0;padding:0}
+.sum ul{margin:0;padding-left:20px}.sum li{margin:6px 0}
+h2{font-size:20px;margin:30px 0 8px;padding-top:22px;border-top:1px solid var(--line)}
+h2 span{display:inline-block;min-width:30px;height:30px;line-height:30px;text-align:center;border-radius:15px;background:var(--y);color:#333;font-size:15px;margin-right:8px}
+p{margin:8px 0}li{margin:5px 0}
+.note{background:#eef5ff;border-left:4px solid var(--blue);border-radius:6px;padding:10px 14px;margin:12px 0;font-size:15px}
+.tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}
+.tbl th,.tbl td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+.tbl th{background:#f6f6f6}
+footer{max-width:980px;margin:0 auto 30px;padding:0 16px;color:var(--muted);font-size:13px;text-align:center}
+@media(max-width:800px){main{grid-template-columns:1fr}nav.toc{position:static;display:none}article{padding:20px 18px}h1{font-size:24px}}
 </style>
 </head>
 <body>
-<header>
-  <h1 class="brand"><img class="logo" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjdmNzg3ODI1LTRiMzYtNDk1ZS05MDFhLTAzNzIyOTU3Yjg0MwAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNogJtvbCpqHEIgL2uUixe+MgAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6NzRmN2JlYmYtMDI2Ny00ZDNlLThlMWQtN2Q1ZGUwOTliODIybHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaMNH2/S5bZ5Ex99tmyHonbcAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIKZkgeoHcxMDg2amiUkn6VyIecj7XYRZ/wih6pD3Cz+FpGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2g2cCxwF4PXBJX9wptQwgDKAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFgg64lw59P4IaGISMZibK7bZ5CJkJkWWAP5+QleS35DQqFkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo3Zjc4NzgyNS00YjM2LTQ5NWUtOTAxYS0wMzcyMjk1N2I4NDMvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDplZjI5ZDllYy1jMGMwLTQwN2YtOWQxOC04ZGI4NjIzYjAyZjZyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggpmSB6gdzEwODZqaJSSfpXIh5yPtdhFn/CKHqkPcLP4WiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIF2kYQo5oOAw8G1uUrtFFFjo0R5HnpnkKQToZQ/m47obomN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIDLHSslBao9ABjiV+4pEoHh5jBwbbU+KKR5EUGAq3x98dGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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">Posta Fácil <span class="ai">AI</span></h1>
-  <a class="btn primary" href="/">← Voltar ao mural</a>
-</header>
+<header><div class="hw"><a class="brand" href="/">Posta Fácil<i>AI</i></a><a class="back" href="/mural.html">← Voltar ao mural</a></div></header>
 <main>
-<article class="doc">
-<h1 class="t">Política de Privacidade</h1>
-<p class="meta">Posta Fácil AI · Atualizada em 08/10/2026 · Contato: <a href="https://wa.me/5562998309271">+55 62 99830-9271</a> · <a href="mailto:postafacilai@hotmail.com">postafacilai@hotmail.com</a></p>
+<nav class="toc" aria-label="Índice"><b>Neste documento</b>
+<a href="#s1">1. Quem é o responsável</a><a href="#s2">2. Quais dados coletamos</a><a href="#s3">3. Para que usamos</a><a href="#s4">4. Com quem compartilhamos</a><a href="#s5">5. No seu aparelho</a><a href="#s6">6. Por quanto tempo guardamos</a><a href="#s7">7. Segurança</a><a href="#s8">8. Seus direitos</a><a href="#s9">9. Menores de idade</a><a href="#s10">10. Alterações e contato</a></nav>
+<article>
+<h1>Política de Privacidade</h1>
+<p class="meta">Posta Fácil AI · Atualizada em 18/10/2026 · Contato: <a href="https://wa.me/5562998309271">+55 62 99830-9271</a> · <a href="mailto:postafacilai@hotmail.com">postafacilai@hotmail.com</a></p>
 
-<div class="resumo"><h2>Resumo</h2><ul>
+<div class="sum"><h2>Resumo</h2><ul>
 <li>Coletamos o mínimo para o mural funcionar: dados do anúncio, métricas de cliques e visitas e o que você digita nos formulários.</li>
-<li>Não vendemos seus dados.</li>
-<li>O Pix é processado pelo Mercado Pago, e não recebemos dados de cartão nem de banco.</li>
-<li>Você pode pedir acesso, correção ou exclusão dos seus dados quando quiser.</li>
-</ul></div>
+<li><b>Não vendemos seus dados.</b></li>
+<li>O Pix é processado pelo Mercado Pago, e <b>não recebemos dados de cartão nem de banco</b>.</li>
+<li>Seu <b>WhatsApp</b> é de uso interno (contato sobre pedido e vencimento) e <b>nunca aparece publicamente</b>.</li>
+<li>Você pode pedir acesso, correção ou exclusão dos seus dados quando quiser.</li></ul></div>
 
-<h2>1. Quem é o responsável</h2>
-<p>O Posta Fácil AI, no contato abaixo, decide como os dados são tratados e responde pelo encarregado de proteção de dados (LGPD).</p>
+<h2 id="s1"><span>1</span>Quem é o responsável</h2>
+<p>O Posta Fácil AI, no contato acima, decide como os dados são tratados e responde pelo encarregado de proteção de dados (LGPD, Lei 13.709/2018).</p>
 
-<h2>2. Quais dados coletamos</h2>
+<h2 id="s2"><span>2</span>Quais dados coletamos</h2>
 <ul>
-<li><b>Anunciantes:</b> nome da loja, link, imagem, cor, nicho, posição e tamanho do bloco, data do pagamento e o código de acesso ao Meu Espaço. Esses dados do anúncio aparecem publicamente no mural.</li>
+<li><b>Anunciantes:</b> nome da loja, link, imagem, cor, nicho, posição e tamanho do bloco, data do pagamento, o <b>WhatsApp informado na compra</b> e o código de acesso ao Meu Espaço. Os dados do anúncio aparecem publicamente no mural; o WhatsApp e o código, não.</li>
+<li><b>Produtos da Loja:</b> nome, imagem, categoria e link de afiliado postados pelo dono do bloco, exibidos publicamente.</li>
 <li><b>Cupons:</b> descrição, código do cupom, validade e limite de usos, mostrados publicamente enquanto o cupom estiver no ar.</li>
 <li><b>Pagamentos:</b> guardamos o número do pedido, o valor e o status. O Mercado Pago processa o Pix.</li>
 <li><b>Licitantes do leilão:</b> nome (exibido publicamente nos lances) e WhatsApp (uso interno, para contato).</li>
+<li><b>Chat da comunidade:</b> nome de exibição e mensagens enviadas, visíveis para os participantes.</li>
 <li><b>Visitantes:</b> contagem de visitas, visualizações e cliques, sem identificar a pessoa. Os provedores de hospedagem podem registrar dados técnicos, como endereço IP e navegador, nos registros de acesso.</li>
-<li><b>Denúncias:</b> o tipo, o motivo e o texto que você digitar.</li>
-<li><b>No seu aparelho:</b> o site guarda localmente os cupons que você revelou, o código do Meu Espaço, se você pediu, e marcas para não contar a mesma visualização ou clique várias vezes.</li>
-</ul>
+<li><b>Denúncias:</b> o tipo, o motivo e o texto que você digitar.</li></ul>
 
-<h2>3. Para que usamos e por quê</h2>
-<ul>
-<li><b>Executar a compra e o leilão</b>, para entregar o que você contratou (execução de contrato).</li>
-<li><b>Mostrar métricas, moderar imagens, tratar denúncias e prevenir fraudes</b> (legítimo interesse e proteção do mural).</li>
-<li><b>Cumprir obrigações legais</b> e defender direitos em processos, quando necessário.</li>
-</ul>
+<h2 id="s3"><span>3</span>Para que usamos e por quê</h2>
+<table class="tbl"><tr><th>Finalidade</th><th>Base legal (LGPD)</th></tr>
+<tr><td>Vender e exibir blocos, produtos e cupons</td><td>Execução de contrato</td></tr>
+<tr><td>Confirmar pagamentos e evitar fraude</td><td>Execução de contrato e prevenção à fraude</td></tr>
+<tr><td>Avisar sobre vencimento do bloco e dar suporte</td><td>Execução de contrato e legítimo interesse</td></tr>
+<tr><td>Mostrar métricas de cliques e rankings</td><td>Legítimo interesse</td></tr>
+<tr><td>Moderar chat, denúncias e conteúdo</td><td>Legítimo interesse e proteção da comunidade</td></tr>
+<tr><td>Cumprir obrigações legais</td><td>Obrigação legal</td></tr></table>
 
-<h2>4. Com quem compartilhamos</h2>
-<ul>
-<li><b>Prestadores que tratam dados por nós:</b> Supabase (banco de dados e arquivos), Vercel (hospedagem), Mercado Pago (pagamentos) e um serviço de análise automática de imagens (OpenAI). Alguns podem tratar dados fora do Brasil, segundo as políticas deles e a LGPD.</li>
-<li><b>Mercado Livre e outras lojas:</b> quando você clica num link, você sai do mural, e a loja passa a tratar os seus dados pelas regras dela. Ela ou o programa de afiliados pode usar cookies para registrar a indicação.</li>
-<li><b>Autoridades:</b> quando a lei ou uma ordem judicial exigir.</li>
-</ul>
+<h2 id="s4"><span>4</span>Com quem compartilhamos</h2>
+<p>Não vendemos nem alugamos dados. Compartilhamos apenas com prestadores necessários ao funcionamento: <b>hospedagem e banco de dados</b>, <b>Mercado Pago</b> (pagamento por Pix) e serviços de moderação de imagem, quando você envia uma. Também podemos compartilhar por ordem judicial ou obrigação legal.</p>
+<div class="note">Os sites de destino dos links (Shopee, Mercado Livre e outros) têm suas próprias regras de privacidade e cookies. Ao clicar, você sai do Posta Fácil AI.</div>
 
-<h2>5. Imagens enviadas</h2>
-<p>A imagem de um anúncio passa por análise automática antes de ir ao ar e fica pública enquanto o anúncio existir. Não envie imagens com dados pessoais de terceiros ou sem o direito de usá-las.</p>
+<h2 id="s5"><span>5</span>O que fica no seu aparelho</h2>
+<p>O site guarda localmente, no seu navegador: os cupons que você revelou, marcas para não contar a mesma visualização ou clique várias vezes e preferências simples de tela. Ao postar produtos, o código do seu bloco pode ficar lembrado no seu aparelho para você não digitar de novo; ele nunca é exibido na tela nem enviado a terceiros. Você pode apagar esses dados limpando o armazenamento do navegador.</p>
 
-<h2>6. Cookies e armazenamento local</h2>
-<p>O site não define cookies próprios de publicidade ou rastreamento. Usamos o armazenamento do navegador apenas para o site funcionar, como descrito na seção 2. Você pode limpar esses dados nas configurações do navegador, e isso apaga os cupons que você revelou naquele aparelho.</p>
+<h2 id="s6"><span>6</span>Por quanto tempo guardamos</h2>
+<ul><li>Dados do anúncio e do pedido: enquanto o bloco estiver ativo e pelo prazo necessário para cumprir obrigações legais e resolver disputas.</li>
+<li>Produtos e cupons: saem do ar quando vencem ou quando o bloco vence.</li>
+<li>Mensagens do chat: por tempo limitado, para moderação.</li>
+<li>Pedidos de exclusão são atendidos em prazo razoável, salvo o que a lei nos obriga a manter.</li></ul>
 
-<h2>7. Por quanto tempo guardamos</h2>
-<p>Os dados do anúncio ficam enquanto ele estiver ativo e, depois, pelo tempo necessário para cumprir obrigações legais e resolver disputas. Métricas e denúncias ficam pelo tempo necessário para análise e segurança. Depois disso, apagamos ou anonimizamos.</p>
+<h2 id="s7"><span>7</span>Segurança</h2>
+<p>Usamos conexão segura (HTTPS), acesso restrito ao banco de dados e verificação de pagamentos direto com o Mercado Pago. Nenhum sistema é totalmente imune a falhas. Por isso, guarde bem o seu código do Meu Espaço e não o compartilhe. Em caso de incidente relevante, avisaremos os afetados e a autoridade competente, como a lei exige.</p>
 
-<h2>8. Seus direitos</h2>
-<p>Pela LGPD, você pode pedir: confirmação de que tratamos seus dados; acesso; correção; anonimização, bloqueio ou exclusão de dados desnecessários; portabilidade; informação sobre com quem compartilhamos; retirada de consentimento, quando for a base; e oposição a um tratamento. Para exercer qualquer um, fale com a gente pelo contato abaixo. Podemos pedir uma confirmação de identidade antes de atender.</p>
+<h2 id="s8"><span>8</span>Seus direitos</h2>
+<p>Você pode, a qualquer momento: confirmar que tratamos seus dados, acessá-los, corrigi-los, pedir anonimização ou exclusão, pedir portabilidade, saber com quem compartilhamos e revogar consentimentos. Fale conosco pelos contatos abaixo e responderemos o quanto antes.</p>
 
-<h2>9. Segurança</h2>
-<p>Usamos conexão segura (HTTPS), acesso restrito aos dados e código de acesso para o Meu Espaço. Nenhum sistema é totalmente seguro, e, se houver um incidente que possa afetar você, avisaremos como a lei exigir. Guarde o seu código de acesso e não o compartilhe.</p>
+<h2 id="s9"><span>9</span>Menores de idade</h2>
+<p>O site não é destinado a menores de 18 anos para compras, cupons ou leilão. Se perceber que dados de um menor foram enviados, avise e removeremos.</p>
 
-<h2>10. Crianças e adolescentes</h2>
-<p>O serviço é para maiores de 18 anos e empresas. Não coletamos intencionalmente dados de menores.</p>
-
-<h2>11. Mudanças</h2>
-<p>Podemos atualizar esta política. A data no topo mostra a última versão. Veja também os <a href="/termos.html">Termos de Uso</a>.</p>
-
-<h2>12. Contato e encarregado</h2>
-<p>Posta Fácil AI · <a href="mailto:postafacilai@hotmail.com">postafacilai@hotmail.com</a> · <a href="https://wa.me/5562998309271">+55 62 99830-9271</a></p>
+<h2 id="s10"><span>10</span>Alterações e contato</h2>
+<p>Podemos atualizar esta política; a data no topo mostra a versão atual. Dúvidas ou pedidos sobre seus dados: WhatsApp <a href="https://wa.me/5562998309271">+55 62 99830-9271</a> ou <a href="mailto:postafacilai@hotmail.com">postafacilai@hotmail.com</a>. Veja também os <a href="/termos.html" style="color:var(--blue)">Termos de Uso</a>.</p>
 </article>
 </main>
-<footer><a href="/termos.html" style="color:var(--accent)">Termos de Uso</a> · © Posta Fácil AI</footer>
+<footer>© Posta Fácil AI · O espaço virtual dos lojistas de casa</footer>
 </body>
 </html>
