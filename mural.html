@@ -2554,7 +2554,7 @@ function card(p){var c=el("div","ljc"),a=el("a","ljim"),h=el("h3","",p.nome),g=e
   [a,g].forEach(function(x){x.href=httpsOk(p.link)?p.link:"#";x.target="_blank";x.rel="sponsored noopener noreferrer";
     x.addEventListener("click",function(){rpc("loja_clique",JSON.stringify({p_id:p.id}))})});
   thumb(a,p.imagem);a.setAttribute("aria-label",p.nome);c.appendChild(a);c.appendChild(h);c.appendChild(el("div","ljcat",p.categoria||"Link de afiliado"));c.appendChild(g);
-  if(!HOT){var ad=el("button","pfadd",window.PFA&&PFA.has(p.id)?"✓ No carrinho":"🛒 Adicionar ao carrinho");ad.type="button";ad.onclick=function(e){e.preventDefault();if(window.PFA){PFA.add(p).then(function(){ad.textContent=PFA.has(p.id)?"✓ No carrinho":"🛒 Adicionar ao carrinho";ad.classList.toggle("on",PFA.has(p.id))})}};c.appendChild(ad)}
+  if(!HOT){var ad=el("button","pfadd",window.PFA&&PFA.has(p.id)?"✓ No carrinho":"Adicionar ao carrinho");ad.type="button";ad.onclick=function(e){e.preventDefault();if(window.PFA){PFA.add(p).then(function(){ad.textContent=PFA.has(p.id)?"✓ No carrinho":"Adicionar ao carrinho";ad.classList.toggle("on",PFA.has(p.id))})}};c.appendChild(ad)}
   return c}
 function listFill(v){var np=Math.max(1,Math.ceil(v.length/PS));if(LJ.page>=np)LJ.page=np-1;if(LJ.page<0)LJ.page=0;var it=v.slice(LJ.page*PS,LJ.page*PS+PS),ml=document.documentElement.classList.contains("ml");
   if(LJ.mv&&ml&&it.length){gd.className="ljg mv";
@@ -2755,6 +2755,18 @@ html.pfc #pfconta{display:block}
 .ljc .pfadd{display:block;width:100%;margin-top:6px;border:1px solid #3483fa;border-radius:6px;background:#fff;color:#3483fa;font:inherit;font-weight:700;font-size:13.5px;padding:8px;cursor:pointer}
 .ljc .pfadd.on{background:#e8f1ff}
 .ljg.mv .ljc .pfadd{display:none}
+
+.dkc i.pfsq{width:88px;height:88px;border-radius:24px;box-shadow:0 6px 14px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.4)}
+.pfft{background:#fff;border-radius:10px;margin:26px 0 0;padding:28px 28px 14px;box-shadow:0 1px 2px rgba(0,0,0,.14);color:#333;font-size:14px;line-height:1.5}
+.pfft .cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:26px}
+.pfft h4{margin:0 0 12px;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.pfft a{display:block;color:#555;text-decoration:none;padding:4px 0}.pfft a:hover{color:#3483fa}
+.pfft .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #e0e0e0;border-radius:8px;padding:7px 11px;margin:0 6px 8px 0;font-weight:700;font-size:13px;color:#333;background:#fafafa}
+.pfft .pill i{font-style:normal;color:#00a650}
+.pfft .ok{display:flex;gap:8px;align-items:flex-start;color:#555;padding:3px 0}.pfft .ok svg{flex:none;margin-top:2px;color:#00a650}
+.pfft .bt{border-top:1px solid #eee;margin-top:20px;padding-top:14px;color:#888;font-size:12.5px;text-align:center}
+.pfft .ct a{display:flex;align-items:center;gap:8px}
+@media(max-width:900px){.pfft .cols{grid-template-columns:repeat(2,minmax(0,1fr))}.pfft{margin:20px 8px 90px;padding:20px 16px 12px}}
 </style>
 <div id="pfconta" role="dialog" aria-modal="true" aria-label="Minha conta"></div>
 <script>
@@ -2776,6 +2788,20 @@ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null
 function toast(t){var d=el("div","pfa-toast",t);d.setAttribute("role","status");document.body.appendChild(d);setTimeout(function(){d.remove()},2600)}
 function mk(l){try{var h=new URL(l).hostname.toLowerCase();if(/(^|\.)(shopee\.com(\.br)?|shope\.ee|shp\.ee)$/.test(h))return"sh";if(/(^|\.)(mercadolivre\.com(\.br)?|mercadolibre\.com|meli\.la)$/.test(h))return"ml"}catch(e){}return"ot"}
 var MKN={sh:"Shopee",ml:"Mercado Livre",ot:"Loja"};
+var IC={mural:'<rect x="3" y="3" width="7" height="7" rx="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.8"/>',
+ cat:'<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor"/>',
+ met:'<path d="M5 20v-6M12 20V5M19 20v-9"/>',
+ bag:'<path d="M6 8h12l1 12H5L6 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/>',
+ blk:'<path d="M12 2.5l8.5 4.8v9.4L12 21.5l-8.5-4.8V7.3L12 2.5z"/><path d="M12 12l8.5-4.7M12 12v9.5M12 12L3.5 7.3"/>',
+ faq:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.6a2.6 2.6 0 1 1 3.6 2.4c-.8.4-1.1 1-1.1 1.8"/><circle cx="12" cy="17.2" r=".7" fill="currentColor"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>',
+ cart:'<path d="M3 4h2l2.4 11h10.2l2-8H6.2"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/>',
+ out:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',
+ tic:'<path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 5v14" stroke-dasharray="2 2"/>'};
+function svg(k,sz,col){return '<svg viewBox="0 0 24 24" width="'+sz+'" height="'+sz+'" fill="none" stroke="'+(col||"currentColor")+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[k]+'</svg>'}
+function pic(){var u=S&&S.user,m=u&&u.user_metadata||{};return m.avatar_url||m.picture||""}
+function avatar(sz){var p=pic(),d=el("span","pfpic");d.style.cssText="width:"+sz+"px;height:"+sz+"px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;background:#e8f1ff;color:#3483fa;font-weight:700;flex:none;vertical-align:middle;font-size:"+Math.round(sz*.5)+"px";
+  var ini=(nome()[0]||"?").toUpperCase();if(p){var im=document.createElement("img");im.alt="";im.referrerPolicy="no-referrer";im.src=p;im.style.cssText="width:100%;height:100%;object-fit:cover";im.onerror=function(){d.textContent=ini};d.appendChild(im)}else d.textContent=ini;return d}
 function nome(){var u=S&&S.user,m=u&&u.user_metadata||{};return m.full_name||m.name||(u&&u.email?u.email.split("@")[0]:"cliente")}
 function mail(){return S&&S.user&&S.user.email||""}
 /* ---- sessão ---- */
@@ -2794,8 +2820,8 @@ bu.onclick=function(){S?openC("acc"):login()};bc.onclick=function(){if(S)openC("
 acc.appendChild(bu);acc.appendChild(bc);
 function place(){var mh=document.querySelector(".mlh");if(!mh)return;var cta=document.querySelector(".dkcta");if(cta&&cta.parentNode!==acc)acc.appendChild(cta);
   var t=innerWidth>700?mh:mh.querySelector(".mlr1");if(t&&acc.parentNode!==t)t.appendChild(acc)}
-function ui(){bu.innerHTML="";bu.appendChild(el("span","",S?"👤":"👤"));bu.appendChild(document.createTextNode(" "));bu.appendChild(el("span","pfa-t",S?"Olá, "+nome().split(" ")[0]:"Entrar"));
-  bc.innerHTML="🛒";var b=el("b","",String(CART.length));b.setAttribute("data-n",CART.length);bc.appendChild(b);place()}
+function ui(){bu.innerHTML="";if(S)bu.appendChild(avatar(24));else{var ic=el("span","");ic.innerHTML=svg("user",18);ic.style.cssText="display:inline-flex;vertical-align:middle";bu.appendChild(ic)}bu.appendChild(document.createTextNode(" "));bu.appendChild(el("span","pfa-t",S?"Olá, "+nome().split(" ")[0]:"Entrar"));
+  bc.innerHTML=svg("cart",20);bc.style.lineHeight="0";var b=el("b","",String(CART.length));b.setAttribute("data-n",CART.length);bc.appendChild(b);place()}
 addEventListener("resize",place);
 /* ---- login ---- */
 var LG={email:""};
@@ -2828,8 +2854,8 @@ function openC(s){sec=s||"cart";var P=$("pfconta");open=true;document.documentEl
 function closeC(){open=false;document.documentElement.classList.remove("pfc")}
 function shell(){var P=$("pfconta");P.innerHTML="";
   var h=el("div","pfch");h.appendChild(el("b","","Posta Fácil"));h.appendChild(el("i","","AI"));var bk=el("button","","← Voltar à loja");bk.type="button";bk.onclick=closeC;h.appendChild(bk);P.appendChild(h);
-  var w=el("div","pfcw"),a=el("aside"),pr=el("div","pfcp"),av=el("div","pfav",(nome()[0]||"?").toUpperCase()),pi=el("div");pi.appendChild(el("b","",nome()));pi.appendChild(el("small","",mail()));pr.appendChild(av);pr.appendChild(pi);a.appendChild(pr);
-  var nv=el("nav");[["acc","👤 Minha Conta"],["cart","🛒 Meu Carrinho"],["blk","🧱 Meus Blocos"],["cup","🎟️ Meus Cupons"],["out","↩ Sair"]].forEach(function(x){var b=el("button",sec===x[0]?"on":"",x[1]);b.type="button";b.setAttribute("data-s",x[0]);
+  var w=el("div","pfcw"),a=el("aside"),pr=el("div","pfcp"),av=el("div","pfav"),pi=el("div");av.appendChild(avatar(54));av.style.overflow="hidden";av.style.padding="0";pi.appendChild(el("b","",nome()));pi.appendChild(el("small","",mail()));pr.appendChild(av);pr.appendChild(pi);a.appendChild(pr);
+  var nv=el("nav");[["acc","Minha Conta","user"],["cart","Meu Carrinho","cart"],["blk","Meus Blocos","blk"],["cup","Meus Cupons","tic"],["out","Sair","out"]].forEach(function(x){var b=el("button",sec===x[0]?"on":"");b.innerHTML=svg(x[2],20)+" ";b.appendChild(document.createTextNode(x[1]));b.type="button";b.setAttribute("data-s",x[0]);
     if(x[0]==="cart"&&CART.length)b.appendChild(el("em","",String(CART.length)));
     b.onclick=function(){if(x[0]==="out"){out();return}if(x[0]==="cup"){if(typeof openCup==="function")openCup();return}sec=x[0];shell();render()};nv.appendChild(b)});
   a.appendChild(nv);var m=el("section","pfcm");m.id="pfcm";w.appendChild(a);w.appendChild(m);P.appendChild(w)}
@@ -2839,7 +2865,7 @@ function rCart(m){var tabs=el("div","pfct"),cnt={all:CART.length,sh:0,ml:0};CART
   var sr=el("div","pfcs"),qi=el("input");qi.placeholder="Você pode buscar pelo nome do produto";qi.value=qs;qi.oninput=function(){qs=this.value;list()};sr.appendChild(qi);m.appendChild(sr);
   var box=el("div");m.appendChild(box);
   function list(){box.innerHTML="";var n=qs.trim().toLowerCase(),L=CART.filter(function(p){return(tab==="all"||mk(p.link)===tab)&&(!n||String(p.nome).toLowerCase().indexOf(n)>=0)});
-    if(!L.length){var e=el("div","pfem");e.appendChild(el("span","","🛒"));e.appendChild(el("b","",CART.length?"Nenhum produto encontrado":"Ainda não há produtos no carrinho"));
+    if(!L.length){var e=el("div","pfem");var ei=el("span","");ei.innerHTML=svg("cart",56,"#c9c9c9");e.appendChild(ei);e.appendChild(el("b","",CART.length?"Nenhum produto encontrado":"Ainda não há produtos no carrinho"));
       e.appendChild(el("p","","Toque em “Adicionar ao carrinho” nos produtos da Loja para juntar tudo aqui."));var g=el("button","pfbtn bl","Ver produtos");g.type="button";g.onclick=closeC;e.appendChild(g);box.appendChild(e);return}
     box.appendChild(el("div","pfnote","O pagamento é feito no site da loja (Shopee ou Mercado Livre). O Posta Fácil AI não vende nem entrega os produtos."));
     L.forEach(function(p){var r=el("div","pfit"),im=el("img");im.alt="";im.referrerPolicy="no-referrer";im.loading="lazy";im.src=p.imagem||"";im.onerror=function(){im.style.visibility="hidden"};r.appendChild(im);
@@ -2869,6 +2895,20 @@ function rBlk(m){var b=el("div","pfcb");b.appendChild(el("h2","","Área dos dono
      .catch(function(e){g.disabled=false;ms.textContent=e.status===409||/duplicate|unique/i.test(e.msg||"")?"Você já pediu acesso a esse bloco.":/limite_vinculos/.test(e.msg||"")?"Limite de pedidos atingido.":"Não foi possível enviar agora."})};
   ld()}
 addEventListener("keydown",function(e){if(e.key==="Escape"&&open&&!$("md").className)closeC()});
+(function(){var G={"Mural":["mural","#5ac8fa","#007aff"],"Categorias":["cat","#ffb340","#ff9500"],"Meu Espaço":["met","#6ee08c","#34c759"],"Postar produto":["bag","#ff7a9c","#ff2d55"],"Seu bloco":["blk","#ff8a65","#ff3b30"],"Como funciona":["faq","#c68cf8","#af52de"]};
+  [].forEach.call(document.querySelectorAll(".dkc"),function(c){var h=c.querySelector("h3"),i=c.querySelector("i"),g=h&&G[h.textContent];if(!g||!i)return;i.className="pfsq";i.textContent="";i.style.background="linear-gradient(145deg,"+g[1]+","+g[2]+")";i.innerHTML=svg(g[0],46,"#fff")})})();
+(function(){var bd=document.querySelector(".ljbody");if(!bd||document.querySelector(".pfft"))return;
+  function L(h,t,ext){return '<a href="'+h+'"'+(ext?' target="_blank" rel="noopener"':'')+'>'+t+'</a>'}
+  var ck='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  var f=el("footer","pfft");f.setAttribute("aria-label","Rodapé");
+  f.innerHTML='<div class="cols">'
+  +'<div><h4>Atendimento</h4>'+L("/ajuda.html","Central de Ajuda")+L("/ajuda.html#comprar","Como comprar um bloco")+L("/ajuda.html#produtos","Como postar produtos")+L("/ajuda.html#cupons","Cupons")+L("/ajuda.html#leilao","Leilão da Placa 1")+'</div>'
+  +'<div><h4>Sobre o Posta Fácil</h4>'+L("/ajuda.html#oque","O que é")+L("/ajuda.html#serve","Para que serve um bloco")+L("/ajuda.html#vencimento","Vencimento e renovação")+L("/termos.html","Termos de Uso")+L("/privacidade.html","Política de Privacidade")+L("/termos.html#s10","Regras da comunidade")+'</div>'
+  +'<div><h4>Pagamento</h4><span class="pill"><i>●</i> Pix</span><span class="pill">Mercado Pago</span><p style="color:#666;margin:6px 0 0;font-size:13px">Pagamento por Pix. Não recebemos dados de cartão nem de conta bancária.</p></div>'
+  +'<div><h4>Segurança</h4><div class="ok">'+ck+'Conexão segura (HTTPS)</div><div class="ok">'+ck+'Tratamento de dados conforme a LGPD</div><div class="ok">'+ck+'Não vendemos seus dados</div><div class="ok">'+ck+'Anúncios revisados e removidos se violarem as regras</div></div>'
+  +'<div class="ct"><h4>Fale conosco</h4>'+L("https://wa.me/5562998309271","WhatsApp +55 62 99830-9271",1)+L("mailto:postafacilai@hotmail.com","postafacilai@hotmail.com")+'<p style="color:#666;margin:8px 0 0;font-size:13px">Atendimento por mensagem.</p></div></div>'
+  +'<div class="bt">© 2026 Posta Fácil AI · O espaço virtual dos lojistas de casa<br>Shopee e Mercado Livre são marcas de seus respectivos donos. O Posta Fácil AI é uma vitrine independente de links de afiliado e não vende nem entrega os produtos anunciados.</div>';
+  bd.appendChild(f)})();
 window.PFA={add:add,has:has,login:login,user:function(){return S&&S.user},open:openC};
 ui();if(S){loadUser().then(function(){ui();return loadCart()}).then(function(){if(cl==="in"){cl=null;openC("cart")}})}
 })();
