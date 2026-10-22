@@ -2262,7 +2262,7 @@ html.dk-out header,html.dk-out #nbar,html.dk-out #nav,html.dk-out #c,html.dk-out
 html.dk #loja{overflow-y:auto;overflow-x:hidden;background:#ebebeb}
 html.dk #loja>*{flex:none}
 html.dk #loja .ljbody{overflow:visible;flex:none;padding:6px 0 70px;background:transparent;max-width:1180px;width:100%;margin:0 auto;box-sizing:border-box}
-html.dk .mlh{display:grid;grid-template-columns:250px minmax(0,1fr) 230px;column-gap:22px;align-items:center;padding:12px max(20px,calc((100% - 1180px)/2)) 0}
+html.dk .mlh{display:grid;grid-template-columns:250px minmax(0,1fr) auto;column-gap:22px;align-items:center;padding:12px max(20px,calc((100% - 1180px)/2)) 0}
 html.dk .mlr1{grid-column:1;grid-row:1;margin:0}
 html.dk .mlsr{grid-column:2;grid-row:1}
 html.dk .dkcta{display:inline-flex;grid-column:3;grid-row:1;justify-self:end;align-items:center;border:0;border-radius:999px;background:#fff;color:#2d3277;font:inherit;font-weight:700;font-size:14px;padding:9px 18px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.15)}
@@ -2384,6 +2384,8 @@ html.yt #buy:hover,html.yt #md button.rsvg:hover{background:#008a43!important}
 #md .rsvc span{font-size:13px;color:#666}
 #md button.rsvg{display:block;width:100%;margin:8px 0;padding:12px;font-size:15px;cursor:pointer}
 #md button.rsvg:disabled{opacity:.5;cursor:default}
+
+@media(min-width:701px) and (max-width:1260px){html.dk .dkcw,html.dk .mlcs{width:calc(100% - 56px)}html.dk #loja .ljbody{padding-left:28px;padding-right:28px}html.dk .mlh{padding-left:28px;padding-right:28px}.hsl{padding-left:80px;padding-right:80px}}
 </style>
 <script>
 /* ===== LOJA: todos os produtos dos donos de bloco, em ordem aleatória e justa ===== */
